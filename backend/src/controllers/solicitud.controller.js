@@ -61,3 +61,4 @@ export async function postAprobarSolicitud(req, res, next) {
     next(err);
   }
 }
+

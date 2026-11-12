@@ -11,3 +11,4 @@ export function formatDecimal(value) {
   const num = Number(value);
   return Number.isFinite(num) ? num.toFixed(2) : String(value);
 }
+

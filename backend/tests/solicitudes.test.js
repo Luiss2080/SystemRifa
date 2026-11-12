@@ -373,3 +373,4 @@ describe('Causas, Solicitudes y Aprobación de Rifas (Paso 6)', () => {
     expect(notifs.body.items.map((n) => n.codigo)).toContain('SOLICITUD_RECHAZADA');
   });
 });
+

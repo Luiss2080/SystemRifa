@@ -62,3 +62,4 @@ export async function eliminarCausa(causaId) {
   await causaRepo.deleteCausa(causaId);
   return { message: 'Causa solidaria eliminada correctamente.' };
 }
+

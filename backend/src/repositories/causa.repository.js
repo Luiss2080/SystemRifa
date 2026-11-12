@@ -38,3 +38,4 @@ export async function deleteCausa(causaId, tx = prisma) {
     where: { causaId }
   });
 }
+

@@ -44,3 +44,4 @@ export async function deleteCausa(req, res, next) {
     next(err);
   }
 }
+
