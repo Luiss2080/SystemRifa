@@ -282,42 +282,62 @@ export function MisTicketsPage() {
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {tickets.map((t) => (
-            <div
-              key={t.ticketId}
-              className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-xs transition hover:border-slate-300"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <span className="text-xs text-slate-500">Ticket</span>
-                  <p className="text-2xl font-extrabold text-slate-900">#{t.numeroTicket}</p>
-                </div>
-                <Badge estado={t.estado} />
-              </div>
+          {tickets.map((t) => {
+            const barra =
+              t.estado === 'VENDIDO'
+                ? 'from-emerald-500 to-teal-500'
+                : t.estado === 'RESERVADO'
+                ? 'from-amber-400 to-orange-500'
+                : 'from-slate-400 to-slate-500';
+            return (
+              <div
+                key={t.ticketId}
+                className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+              >
+                <div className={`h-1.5 w-full bg-gradient-to-r ${barra}`} />
+                <div className="flex flex-1 flex-col justify-between p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                        Número de ticket
+                      </span>
+                      <p className="text-2xl font-extrabold text-slate-900">#{t.numeroTicket}</p>
+                    </div>
+                    <Badge estado={t.estado} />
+                  </div>
 
-              <div className="mt-3 space-y-1 text-sm">
-                <Link
-                  to={`/rifas/${t.rifaId}`}
-                  className="font-semibold text-emerald-700 hover:underline"
-                >
-                  {t.rifa?.nombre}
-                </Link>
-                <p className="text-xs text-slate-500">
-                  Precio: {formatearBs(t.rifa?.precioTicket || '0')}
-                </p>
-                {t.pago && (
-                  <p className="text-xs text-slate-600">
-                    Pago #{t.pago.pagoId}: <Badge estado={t.pago.estado} />
-                  </p>
-                )}
-                {t.estado === 'RESERVADO' && t.reservadoHasta && !t.pagoId && (
-                  <p className="text-xs text-amber-700">
-                    Reserva vence: {formatearFecha(t.reservadoHasta)}
-                  </p>
-                )}
+                  <div className="mt-3 space-y-1.5 text-sm">
+                    <p className="font-bold text-slate-900">{t.rifa?.nombre}</p>
+                    <p className="text-xs text-slate-500">
+                      Valor unitario:{' '}
+                      <span className="font-semibold text-emerald-700">
+                        {formatearBs(t.rifa?.precioTicket || '0')}
+                      </span>
+                    </p>
+                    {t.pago && (
+                      <p className="text-xs text-slate-600">
+                        Pago #{t.pago.pagoId}: <Badge estado={t.pago.estado} />
+                      </p>
+                    )}
+                    {t.estado === 'RESERVADO' && t.reservadoHasta && !t.pagoId && (
+                      <p className="text-xs font-medium text-amber-700">
+                        Reserva vence: {formatearFecha(t.reservadoHasta)}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-4 border-t border-slate-100 pt-3">
+                    <Link to={`/rifas/${t.rifaId}`}>
+                      <Button variant="emeraldSoft" size="sm" className="w-full">
+                        Ver rifa y premios
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
