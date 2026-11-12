@@ -298,7 +298,7 @@ export function CatalogoPage() {
               return (
                 <article
                   key={rifa.rifaId}
-                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
+                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-xs backdrop-blur-sm transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
                 >
                   <div
                     className={`h-1.5 w-full ${
