@@ -46,6 +46,7 @@ export function App() {
       <ToastProvider>
         <AuthProvider>
           <BrowserRouter>
+            <InteractiveBackground />
             <Routes>
               {/* Rutas públicas */}
               <Route element={<PublicLayout />}>
