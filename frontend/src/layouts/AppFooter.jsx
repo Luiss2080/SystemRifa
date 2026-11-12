@@ -22,6 +22,7 @@ import {
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 
 const LEGAL_MODALS = {
   privacidad: {
@@ -153,7 +154,7 @@ export function AppFooter() {
   const year = new Date().getFullYear();
 
   function openHelpWidget() {
-    window.dispatchEvent(new CustomEvent('open-help-widget'));
+    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
   const servicios = [
@@ -238,7 +239,7 @@ export function AppFooter() {
       {/* Franja superior luminosa acorde a la identidad de la web */}
       <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
 
-      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-11 pb-7 sm:px-6 lg:px-8">
+      <div className="relative w-full px-4 pt-11 pb-7 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-0">
           {/* Columna 1: Identidad comercial y redes sociales */}
           <div className="space-y-5 lg:col-span-4 lg:pr-8">
@@ -246,12 +247,10 @@ export function AppFooter() {
               to="/"
               className="group inline-flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white px-4 py-3 shadow-2xs transition hover:border-emerald-300 hover:shadow-sm"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-600/20">
-                <Ticket className="h-6 w-6" />
-              </span>
+              <BrandMark size="xl" className="shadow-sm shadow-emerald-600/20 group-hover:scale-105" />
               <span>
                 <span className="block text-lg font-extrabold tracking-tight text-slate-900">
-                  RIFAS<span className="text-emerald-600">SOLIDARIAS</span>
+                  RIFAS <span className="text-emerald-600">SOLIDARIAS</span>
                 </span>
                 <span className="block text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                   Plataforma Verificada

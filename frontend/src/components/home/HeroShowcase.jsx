@@ -4,13 +4,18 @@ import {
   ArrowRight,
   Award,
   CheckCircle2,
+  ChevronDown,
   Clock,
+  FilePlus2,
   HeartHandshake,
+  HelpCircle,
   Lock,
+  MessageCircle,
   ShieldCheck,
   Sparkles,
   Star,
   Ticket,
+  Users,
 } from 'lucide-react';
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
 

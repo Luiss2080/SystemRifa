@@ -41,6 +41,7 @@ import {
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { formatearFechaCorta } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 
 export function AppHeader({ variant = 'public' }) {
   const { usuario, autenticado, esAdmin, esOrganizador, logout, tienePermiso, tieneAlgunPermiso } =
@@ -172,7 +173,7 @@ export function AppHeader({ variant = 'public' }) {
   function openHelpWidget() {
     setDropdownAbierto(null);
     setMenuAbierto(false);
-    window.dispatchEvent(new CustomEvent('open-help-widget'));
+    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
   // Construcción de navegación completa con desplegables por perfil
@@ -638,21 +639,14 @@ export function AppHeader({ variant = 'public' }) {
         esPanel ? 'border-t-[3px] border-t-emerald-600' : ''
       }`}
     >
-      <div
-        className={`flex h-18 w-full items-center justify-between gap-3 px-4 sm:px-6 ${
-          esPanel ? 'lg:px-6' : 'mx-auto max-w-[1440px] lg:px-8'
-        }`}
-      >
+      <div className="flex h-18 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Marca / Logo */}
         <div className="flex shrink-0 items-center gap-3">
           <Link to={homeDestino} className="group flex items-center gap-2.5">
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-md shadow-emerald-600/20 transition duration-200 group-hover:scale-105">
-              <Ticket className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-amber-400" />
-            </span>
+            <BrandMark size="lg" className="shadow-md shadow-emerald-600/20 group-hover:scale-105" />
             <span className="leading-none">
               <span className="block text-[15px] font-extrabold tracking-tight text-slate-900">
-                RIFAS<span className="text-emerald-600">SOLIDARIAS</span>
+                RIFAS <span className="text-emerald-600">SOLIDARIAS</span>
               </span>
               <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                 {esPanel ? 'Consola de Gestión' : 'Sorteos Auditados'}
@@ -675,7 +669,9 @@ export function AppHeader({ variant = 'public' }) {
           aria-label="Navegación principal"
           className="hidden items-center gap-1 rounded-full border border-slate-200/90 bg-slate-50/75 px-2 py-1.5 shadow-2xs lg:flex"
         >
-          {navItems.map((item) => {
+          {navItems
+            .filter((item) => item.type !== 'dropdown' || (item.items && item.items.length > 0))
+            .map((item) => {
             if (item.type === 'dropdown') {
               const isOpen = dropdownAbierto === item.id;
               return (
@@ -985,7 +981,9 @@ export function AppHeader({ variant = 'public' }) {
       {menuAbierto && (
         <div className="animate-slide-up max-h-[82vh] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 text-slate-800 lg:hidden">
           <nav className="flex flex-col gap-1.5">
-            {navItems.map((item) => {
+            {navItems
+            .filter((item) => item.type !== 'dropdown' || (item.items && item.items.length > 0))
+            .map((item) => {
               if (item.type === 'dropdown') {
                 const expanded = mobileGroupAbierto === item.id;
                 return (

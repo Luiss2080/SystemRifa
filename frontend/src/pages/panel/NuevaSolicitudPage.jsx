@@ -192,14 +192,14 @@ export function NuevaSolicitudPage() {
         {/* Vista previa en tiempo real */}
         <aside className="space-y-4 lg:col-span-5">
           <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
-            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 px-5 py-4 text-white">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+            <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-600 px-5 py-4 text-white">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-100">
                 Vista previa en vivo
               </p>
               <h2 className="mt-1 text-lg font-extrabold">
                 {form.nombre.trim() || 'Tu próxima rifa solidaria'}
               </h2>
-              <p className="mt-0.5 text-xs text-slate-300">{nombreCausaSeleccionada}</p>
+              <p className="mt-0.5 text-xs text-emerald-50">{nombreCausaSeleccionada}</p>
             </div>
             <div className="space-y-4 p-5">
               <p className="text-xs leading-relaxed text-slate-600">
