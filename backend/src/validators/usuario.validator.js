@@ -39,3 +39,22 @@ export const cambiarPasswordSchema = z.object({
   passwordNueva: passwordSchema
 });
 
+export const idParamSchema = z.object({
+  id: z.coerce.number().int().positive('El ID debe ser un entero positivo.')
+});
+
+export const listarUsuariosQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().trim().max(120).optional(),
+  rol: z.string().trim().max(50).optional(),
+  activo: z
+    .enum(['true', 'false'])
+    .transform((v) => v === 'true')
+    .optional()
+});
+
+export const cambiarActivoSchema = z.object({
+  activo: z.boolean({ required_error: 'El campo activo es obligatorio.' })
+});
+
