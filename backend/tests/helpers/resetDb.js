@@ -2,10 +2,11 @@ import { prisma } from '../../src/config/prisma.js';
 import { env } from '../../src/config/env.js';
 import { runSeed } from '../../prisma/seed.js';
 import { resetRateLimiters } from '../../src/middlewares/rateLimit.js';
+import { invalidateAllPermissions } from '../../src/utils/permissionCache.js';
 
 /**
  * Limpia todas las tablas de la base de datos de pruebas (excluyendo _prisma_migrations),
- * reinicia los limitadores de tasa en memoria y vuelve a ejecutar el seed base idempotente.
+ * reinicia los limitadores de tasa y la caché de permisos, y vuelve a ejecutar el seed base.
  */
 export async function resetDb() {
   if (env.NODE_ENV !== 'test') {
@@ -13,6 +14,7 @@ export async function resetDb() {
   }
 
   resetRateLimiters();
+  invalidateAllPermissions();
 
   const tables = await prisma.$queryRaw`
     SELECT TABLE_NAME AS tableName

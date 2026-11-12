@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { AppError } from '../utils/AppError.js';
+import { extractEffectivePermissions } from '../utils/access.js';
 import {
   generateRefreshToken,
   getRefreshExpirationDate,
@@ -11,26 +12,6 @@ import * as usuarioRepo from '../repositories/usuario.repository.js';
 import * as refreshTokenRepo from '../repositories/refreshToken.repository.js';
 
 const BCRYPT_COST = 12;
-
-function extractEffectivePermissions(userWithAccess) {
-  const permisosSet = new Set();
-
-  for (const rolUsuario of userWithAccess.roles) {
-    for (const pr of rolUsuario.rol.permisos) {
-      if (pr.permiso.estaActivo) {
-        permisosSet.add(`${pr.permiso.recurso}:${pr.permiso.accion}`);
-      }
-    }
-  }
-
-  for (const pu of userWithAccess.permisosDirectos) {
-    if (pu.permiso.estaActivo) {
-      permisosSet.add(`${pu.permiso.recurso}:${pu.permiso.accion}`);
-    }
-  }
-
-  return Array.from(permisosSet).sort();
-}
 
 function buildConflictError(conflicts, input) {
   const campos = [];

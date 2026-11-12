@@ -195,3 +195,62 @@ export async function updatePasswordHash(usuarioId, passwordHash, tx = prisma) {
   });
 }
 
+export async function findManyPaginated({ page, limit, search, rol, activo }, db = prisma) {
+  const where = {
+    ...(search
+      ? {
+          OR: [{ alias: { contains: search } }, { email: { contains: search } }]
+        }
+      : {}),
+    ...(activo !== undefined ? { activo } : {}),
+    ...(rol
+      ? {
+          roles: {
+            some: {
+              rol: { nombre: rol }
+            }
+          }
+        }
+      : {})
+  };
+
+  const [items, total] = await Promise.all([
+    db.usuario.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { usuarioId: 'asc' },
+      select: {
+        ...USER_PUBLIC_SELECT,
+        roles: {
+          select: {
+            rol: {
+              select: { rolId: true, nombre: true }
+            }
+          }
+        }
+      }
+    }),
+    db.usuario.count({ where })
+  ]);
+
+  return { items, total };
+}
+
+export async function setActivo(usuarioId, activo, tx = prisma) {
+  return tx.usuario.update({
+    where: { usuarioId },
+    data: { activo },
+    select: {
+      ...USER_PUBLIC_SELECT,
+      roles: {
+        select: {
+          rol: {
+            select: { rolId: true, nombre: true }
+          }
+        }
+      }
+    }
+  });
+}
+
