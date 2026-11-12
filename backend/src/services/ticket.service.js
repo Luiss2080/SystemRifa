@@ -34,6 +34,7 @@ export async function reservarTickets(usuarioId, rifaId, numeros) {
 
   const reservadoHasta = new Date(Date.now() + CONSTANTES.RESERVA_MINUTOS * 60 * 1000);
 
+  let conflicto = false;
   await withTransaction(async (tx) => {
     const result = await ticketRepo.reservarDisponiblesCondicional(
       { rifaId, numeros, usuarioId, reservadoHasta },
@@ -41,17 +42,23 @@ export async function reservarTickets(usuarioId, rifaId, numeros) {
     );
 
     if (result.count !== numeros.length) {
-      const encontrados = await ticketRepo.findNumerosEstado(rifaId, numeros, tx);
-      const mapEstados = new Map(encontrados.map((t) => [t.numeroTicket, t.estado]));
-      const noDisponibles = numeros.filter((n) => mapEstados.get(n) !== 'DISPONIBLE');
-
-      throw new AppError(
-        409,
-        'TICKETS_UNAVAILABLE',
-        `Los siguientes números no están disponibles: ${noDisponibles.join(', ')}.`,
-        { noDisponibles }
-      );
+      conflicto = true;
+      throw new AppError(409, 'TICKETS_UNAVAILABLE', 'Uno o más números no están disponibles.');
     }
+  }).catch(async (err) => {
+    if (!conflicto) {
+      throw err;
+    }
+    const encontrados = await ticketRepo.findNumerosEstado(rifaId, numeros);
+    const mapEstados = new Map(encontrados.map((t) => [t.numeroTicket, t.estado]));
+    const noDisponibles = numeros.filter((n) => mapEstados.get(n) !== 'DISPONIBLE');
+
+    throw new AppError(
+      409,
+      'TICKETS_UNAVAILABLE',
+      `Los siguientes números no están disponibles: ${noDisponibles.join(', ')}.`,
+      { noDisponibles }
+    );
   });
 
   await notificacionService.notificar('TICKET_RESERVADO', [usuarioId], {
