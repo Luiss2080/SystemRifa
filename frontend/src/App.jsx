@@ -2,8 +2,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './features/auth/AuthContext.jsx';
 import { ToastProvider } from './components/ui/Toast.jsx';
-import { PublicLayout, UserLayout } from './layouts/Layouts.jsx';
+import { PanelLayout, PublicLayout, UserLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
+import { RequirePermiso } from './routes/RequirePermiso.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { RegistroPage } from './pages/RegistroPage.jsx';
 import { PerfilPage } from './pages/PerfilPage.jsx';
@@ -16,6 +17,18 @@ import { ResultadoPublicoPage } from './pages/ResultadoPublicoPage.jsx';
 import { MisTicketsPage } from './pages/MisTicketsPage.jsx';
 import { MisPagosPage } from './pages/MisPagosPage.jsx';
 import { NotificacionesPage } from './pages/NotificacionesPage.jsx';
+import { NuevaSolicitudPage } from './pages/panel/NuevaSolicitudPage.jsx';
+import { MisSolicitudesPage } from './pages/panel/MisSolicitudesPage.jsx';
+import { OrganizadorRifasPage } from './pages/panel/OrganizadorRifasPage.jsx';
+import { OrganizadorRifaGestionPage } from './pages/panel/OrganizadorRifaGestionPage.jsx';
+import { AdminSolicitudesPage } from './pages/admin/AdminSolicitudesPage.jsx';
+import { AdminPagosPage } from './pages/admin/AdminPagosPage.jsx';
+import { AdminCausasPage } from './pages/admin/AdminCausasPage.jsx';
+import { AdminUsuariosPage } from './pages/admin/AdminUsuariosPage.jsx';
+import { AdminRolesPage } from './pages/admin/AdminRolesPage.jsx';
+import { AdminPlantillasPage } from './pages/admin/AdminPlantillasPage.jsx';
+import { AdminReportesPage } from './pages/admin/AdminReportesPage.jsx';
+import { AdminAuditoriaPage } from './pages/admin/AdminAuditoriaPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +46,7 @@ export function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
+              {/* Rutas públicas */}
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<CatalogoPage />} />
                 <Route path="/causas" element={<CausasPublicPage />} />
@@ -43,12 +57,70 @@ export function App() {
                 <Route path="/403" element={<ForbiddenPage />} />
               </Route>
 
+              {/* Rutas participante autenticado */}
               <Route element={<RequireAuth />}>
                 <Route element={<UserLayout />}>
                   <Route path="/perfil" element={<PerfilPage />} />
                   <Route path="/mis-tickets" element={<MisTicketsPage />} />
                   <Route path="/mis-pagos" element={<MisPagosPage />} />
                   <Route path="/notificaciones" element={<NotificacionesPage />} />
+                </Route>
+
+                {/* Panel Organizador y Administrador */}
+                <Route element={<PanelLayout />}>
+                  <Route element={<RequirePermiso recurso="solicitudes" accion="crear" />}>
+                    <Route path="/solicitudes/nueva" element={<NuevaSolicitudPage />} />
+                    <Route path="/solicitudes/mias" element={<MisSolicitudesPage />} />
+                  </Route>
+
+                  <Route
+                    element={
+                      <RequirePermiso
+                        anyOf={[
+                          ['rifas', 'leer'],
+                          ['rifas', 'administrar'],
+                          ['premios', 'crud'],
+                          ['sorteos', 'realizar'],
+                          ['ganadores', 'publicar'],
+                        ]}
+                      />
+                    }
+                  >
+                    <Route path="/organizador/rifas" element={<OrganizadorRifasPage />} />
+                    <Route path="/organizador/rifas/:id" element={<OrganizadorRifaGestionPage />} />
+                  </Route>
+
+                  <Route element={<RequirePermiso recurso="solicitudes" accion="revisar" />}>
+                    <Route path="/admin/solicitudes" element={<AdminSolicitudesPage />} />
+                  </Route>
+                  <Route element={<RequirePermiso recurso="pagos" accion="verificar" />}>
+                    <Route path="/admin/pagos" element={<AdminPagosPage />} />
+                  </Route>
+                  <Route element={<RequirePermiso recurso="causas" accion="crud" />}>
+                    <Route path="/admin/causas" element={<AdminCausasPage />} />
+                  </Route>
+                  <Route element={<RequirePermiso recurso="usuarios" accion="leer" />}>
+                    <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
+                  </Route>
+                  <Route
+                    element={
+                      <RequirePermiso
+                        anyOf={[
+                          ['roles', 'administrar'],
+                          ['permisos', 'administrar'],
+                        ]}
+                      />
+                    }
+                  >
+                    <Route path="/admin/roles" element={<AdminRolesPage />} />
+                  </Route>
+                  <Route element={<RequirePermiso recurso="plantillas" accion="administrar" />}>
+                    <Route path="/admin/plantillas" element={<AdminPlantillasPage />} />
+                  </Route>
+                  <Route element={<RequirePermiso recurso="reportes" accion="leer" />}>
+                    <Route path="/admin/reportes" element={<AdminReportesPage />} />
+                    <Route path="/admin/auditoria" element={<AdminAuditoriaPage />} />
+                  </Route>
                 </Route>
               </Route>
 
