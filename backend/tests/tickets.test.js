@@ -225,14 +225,14 @@ describe('Rifas, Premios, Reservas y Concurrencia (Paso 7)', () => {
       alias: 'comp_a',
       email: 'compa@ejemplo.com',
       nombres: 'Comp',
-      apellidos: 'A',
+      apellidos: 'Alfa',
       password: 'Password123'
     });
     const comp2 = await registrarYLoguear({
       alias: 'comp_b',
       email: 'compb@ejemplo.com',
       nombres: 'Comp',
-      apellidos: 'B',
+      apellidos: 'Beta',
       password: 'Password123'
     });
 
