@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowUp,
@@ -12,6 +12,8 @@ import {
   ShieldCheck,
   X,
 } from 'lucide-react';
+import { useAuth } from '../../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../../features/auth/roleAccess.js';
 
 const WHATSAPP_NUMBER = '59170020004';
 const WHATSAPP_DISPLAY = '+591 700 20004';
@@ -121,6 +123,18 @@ function WhatsAppIcon({ className = 'h-6 w-6' }) {
 
 export function FloatingWidgets() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { autenticado, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } = useAuth();
+  const { tieneAdminPanel, tieneOrganizadorPanel } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
+  const [isLgScreen, setIsLgScreen] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
+  );
   const [botOpen, setBotOpen] = useState(false);
   const [waOpen, setWaOpen] = useState(false);
   const [messages, setMessages] = useState(() => crearMensajeInicial());
@@ -130,7 +144,17 @@ export function FloatingWidgets() {
   const [showTop, setShowTop] = useState(false);
   const chatEndRef = useRef(null);
 
+  const tienePanelSidebar =
+    autenticado &&
+    (tieneAdminPanel || tieneOrganizadorPanel) &&
+    !['/', '/login', '/registro', '/403'].includes(location.pathname);
+  const dockBotRight = tienePanelSidebar && isLgScreen;
+
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    function onMediaChange(e) {
+      setIsLgScreen(e.matches);
+    }
     function onScroll() {
       setShowTop(window.scrollY > 360);
     }
@@ -144,10 +168,12 @@ export function FloatingWidgets() {
         setWaOpen(false);
       }
     }
+    mediaQuery.addEventListener('change', onMediaChange);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('open-help-widget', onOpenHelp);
     window.addEventListener('keydown', onKeyDown);
     return () => {
+      mediaQuery.removeEventListener('change', onMediaChange);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('open-help-widget', onOpenHelp);
       window.removeEventListener('keydown', onKeyDown);
@@ -203,12 +229,27 @@ export function FloatingWidgets() {
 
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMensaje)}`;
 
-  return (
-    <>
-      {/* Widget Inferior Izquierdo: Asistente Virtual RifaBot */}
-      <div className="fixed bottom-4 left-4 z-40 flex flex-col items-start">
-        {botOpen ? (
-          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[336px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
+  const botTrigger = (
+    <button
+      type="button"
+      onClick={() => {
+        setBotOpen(true);
+        setWaOpen(false);
+      }}
+      aria-label="Abrir asistente virtual de ayuda"
+      title="Asistente RifaBot"
+      className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl cursor-pointer"
+    >
+      <Bot className="h-6 w-6" />
+      <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-amber-400" />
+      </span>
+    </button>
+  );
+
+  const botCard = (
+    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[336px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
             {/* Cabecera verde de la web */}
             <div className="relative bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 px-3.5 py-2.5 text-white">
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-emerald-300 via-amber-300 to-teal-300" />

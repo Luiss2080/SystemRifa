@@ -20,8 +20,6 @@ import {
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
-import { resolverAccesoRol } from '../features/auth/roleAccess.js';
-import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { AppHeader } from './AppHeader.jsx';
 import { AppFooter } from './AppFooter.jsx';
 
@@ -46,10 +44,10 @@ export function UserLayout() {
     }`;
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+    <div className="relative z-10 flex min-h-screen flex-col overflow-x-clip bg-transparent">
       <AppHeader variant="user" />
-      <div className="border-b border-emerald-200/70 bg-emerald-50/70 backdrop-blur-xs">
-        <div className="flex w-full flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
+      <div className="border-b border-emerald-200/70 bg-emerald-50/70 backdrop-blur-xs lg:hidden">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
           <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
             Mi espacio personal
           </span>
@@ -73,7 +71,7 @@ export function UserLayout() {
           </nav>
         </div>
       </div>
-      <main className="flex w-full flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
+      <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
         <Outlet />
       </main>
       <AppFooter />
@@ -82,8 +80,16 @@ export function UserLayout() {
 }
 
 export function PanelLayout() {
-  const { esAdmin, tienePermiso, tieneAlgunPermiso, usuario } = useAuth();
+  const { esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso, usuario } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+
+  const { rolPrincipal, tieneAdminPanel } = resolverAccesoRol({
+    autenticado: true,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
 
   const itemsOrganizador = [
     tienePermiso('solicitudes', 'crear') && {
@@ -96,13 +102,12 @@ export function PanelLayout() {
       label: 'Mis solicitudes',
       icon: ClipboardList,
     },
-    (tienePermiso('rifas', 'leer') ||
-      tieneAlgunPermiso([
-        ['rifas', 'administrar'],
-        ['premios', 'crud'],
-        ['sorteos', 'realizar'],
-        ['ganadores', 'publicar'],
-      ])) && {
+    tieneAlgunPermiso([
+      ['rifas', 'administrar'],
+      ['premios', 'crud'],
+      ['sorteos', 'realizar'],
+      ['ganadores', 'publicar'],
+    ]) && {
       to: '/organizador/rifas',
       label: 'Mis rifas',
       icon: Ticket,
@@ -191,7 +196,7 @@ export function PanelLayout() {
   };
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+    <div className="relative z-10 flex min-h-screen flex-col overflow-x-clip bg-transparent">
       <AppHeader variant="panel" />
 
       <div className="flex w-full flex-1 flex-col lg:flex-row">
@@ -201,7 +206,7 @@ export function PanelLayout() {
             collapsed ? 'lg:w-[76px]' : 'lg:w-64'
           }`}
         >
-          <div className="flex flex-col gap-4 p-3 lg:sticky lg:top-[4.5rem] lg:h-[calc(100vh-4.5rem)] lg:overflow-y-auto lg:px-3.5 lg:pt-4 lg:pb-20">
+          <div className="flex flex-col gap-4 p-3 lg:sticky lg:top-[4.75rem] lg:h-[calc(100vh-4.75rem)] lg:overflow-y-auto lg:px-3.5 lg:pt-4 lg:pb-6">
             {/* Cabecera del Sidebar + botón contraer */}
             <div className="flex items-center justify-between gap-2 rounded-2xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50 to-teal-50/70 px-3 py-2.5">
               <div className={`flex min-w-0 items-center gap-2 ${collapsed ? 'lg:hidden' : ''}`}>
@@ -210,7 +215,7 @@ export function PanelLayout() {
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-xs font-extrabold text-slate-900">
-                    {esAdmin ? 'Consola Admin' : 'Panel Organizador'}
+                    {tieneAdminPanel ? 'Consola Admin' : 'Panel Organizador'}
                   </p>
                   <p className="truncate text-[10px] font-medium text-emerald-700">
                     @{usuario?.alias}
@@ -235,7 +240,7 @@ export function PanelLayout() {
 
             {/* Grupos de navegación */}
             <div className="space-y-5">
-              {esAdmin ? (
+              {rolPrincipal === 'ADMINISTRADOR' ? (
                 <>
                   {renderGroup('Administración', itemsAdmin, 'text-slate-500')}
                   {renderGroup('Campañas', itemsOrganizador, 'text-emerald-700')}
@@ -248,11 +253,11 @@ export function PanelLayout() {
               )}
             </div>
 
-            {/* Acceso directo inferior al catálogo público */}
+            {/* Acceso directo inferior al catálogo web */}
             <div className="mt-auto hidden border-t border-slate-200/80 pt-3 lg:block">
               <Link
-                to="/"
-                title={collapsed ? 'Ir al catálogo público' : undefined}
+                to="/explorar"
+                title={collapsed ? 'Ir al catálogo activo' : undefined}
                 className={`flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 ${
                   collapsed ? 'justify-center px-2' : 'justify-between'
                 }`}
@@ -277,37 +282,4 @@ export function PanelLayout() {
       </div>
     </div>
   );
-}
-
-/**
- * Layout adaptativo según rol:
- * - Visitante sin sesión -> PublicLayout
- * - Participante -> UserLayout
- * - Organizador / Administrador -> PanelLayout
- */
-export function AdaptiveLayout() {
-  const { autenticado, cargando, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } =
-    useAuth();
-
-  if (cargando) {
-    return <FullPageSpinner message="Cargando plataforma..." />;
-  }
-
-  if (!autenticado) {
-    return <PublicLayout />;
-  }
-
-  const { tieneAdminPanel, tieneOrganizadorPanel } = resolverAccesoRol({
-    autenticado,
-    esAdmin,
-    esOrganizador,
-    tienePermiso,
-    tieneAlgunPermiso,
-  });
-
-  if (tieneAdminPanel || tieneOrganizadorPanel) {
-    return <PanelLayout />;
-  }
-
-  return <UserLayout />;
 }
