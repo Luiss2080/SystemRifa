@@ -158,7 +158,7 @@ export function CatalogoPage() {
         </div>
       </section>
 
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
+      <section className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-xs backdrop-blur-md sm:p-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />

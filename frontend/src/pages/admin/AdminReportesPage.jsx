@@ -80,17 +80,20 @@ export function AdminReportesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Reportes y estadísticas</h1>
-        <p className="text-sm text-slate-500">
-          Consolidado financiero (solo pagos CONFIRMADOS) y avance por causas solidarias
+      <section className="rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 text-white shadow-md">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-emerald-300">
+          Analítica ejecutiva en tiempo real
+        </span>
+        <h1 className="mt-2 text-2xl font-extrabold tracking-tight">Reportes y estadísticas</h1>
+        <p className="mt-1 text-sm text-slate-300">
+          Consolidado financiero (exclusivamente pagos CONFIRMADOS) y cumplimiento de metas solidarias.
         </p>
-      </div>
+      </section>
 
       {resumen && (
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="rounded-2xl border border-slate-200/80 border-l-4 border-l-emerald-500 bg-white/90 p-5 shadow-xs backdrop-blur-md">
+            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
               <span>Recaudación confirmada</span>
               <DollarSign className="h-4 w-4 text-emerald-600" />
             </div>
@@ -98,8 +101,8 @@ export function AdminReportesPage() {
               {formatearBs(resumen.recaudacionTotalConfirmada)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="rounded-2xl border border-slate-200/80 border-l-4 border-l-amber-500 bg-white/90 p-5 shadow-xs backdrop-blur-md">
+            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
               <span>Pendiente de verificar</span>
               <Clock className="h-4 w-4 text-amber-500" />
             </div>
@@ -107,8 +110,8 @@ export function AdminReportesPage() {
               {formatearBs(resumen.recaudacionTotalPendiente)}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="rounded-2xl border border-slate-200/80 border-l-4 border-l-indigo-500 bg-white/90 p-5 shadow-xs backdrop-blur-md">
+            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
               <span>Tickets vendidos</span>
               <Ticket className="h-4 w-4 text-indigo-600" />
             </div>
@@ -116,10 +119,10 @@ export function AdminReportesPage() {
               {resumen.ticketsVendidos}
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="rounded-2xl border border-slate-200/80 border-l-4 border-l-sky-500 bg-white/90 p-5 shadow-xs backdrop-blur-md">
+            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
               <span>Usuarios activos / totales</span>
-              <Users className="h-4 w-4 text-slate-500" />
+              <Users className="h-4 w-4 text-sky-600" />
             </div>
             <p className="mt-1.5 text-2xl font-extrabold text-slate-900">
               {resumen.usuarios?.activos} / {resumen.usuarios?.totales}
@@ -129,7 +132,7 @@ export function AdminReportesPage() {
       )}
 
       <section className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs lg:col-span-2">
+        <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-xs backdrop-blur-md lg:col-span-2">
           <h2 className="mb-4 text-base font-bold text-slate-900">Recaudación confirmada por causa (Bs)</h2>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -144,7 +147,7 @@ export function AdminReportesPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+        <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-xs backdrop-blur-md">
           <h2 className="mb-4 text-base font-bold text-slate-900">Rifas por estado</h2>
           <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
