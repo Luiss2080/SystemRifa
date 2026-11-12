@@ -193,3 +193,4 @@ export async function verificarPago(adminId, pagoId, { aprobado, motivo }) {
 
   return { pago: formatPago(pagoActualizado) };
 }
+

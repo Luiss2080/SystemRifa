@@ -35,3 +35,4 @@ export async function patchVerificarPago(req, res, next) {
     next(err);
   }
 }
+
