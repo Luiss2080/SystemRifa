@@ -81,10 +81,10 @@ export function RegistroPage() {
   ];
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-11rem)] max-w-5xl items-center py-2">
+    <div className="mx-auto flex min-h-[calc(100vh-14rem)] max-w-5xl items-center py-1">
       <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-lg backdrop-blur-md lg:grid-cols-12">
         {/* Columna izquierda: Beneficios y privacidad */}
-        <section className="flex flex-col justify-between bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-6 text-white sm:p-7 lg:col-span-5">
+        <section className="flex flex-col justify-between bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-5">
           <div className="space-y-3">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
               <HeartHandshake className="h-3.5 w-3.5" />
@@ -138,7 +138,7 @@ export function RegistroPage() {
         </section>
 
         {/* Columna derecha: Formulario de registro */}
-        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-7">
+        <section className="flex flex-col justify-center p-5 sm:p-6 lg:col-span-7">
           <div className="mb-4 flex items-center gap-3">
             <div className="inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700">
               <UserPlus className="h-5 w-5" />

@@ -117,10 +117,10 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-11rem)] max-w-5xl items-center py-2">
+    <div className="mx-auto flex min-h-[calc(100vh-14rem)] max-w-5xl items-center py-1">
       <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-lg backdrop-blur-md lg:grid-cols-12">
         {/* Columna izquierda: Presentación limpia y sin saturación */}
-        <section className="flex flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-6 text-white sm:p-8 lg:col-span-5">
+        <section className="flex flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-7 lg:col-span-5">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-300">
               <Ticket className="h-3.5 w-3.5" />
@@ -148,7 +148,7 @@ export function LoginPage() {
         </section>
 
         {/* Columna derecha: Formulario + Desplegable de autocompletado */}
-        <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
+        <section className="flex flex-col justify-center p-5 sm:p-7 lg:col-span-7">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="text-2xl font-extrabold text-slate-900">Iniciar sesión</h2>
