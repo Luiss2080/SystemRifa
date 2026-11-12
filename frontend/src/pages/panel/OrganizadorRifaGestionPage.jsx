@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, Award, CalendarClock, CheckCircle2, Plus, Trash2, Trophy } from 'lucide-react';
-import { getDetalleRifa } from '../../features/rifas/publicApi.js';
+import {
+  AlertTriangle,
+  Award,
+  Ban,
+  CalendarClock,
+  CheckCircle2,
+  Plus,
+  Search,
+  Trash2,
+  Trophy,
+} from 'lucide-react';
+import { getDetalleRifa, getTicketsRifa } from '../../features/rifas/publicApi.js';
 import {
   actualizarPremioApi,
+  anularTicketApi,
   crearPremioApi,
   desactivarPremioApi,
   extenderRifaApi,
@@ -45,6 +56,12 @@ export function OrganizadorRifaGestionPage() {
     enabled: esAdmin || tienePermiso('reportes', 'leer'),
   });
 
+  const { data: ticketsData } = useQuery({
+    queryKey: ['rifa-tickets', id],
+    queryFn: () => getTicketsRifa(id),
+    enabled: tienePermiso('rifas', 'administrar'),
+  });
+
   // Modales y formularios
   const [modalPremio, setModalPremio] = useState(null); // { modo: 'crear' | 'editar', premio?: obj }
   const [formPremio, setFormPremio] = useState({ nombre: '', descripcion: '', valor: '' });
@@ -69,8 +86,21 @@ export function OrganizadorRifaGestionPage() {
   const [datosEntrega, setDatosEntrega] = useState('');
   const [guardandoEntrega, setGuardandoEntrega] = useState(false);
 
+  const [busquedaTicket, setBusquedaTicket] = useState('');
+  const [ticketAAnular, setTicketAAnular] = useState(null);
+  const [motivoAnular, setMotivoAnular] = useState('');
+  const [anulandoTicket, setAnulandoTicket] = useState(false);
+
+  const ticketsFiltrados = useMemo(() => {
+    const items = ticketsData?.items || [];
+    const q = busquedaTicket.trim();
+    if (!q) return items.slice(0, 30);
+    return items.filter((t) => String(t.numeroTicket).includes(q)).slice(0, 30);
+  }, [ticketsData, busquedaTicket]);
+
   function invalidar() {
     queryClient.invalidateQueries({ queryKey: ['rifa-detalle', id] });
+    queryClient.invalidateQueries({ queryKey: ['rifa-tickets', id] });
     queryClient.invalidateQueries({ queryKey: ['reporte-rifa', id] });
     queryClient.invalidateQueries({ queryKey: ['mis-rifas-org'] });
   }

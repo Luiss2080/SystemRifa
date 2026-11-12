@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Search, Shield, UserCheck, UserX, X } from 'lucide-react';
 import {
+  asignarPermisoUsuarioApi,
   asignarRolUsuarioApi,
   cambiarActivoUsuarioApi,
+  getPermisosApi,
   getRolesApi,
   getUsuarioDetalleApi,
   getUsuariosAdminApi,
+  quitarPermisoUsuarioApi,
   quitarRolUsuarioApi,
 } from '../../features/panel/panelApi.js';
 import { useAuth } from '../../features/auth/AuthContext.jsx';

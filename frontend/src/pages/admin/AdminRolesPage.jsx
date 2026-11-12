@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import {
+  actualizarPermisoApi,
   asignarPermisoRolApi,
   crearRolApi,
+  eliminarRolApi,
   getHistorialPermisosApi,
   getPermisosApi,
   getRolesApi,
@@ -17,7 +19,7 @@ import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
 import { FullPageSpinner } from '../../components/ui/Feedback.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
-import { Modal } from '../../components/ui/Modal.jsx';
+import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
 
 export function AdminRolesPage() {

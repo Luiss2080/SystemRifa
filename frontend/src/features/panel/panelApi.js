@@ -72,6 +72,11 @@ export async function getReporteRifaApi(rifaId) {
   return data;
 }
 
+export async function anularTicketApi(ticketId, motivo) {
+  const { data } = await apiClient.post(`/tickets/${ticketId}/anular`, { motivo });
+  return data;
+}
+
 // Admin Pagos
 export async function getPagosAdminApi(params) {
   const { data } = await apiClient.get('/pagos', { params });
@@ -142,6 +147,16 @@ export async function getRolesApi() {
 
 export async function crearRolApi(payload) {
   const { data } = await apiClient.post('/roles', payload);
+  return data;
+}
+
+export async function eliminarRolApi(rolId) {
+  const { data } = await apiClient.delete(`/roles/${rolId}`);
+  return data;
+}
+
+export async function actualizarPermisoApi(permisoId, payload) {
+  const { data } = await apiClient.patch(`/permisos/${permisoId}`, payload);
   return data;
 }
 
