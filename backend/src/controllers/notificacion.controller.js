@@ -53,3 +53,4 @@ export async function patchTipoNotificacion(req, res, next) {
     next(err);
   }
 }
+

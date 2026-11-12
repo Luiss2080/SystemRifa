@@ -20,3 +20,4 @@ router.patch('/:id/leida', validate(idParamSchema, 'params'), patchMarcarLeida);
 router.delete('/:id', validate(idParamSchema, 'params'), deleteNotificacion);
 
 export default router;
+

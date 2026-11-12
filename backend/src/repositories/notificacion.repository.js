@@ -169,3 +169,4 @@ export async function softDeleteOne(notificacionId, usuarioId, db = prisma) {
     }
   });
 }
+

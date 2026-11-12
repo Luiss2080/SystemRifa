@@ -186,3 +186,4 @@ export async function actualizarTipoNotificacion(tipoNotificacionId, data) {
   const actualizado = await notificacionRepo.updateTipo(tipoNotificacionId, data);
   return { tipo: actualizado };
 }
+

@@ -18,3 +18,4 @@ export const actualizarTipoNotificacionSchema = z
   .refine((data) => Object.keys(data).length > 0, {
     message: 'Debe enviar al menos un campo para actualizar.'
   });
+
