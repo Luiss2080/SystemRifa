@@ -445,6 +445,8 @@ export function CatalogoPage({ mode = 'landing' }) {
           )}
         </>
       )}
+
+      <PlatformContentSection totalRifas={rifasBase.length} totalCausas={causas.length} />
     </div>
   );
 }

@@ -20,6 +20,8 @@ import {
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
+import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { AppHeader } from './AppHeader.jsx';
 import { AppFooter } from './AppFooter.jsx';
 
@@ -47,7 +49,7 @@ export function UserLayout() {
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader variant="user" />
       <div className="border-b border-emerald-200/70 bg-emerald-50/70 backdrop-blur-xs">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
           <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
             Mi espacio personal
           </span>
@@ -71,7 +73,7 @@ export function UserLayout() {
           </nav>
         </div>
       </div>
-      <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
+      <main className="flex w-full flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
         <Outlet />
       </main>
       <AppFooter />
@@ -275,4 +277,37 @@ export function PanelLayout() {
       </div>
     </div>
   );
+}
+
+/**
+ * Layout adaptativo según rol:
+ * - Visitante sin sesión -> PublicLayout
+ * - Participante -> UserLayout
+ * - Organizador / Administrador -> PanelLayout
+ */
+export function AdaptiveLayout() {
+  const { autenticado, cargando, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } =
+    useAuth();
+
+  if (cargando) {
+    return <FullPageSpinner message="Cargando plataforma..." />;
+  }
+
+  if (!autenticado) {
+    return <PublicLayout />;
+  }
+
+  const { tieneAdminPanel, tieneOrganizadorPanel } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
+
+  if (tieneAdminPanel || tieneOrganizadorPanel) {
+    return <PanelLayout />;
+  }
+
+  return <UserLayout />;
 }
