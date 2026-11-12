@@ -204,6 +204,23 @@ export function CatalogoPage({ mode = 'landing' }) {
         id="catalogo-activo"
         className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-xs backdrop-blur-md sm:p-5"
       >
+        {esVistaLanding && (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
+                Catálogo en vivo
+              </span>
+              <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
+                Rifas solidarias disponibles para participar
+              </h2>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200/80">
+              <Ticket className="h-3.5 w-3.5 text-emerald-600" />
+              {rifasFiltradas.length} disponible(s)
+            </span>
+          </div>
+        )}
+
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -339,6 +356,9 @@ export function CatalogoPage({ mode = 'landing' }) {
               const pctAvance = 100 - pctDisponible;
               const hrs = horasRestantes(rifa.fechaFin);
               const porCerrar = rifa.estado !== 'FINALIZADA' && hrs > 0 && hrs <= HORAS_URGENCIA;
+              const premios = rifa.premios || [];
+              const primerPremio = premios[0];
+              const valorPremios = sumarMontosBs(premios.map((p) => p.valor || '0'));
 
               return (
                 <article
@@ -381,6 +401,25 @@ export function CatalogoPage({ mode = 'landing' }) {
                           </p>
                         )}
                       </div>
+
+                      {primerPremio && (
+                        <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-200/70 bg-amber-50/70 px-3 py-2 text-xs">
+                          <div className="flex min-w-0 items-center gap-2">
+                            <Award className="h-4 w-4 shrink-0 text-amber-600" />
+                            <div className="min-w-0">
+                              <p className="truncate font-bold text-slate-900">
+                                {primerPremio.nombre}
+                                {premios.length > 1 ? ` (+${premios.length - 1} más)` : ''}
+                              </p>
+                              {Number(valorPremios) > 0 && (
+                                <p className="text-[11px] font-medium text-amber-800">
+                                  Premios valorados en {formatearBs(valorPremios)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5 text-xs">
                         <div>
@@ -461,7 +500,16 @@ export function CatalogoPage({ mode = 'landing' }) {
         </>
       )}
 
+      {esVistaLanding && (
+        <>
+          <CausasDestacadasSection causas={causas} onSelectCausa={seleccionarCausa} />
+          <GarantiasSection />
+        </>
+      )}
+
       <PlatformContentSection totalRifas={rifasBase.length} totalCausas={causas.length} />
+
+      {esVistaLanding && <LandingFinalCta />}
     </div>
   );
 }
