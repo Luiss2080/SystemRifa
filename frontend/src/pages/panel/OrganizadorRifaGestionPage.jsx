@@ -567,6 +567,9 @@ export function OrganizadorRifaGestionPage() {
         open={Boolean(modalPremio)}
         onClose={() => setModalPremio(null)}
         title={modalPremio?.modo === 'editar' ? 'Editar premio' : 'Nuevo premio'}
+        description="Especifica el premio, su descripción y valor referencial para los participantes."
+        badge="Inventario de premios"
+        icon={Award}
       >
         <form onSubmit={handleGuardarPremio} className="space-y-4">
           <Input
@@ -666,6 +669,10 @@ export function OrganizadorRifaGestionPage() {
         open={Boolean(modalEntrega)}
         onClose={() => setModalEntrega(null)}
         title={`Registrar entrega · ${modalEntrega?.nombre || ''}`}
+        description="Deja constancia oficial de la entrega del premio al ganador para auditoría."
+        badge="Cierre de premio"
+        icon={Trophy}
+        tone="amber"
       >
         <form onSubmit={handleRegistrarEntrega} className="space-y-4">
           <Textarea

@@ -433,6 +433,9 @@ export function MisTicketsPage() {
         open={Boolean(grupoAPagar)}
         onClose={() => setGrupoAPagar(null)}
         title={`Registrar pago · ${grupoAPagar?.nombreRifa || ''}`}
+        description="Envía la referencia de tu transferencia o comprobante antes de que expire la reserva."
+        badge="Pago de reserva"
+        icon={CreditCard}
       >
         {grupoAPagar && (
           <form onSubmit={handlePagarGrupo} className="space-y-4">

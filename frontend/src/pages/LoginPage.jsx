@@ -141,21 +141,20 @@ export function LoginPage() {
           <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-teal-400/10 blur-3xl" />
 
-          <div className="relative space-y-6">
-            <div className="flex items-center justify-between gap-3">
-              <BrandMark size="lg" />
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
+          <div className="relative flex flex-1 flex-col justify-center space-y-5">
+            <div className="text-center">
+              <div className="mb-3 flex justify-center">
+                <BrandMark size="xl" />
+              </div>
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Acceso seguro
+                Portal Rifas Solidarias
               </span>
-            </div>
-
-            <div className="space-y-2">
-              <h1 className="text-2xl font-extrabold tracking-tight sm:text-[26px]">
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-[26px]">
                 Bienvenido de vuelta
               </h1>
-              <p className="text-sm leading-relaxed text-slate-300">
-                Gestiona tus números reservados, valida pagos y administra campañas solidarias desde un solo panel.
+              <p className="mt-2 text-xs leading-relaxed text-slate-300 sm:text-sm">
+                Gestiona tus números reservados, pagos y campañas solidarias en tiempo real.
               </p>
             </div>
 
@@ -186,13 +185,13 @@ export function LoginPage() {
             </div>
           </div>
 
-          <div className="relative mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-slate-300">
-            <span>¿Solo quieres ver campañas?</span>
+          <div className="relative mt-6 border-t border-white/10 pt-4 text-center text-xs text-slate-300">
+            ¿Solo quieres explorar?{' '}
             <Link
               to="/"
               className="inline-flex items-center gap-1 font-bold text-emerald-300 transition hover:text-emerald-200 hover:underline"
             >
-              Ver catálogo
+              Ver catálogo público
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -201,18 +200,16 @@ export function LoginPage() {
         {/* Columna derecha: Formulario */}
         <section className="flex flex-col justify-center p-6 sm:p-10 lg:col-span-7">
           <div className="mx-auto w-full max-w-md">
-            <div className="mb-6 flex items-start gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
+            <div className="mb-6 text-center">
+              <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
                 <KeyRound className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-                  Iniciar sesión
-                </h2>
-                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
-                  Introduce tus credenciales o selecciona una cuenta de prueba por rol.
-                </p>
-              </div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+                Iniciar sesión
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                Introduce tus credenciales o despliega una cuenta de prueba por rol.
+              </p>
             </div>
 
             {/* Desplegable compacto para autocompletar por rol (solo DEV) */}

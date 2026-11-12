@@ -106,21 +106,20 @@ export function RegistroPage() {
           <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-cyan-400/15 blur-3xl" />
 
-          <div className="relative space-y-5">
-            <div className="flex items-center justify-between gap-3">
-              <BrandMark size="lg" />
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-emerald-100 ring-1 ring-white/20 backdrop-blur-xs">
+          <div className="relative flex flex-1 flex-col justify-center space-y-5">
+            <div className="text-center">
+              <div className="mb-3 flex justify-center">
+                <BrandMark size="xl" />
+              </div>
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-emerald-100 ring-1 ring-white/20 backdrop-blur-xs">
                 <HeartHandshake className="h-3.5 w-3.5" />
-                Comunidad verificada
+                Únete a Rifas Solidarias
               </span>
-            </div>
-
-            <div className="space-y-2">
-              <h1 className="text-2xl font-extrabold tracking-tight sm:text-[26px]">
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-[26px]">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="text-sm leading-relaxed text-emerald-50/90">
-                Elige tus números favoritos en tiempo real, valida comprobantes o propón campañas para causas verificadas.
+              <p className="mt-2 text-xs leading-relaxed text-emerald-50/90 sm:text-sm">
+                Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
               </p>
             </div>
 
@@ -163,8 +162,8 @@ export function RegistroPage() {
             </div>
           </div>
 
-          <div className="relative mt-6 flex items-center justify-between border-t border-white/15 pt-4 text-xs text-emerald-50">
-            <span>¿Ya tienes una cuenta?</span>
+          <div className="relative mt-6 border-t border-white/15 pt-4 text-center text-xs text-emerald-50">
+            ¿Ya tienes una cuenta?{' '}
             <Link
               to="/login"
               state={{ from: destino }}
@@ -178,20 +177,16 @@ export function RegistroPage() {
 
         {/* Columna derecha: Formulario */}
         <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
-          <div className="mb-5 flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
-                <UserPlus className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-                  Crear cuenta
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Completa tus datos para habilitar tu acceso a la plataforma
-                </p>
-              </div>
+          <div className="mb-5 text-center">
+            <div className="mx-auto mb-2.5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
+              <UserPlus className="h-5 w-5" />
             </div>
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              Crear cuenta
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Completa tus datos para habilitar tu acceso a la plataforma
+            </p>
           </div>
 
           {errorMsg && (
