@@ -256,7 +256,7 @@ export function HeroShowcase({
                     onClick={() => {
                       if (!isCenter) {
                         setCenterIndex(idx);
-                      } else if (!card.isDemo && card.rifaId) {
+                      } else if (card.rifaId) {
                         navigate(`/rifas/${card.rifaId}`);
                       } else {
                         document
@@ -268,7 +268,7 @@ export function HeroShowcase({
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         if (!isCenter) setCenterIndex(idx);
-                        else if (!card.isDemo && card.rifaId) navigate(`/rifas/${card.rifaId}`);
+                        else if (card.rifaId) navigate(`/rifas/${card.rifaId}`);
                       }
                     }}
                     style={{

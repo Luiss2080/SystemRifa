@@ -23,8 +23,10 @@ import { getCatalogoRifas, getCausasPublicas } from '../features/rifas/publicApi
 import { formatearBs, formatearFechaCorta, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { PaginationCard } from '../components/ui/DataTable.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
+import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../components/panel/PanelKit.jsx';
 import {
   CauseMarqueeTicker,
   CausasDestacadasSection,
