@@ -409,15 +409,22 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                     </div>
 
                     {/* Centro visual */}
-                    <div className="my-auto space-y-2.5 py-2">
-                      <span className="inline-flex items-center gap-1 rounded-lg bg-white/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-200 backdrop-blur-xs">
-                        <HeartHandshake className="h-3 w-3" />
-                        {card.causa?.nombre || 'Causa Solidaria'}
+                    <div className="my-auto space-y-2 py-1.5">
+                      <span className="inline-flex max-w-full items-center gap-1 truncate rounded-lg bg-white/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-200 backdrop-blur-xs">
+                        <HeartHandshake className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{card.causa?.nombre || 'Causa Solidaria'}</span>
                       </span>
 
-                      <h3 className="line-clamp-3 text-base font-extrabold leading-snug text-white sm:text-lg">
+                      <h3 className="line-clamp-2 text-base font-extrabold leading-snug text-white sm:text-lg">
                         {card.nombre}
                       </h3>
+
+                      {premioPrincipal && (
+                        <p className="inline-flex max-w-full items-center gap-1 truncate rounded-md bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
+                          <Award className="h-3 w-3 shrink-0 text-amber-300" />
+                          <span className="truncate">{premioPrincipal}</span>
+                        </p>
+                      )}
 
                       <div className="rounded-xl bg-black/25 p-2.5 backdrop-blur-xs">
                         <div className="flex items-baseline justify-between">
@@ -454,92 +461,417 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
               })}
             </div>
 
-            {/* Indicadores del abanico */}
-            <div className="mt-1 flex items-center justify-center gap-1.5">
-              {cards.map((c, idx) => (
-                <button
-                  key={`dot-${c.id}-${idx}`}
-                  type="button"
-                  onClick={() => setCenterIndex(idx)}
-                  aria-label={`Destacar tarjeta ${idx + 1}`}
-                  className={`h-2 rounded-full transition-all cursor-pointer ${
-                    idx === activeIdx ? 'w-6 bg-emerald-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
-                  }`}
-                />
-              ))}
+            {/* Controles e indicadores del abanico */}
+            <div className="mt-2 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setCenterIndex((cur) => (cur - 1 + cards.length) % cards.length)}
+                aria-label="Tarjeta anterior"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              <div className="flex items-center gap-1.5">
+                {cards.map((c, idx) => (
+                  <button
+                    key={`dot-${c.id}-${idx}`}
+                    type="button"
+                    onClick={() => setCenterIndex(idx)}
+                    aria-label={`Destacar tarjeta ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${
+                      idx === activeIdx ? 'w-6 bg-emerald-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setCenterIndex((cur) => (cur + 1) % cards.length)}
+                aria-label="Siguiente tarjeta"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Banner Marquee Deslizante de Causas Verificadas (como la franja inferior de la imagen 1) */}
+      {/* Banner Marquee Deslizante de Causas Verificadas */}
       <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} />
 
-      {/* Widgets de Proceso y Garantías */}
-      <section
-        id="como-funciona"
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        <div
-          id="garantias"
-          className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm"
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-            <Ticket className="h-5 w-5" />
-          </span>
+      {/* Cómo funciona: 4 pasos simples */}
+      <section id="como-funciona" className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1">
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
-              1. Elige tus números
-            </p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
-              Selecciona tus boletos disponibles en el tablero en vivo.
-            </p>
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
+              Proceso simple en 4 pasos
+            </span>
+            <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
+              Cómo participar de forma segura
+            </h2>
           </div>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById('garantias')?.scrollIntoView({ behavior: 'smooth' })
+            }
+            className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 cursor-pointer"
+          >
+            Ver garantías del sistema
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </div>
 
-        <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-            <Clock className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
-              2. Reserva 15 minutos
-            </p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
-              Bloqueo atómico sin colisiones mientras envías tu pago.
-            </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm transition hover:border-emerald-300 hover:shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Ticket className="h-5 w-5" />
+            </span>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                Paso 01
+              </span>
+              <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
+                Elige tus números
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Selecciona tus boletos disponibles en el tablero en vivo o al azar.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
-            <Lock className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
-              3. Pago verificado
-            </p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
-              Validación manual con auditoría y notificación inmediata.
-            </p>
+          <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm transition hover:border-amber-300 hover:shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+              <Clock className="h-5 w-5" />
+            </span>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                Paso 02
+              </span>
+              <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
+                Reserva 15 minutos
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Bloqueo atómico sin colisiones mientras envías tu comprobante.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
-            <Award className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
-              4. Sorteo auditable
-            </p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
-              Solo tickets aprobados participan y el alias ganador es público.
-            </p>
+          <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm transition hover:border-sky-300 hover:shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+              <Lock className="h-5 w-5" />
+            </span>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
+                Paso 03
+              </span>
+              <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
+                Pago verificado
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Validación manual con auditoría y notificación inmediata.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-2xl border border-slate-200/90 bg-white/90 p-4 shadow-2xs backdrop-blur-sm transition hover:border-rose-300 hover:shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+              <Award className="h-5 w-5" />
+            </span>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600">
+                Paso 04
+              </span>
+              <p className="text-xs font-extrabold uppercase tracking-wide text-slate-900">
+                Sorteo auditable
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                Solo tickets aprobados participan y el alias ganador es público.
+              </p>
+            </div>
           </div>
         </div>
       </section>
     </div>
+  );
+}
+
+export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
+  const destacadas = causas.slice(0, 3);
+
+  return (
+    <section
+      id="causas-destacadas"
+      className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md sm:p-8"
+    >
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-100 pb-5">
+        <div className="max-w-2xl space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-0.5 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
+            <HeartHandshake className="h-3.5 w-3.5" />
+            Impacto social verificado
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            Causas que transforman realidades
+          </h2>
+          <p className="text-sm text-slate-600">
+            Cada ticket vendido respalda una causa aprobada con metas claras y trazabilidad pública.
+          </p>
+        </div>
+
+        <Link
+          to="/causas"
+          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-extrabold text-emerald-800 transition hover:bg-emerald-100"
+        >
+          Ver todas las causas
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
+      {destacadas.length === 0 ? (
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-center sm:flex-row sm:text-left">
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-slate-900">
+              Explora el directorio completo de causas solidarias
+            </p>
+            <p className="text-xs text-slate-600">
+              Consulta las metas, campañas activas y propuestas comunitarias disponibles en la plataforma.
+            </p>
+          </div>
+          <Link
+            to="/causas"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-800"
+          >
+            Ir al directorio
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {destacadas.map((causa) => {
+            const cantRifas = causa.rifasCount ?? 0;
+            return (
+              <article
+                key={causa.causaId}
+                className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/70 p-5 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-white hover:shadow-md"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800">
+                      <ShieldCheck className="h-3 w-3" />
+                      Verificada
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-slate-700 ring-1 ring-slate-200">
+                      <Ticket className="h-3 w-3 text-emerald-600" />
+                      {cantRifas} rifa(s)
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900 group-hover:text-emerald-700">
+                      {causa.nombre}
+                    </h3>
+                    <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600">
+                      {causa.descripcion || 'Iniciativa solidaria respaldada por sorteos auditados.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-200/70 pt-3.5">
+                  <div>
+                    <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                      <Target className="h-3 w-3 text-emerald-600" />
+                      Meta
+                    </p>
+                    <p className="text-sm font-extrabold text-emerald-700">
+                      {formatearBs(causa.meta)}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onSelectCausa) {
+                        onSelectCausa(String(causa.causaId));
+                        document
+                          .getElementById('catalogo-activo')
+                          ?.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-slate-800 ring-1 ring-slate-200 transition hover:bg-emerald-600 hover:text-white hover:ring-emerald-600 cursor-pointer"
+                  >
+                    Filtrar rifas
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
+export function GarantiasSection() {
+  const garantias = [
+    {
+      icon: Clock,
+      color: 'bg-amber-100 text-amber-700',
+      title: 'Reservas atómicas de 15 min',
+      desc: 'Bloqueo transaccional en base de datos para que dos personas nunca puedan tomar el mismo número al mismo tiempo.',
+    },
+    {
+      icon: ShieldCheck,
+      color: 'bg-emerald-100 text-emerald-700',
+      title: 'Pagos validados con respaldo',
+      desc: 'Cada transferencia bancaria o QR se registra con número de referencia y pasa por verificación administrativa antes de emitir el ticket vendido.',
+    },
+    {
+      icon: Eye,
+      color: 'bg-sky-100 text-sky-700',
+      title: 'Privacidad por alias público',
+      desc: 'En el tablero de resultados y ganadores se publica únicamente tu alias elegido, protegiendo tu correo, nombre completo y teléfono.',
+    },
+    {
+      icon: Lock,
+      color: 'bg-indigo-100 text-indigo-700',
+      title: 'Auditoría y entrega trazable',
+      desc: 'Aprobaciones, pagos, sorteos y entregas de premios quedan guardados con fecha, hora y actor en bitácora inmutable.',
+    },
+  ];
+
+  return (
+    <section
+      id="garantias"
+      className="grid gap-6 rounded-3xl border border-emerald-200/70 bg-white/90 p-6 shadow-xs backdrop-blur-md lg:grid-cols-12 lg:p-8"
+    >
+      <div className="space-y-4 lg:col-span-7">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+          Garantías del sistema
+        </span>
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          Transparencia técnica en cada boleto y sorteo
+        </h2>
+        <p className="text-sm leading-relaxed text-slate-600">
+          Nuestra arquitectura protege tanto a quien participa como a quien organiza una campaña solidaria, asegurando equidad real desde la reserva hasta la entrega del premio.
+        </p>
+
+        <div className="grid gap-3 pt-1 sm:grid-cols-2">
+          {garantias.map((g) => {
+            const Icon = g.icon;
+            return (
+              <div
+                key={g.title}
+                className="rounded-2xl border border-slate-200/80 bg-slate-50/75 p-4 transition hover:border-emerald-300 hover:bg-white"
+              >
+                <span className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${g.color}`}>
+                  <Icon className="h-4.5 w-4.5" />
+                </span>
+                <h3 className="mt-2.5 text-sm font-extrabold text-slate-900">{g.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">{g.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-950 p-6 text-white shadow-lg lg:col-span-5">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-amber-300 ring-1 ring-white/15">
+            <Sparkles className="h-3.5 w-3.5" />
+            Ciclo de confianza verificado
+          </div>
+
+          <h3 className="text-xl font-extrabold leading-snug">
+            Solo los tickets con pago aprobado participan en el sorteo oficial
+          </h3>
+
+          <ul className="space-y-2.5 text-xs text-slate-200">
+            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+              <span>
+                Tablero sincronizado en vivo cada pocos segundos con estados claros: Disponible,
+                Reservado y Vendido.
+              </span>
+            </li>
+            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+              <span>
+                Liberación automática tras 15 minutos si una reserva no registra comprobante de pago.
+              </span>
+            </li>
+            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sky-300" />
+              <span>
+                URL pública por campaña para auditar premios entregados y ganadores por alias.
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2.5 border-t border-white/15 pt-4">
+          <Link
+            to="/registro"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-4 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 transition hover:brightness-105"
+          >
+            <UserPlus className="h-3.5 w-3.5" />
+            Crear cuenta
+          </Link>
+          <Link
+            to="/causas"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-white/20 transition hover:bg-white/20"
+          >
+            Ver causas
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function LandingFinalCta() {
+  return (
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 p-6 text-white shadow-xl sm:p-10">
+      <div className="pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full bg-amber-400/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-emerald-400/15 blur-3xl" />
+
+      <div className="relative flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+        <div className="max-w-2xl space-y-2.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1 text-xs font-bold text-amber-300 ring-1 ring-white/15">
+            <Sparkles className="h-3.5 w-3.5" />
+            Comienza hoy mismo
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+            ¿Listo para elegir tus números o lanzar una campaña solidaria?
+          </h2>
+          <p className="text-sm leading-relaxed text-emerald-50/90">
+            Regístrate gratis en menos de un minuto para reservar boletos con seguridad o envía una solicitud para recaudar fondos para tu causa.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/registro"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:brightness-105"
+          >
+            <UserPlus className="h-4 w-4" />
+            Crear cuenta gratis
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            to="/solicitudes/nueva"
+            className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-white backdrop-blur-xs transition hover:-translate-y-0.5 hover:bg-white/20"
+          >
+            <FilePlus2 className="h-4 w-4 text-amber-300" />
+            Organizar una rifa
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
