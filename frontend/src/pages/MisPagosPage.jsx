@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { ShieldCheck } from 'lucide-react';
 import { getMisPagos } from '../features/rifas/publicApi.js';
 import { formatearBs, formatearFecha } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { DataTable } from '../components/ui/DataTable.jsx';
-import { Select } from '../components/ui/Select.jsx';
+
+const ESTADOS_PAGO = [
+  { key: '', label: 'Todos' },
+  { key: 'PENDIENTE', label: 'Pendientes' },
+  { key: 'CONFIRMADO', label: 'Confirmados' },
+  { key: 'RECHAZADO', label: 'Rechazados' },
+];
 
 export function MisPagosPage() {
   const [estado, setEstado] = useState('');
@@ -51,7 +58,7 @@ export function MisPagosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Mis pagos</h1>
           <p className="text-sm text-slate-500">
@@ -59,22 +66,34 @@ export function MisPagosPage() {
           </p>
         </div>
 
-        <div className="w-full sm:w-56">
-          <Select
-            label="Estado"
-            placeholder="Todos"
-            value={estado}
-            onChange={(e) => {
-              setEstado(e.target.value);
-              setPage(1);
-            }}
-            options={[
-              { value: 'PENDIENTE', label: 'Pendiente' },
-              { value: 'CONFIRMADO', label: 'Confirmado' },
-              { value: 'RECHAZADO', label: 'Rechazado' },
-            ]}
-          />
+        <div className="flex flex-wrap gap-1.5">
+          {ESTADOS_PAGO.map((opt) => (
+            <button
+              key={opt.key || 'all'}
+              type="button"
+              onClick={() => {
+                setEstado(opt.key);
+                setPage(1);
+              }}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                estado === opt.key
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600 shadow-xs">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+        <span>
+          Cuando envías un comprobante queda en estado <strong>PENDIENTE</strong>. Apenas un
+          administrador lo valide, tus números pasarán a <strong>VENDIDO</strong> y recibirás una
+          notificación.
+        </span>
       </div>
 
       <DataTable
@@ -92,4 +111,3 @@ export function MisPagosPage() {
     </div>
   );
 }
-

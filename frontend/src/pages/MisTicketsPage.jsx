@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Clock, CreditCard, Ticket, Trash2 } from 'lucide-react';
@@ -17,6 +17,48 @@ import { Modal } from '../components/ui/Modal.jsx';
 import { Select } from '../components/ui/Select.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
 
+const RESERVA_SEGUNDOS = 15 * 60;
+
+function CountdownReserva({ targetIso }) {
+  const [seg, setSeg] = useState(() =>
+    Math.max(0, Math.floor((new Date(targetIso).getTime() - Date.now()) / 1000))
+  );
+
+  useEffect(() => {
+    const update = () =>
+      setSeg(Math.max(0, Math.floor((new Date(targetIso).getTime() - Date.now()) / 1000)));
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, [targetIso]);
+
+  const min = Math.floor(seg / 60);
+  const rem = seg % 60;
+  const pct = Math.min(100, Math.max(0, Math.round((seg / RESERVA_SEGUNDOS) * 100)));
+  const critico = seg <= 180;
+
+  return (
+    <div className="mt-2 space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <span className={critico ? 'font-semibold text-rose-700' : 'text-amber-800'}>
+          {seg === 0 ? 'Reserva expirada' : `Vence: ${formatearFecha(targetIso)}`}
+        </span>
+        <span className={`font-mono font-bold ${critico ? 'text-rose-700' : 'text-amber-900'}`}>
+          {String(min).padStart(2, '0')}:{String(rem).padStart(2, '0')}
+        </span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-amber-200/70">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${
+            critico ? 'bg-rose-500' : 'bg-amber-500'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function MisTicketsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -34,16 +76,25 @@ export function MisTicketsPage() {
     refetchInterval: 15000,
   });
 
+  const todosTickets = useMemo(() => data?.items || [], [data]);
+
+  const conteos = useMemo(() => {
+    const map = { TOTAL: todosTickets.length, RESERVADO: 0, VENDIDO: 0, ANULADO: 0 };
+    for (const t of todosTickets) {
+      if (map[t.estado] !== undefined) map[t.estado] += 1;
+    }
+    return map;
+  }, [todosTickets]);
+
   const tickets = useMemo(() => {
-    const items = data?.items || [];
-    if (!filtroEstado) return items;
-    return items.filter((t) => t.estado === filtroEstado);
-  }, [data, filtroEstado]);
+    if (!filtroEstado) return todosTickets;
+    return todosTickets.filter((t) => t.estado === filtroEstado);
+  }, [todosTickets, filtroEstado]);
 
   // Agrupamos tickets RESERVADO sin pagoId por rifaId para facilitar el pago o liberación
   const reservasSinPagoPorRifa = useMemo(() => {
     const map = new Map();
-    for (const t of data?.items || []) {
+    for (const t of todosTickets) {
       if (t.estado === 'RESERVADO' && !t.pagoId) {
         if (!map.has(t.rifaId)) {
           map.set(t.rifaId, {
@@ -56,7 +107,7 @@ export function MisTicketsPage() {
       }
     }
     return Array.from(map.values());
-  }, [data]);
+  }, [todosTickets]);
 
   async function handleLiberar(rifaId, numeros) {
     try {
@@ -94,9 +145,16 @@ export function MisTicketsPage() {
 
   if (isLoading) return <FullPageSpinner message="Cargando tus tickets..." />;
 
+  const filtros = [
+    { key: '', label: `Todos (${conteos.TOTAL})` },
+    { key: 'RESERVADO', label: `Reservados (${conteos.RESERVADO})` },
+    { key: 'VENDIDO', label: `Vendidos (${conteos.VENDIDO})` },
+    { key: 'ANULADO', label: `Anulados (${conteos.ANULADO})` },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Mis tickets</h1>
           <p className="text-sm text-slate-500">
@@ -104,18 +162,21 @@ export function MisTicketsPage() {
           </p>
         </div>
 
-        <div className="w-full sm:w-56">
-          <Select
-            label="Filtrar por estado"
-            placeholder="Todos"
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
-            options={[
-              { value: 'RESERVADO', label: 'Reservados' },
-              { value: 'VENDIDO', label: 'Vendidos' },
-              { value: 'ANULADO', label: 'Anulados' },
-            ]}
-          />
+        <div className="flex flex-wrap gap-1.5">
+          {filtros.map((f) => (
+            <button
+              key={f.key || 'all'}
+              type="button"
+              onClick={() => setFiltroEstado(f.key)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                filtroEstado === f.key
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -135,14 +196,11 @@ export function MisTicketsPage() {
                   className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 shadow-xs"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h3 className="font-bold text-slate-900">{grupo.nombreRifa}</h3>
-                      <p className="text-xs text-amber-800">
-                        Vence: {formatearFecha(expira)}
-                      </p>
-                    </div>
+                    <h3 className="font-bold text-slate-900">{grupo.nombreRifa}</h3>
                     <span className="font-bold text-emerald-800">{formatearBs(total)}</span>
                   </div>
+
+                  {expira && <CountdownReserva targetIso={expira} />}
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {grupo.tickets.map((t) => (
@@ -184,12 +242,18 @@ export function MisTicketsPage() {
       {tickets.length === 0 ? (
         <EmptyState
           icon={Ticket}
-          title="No tienes tickets registrados"
+          title={filtroEstado ? 'Sin tickets en este estado' : 'No tienes tickets registrados'}
           description="Explora el catálogo de rifas solidarias para reservar tus números."
           action={
-            <Link to="/">
-              <Button>Ver rifas activas</Button>
-            </Link>
+            filtroEstado ? (
+              <Button variant="secondary" onClick={() => setFiltroEstado('')}>
+                Ver todos
+              </Button>
+            ) : (
+              <Link to="/">
+                <Button>Ver rifas activas</Button>
+              </Link>
+            )
           }
         />
       ) : (
@@ -197,7 +261,7 @@ export function MisTicketsPage() {
           {tickets.map((t) => (
             <div
               key={t.ticketId}
-              className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-xs"
+              className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-xs transition hover:border-slate-300"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -283,4 +347,3 @@ export function MisTicketsPage() {
     </div>
   );
 }
-

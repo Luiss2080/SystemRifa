@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './Button.jsx';
-import { EmptyState, Spinner } from './Feedback.jsx';
+import { EmptyState } from './Feedback.jsx';
+import { TableSkeleton } from './Skeleton.jsx';
 
 export function DataTable({
   columns = [],
@@ -15,11 +16,7 @@ export function DataTable({
   rowKey = 'id',
 }) {
   if (loading) {
-    return (
-      <div className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-12">
-        <Spinner />
-      </div>
-    );
+    return <TableSkeleton rows={6} />;
   }
 
   if (!data.length) {
@@ -41,7 +38,7 @@ export function DataTable({
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
             {data.map((row, idx) => (
-              <tr key={row[rowKey] ?? idx} className="hover:bg-slate-50/70">
+              <tr key={row[rowKey] ?? idx} className="transition hover:bg-slate-50/70">
                 {columns.map((col) => (
                   <td key={col.key} className={`px-4 py-3 text-slate-700 ${col.cellClassName || ''}`}>
                     {col.render ? col.render(row) : row[col.key]}
@@ -83,4 +80,3 @@ export function DataTable({
     </div>
   );
 }
-

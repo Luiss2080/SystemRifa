@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Award, CalendarClock, CheckCircle2, Plus, Trash2, Trophy } from 'lucide-react';
+import { AlertTriangle, Award, CalendarClock, CheckCircle2, Plus, Trash2, Trophy } from 'lucide-react';
 import { getDetalleRifa } from '../../features/rifas/publicApi.js';
 import {
   actualizarPremioApi,

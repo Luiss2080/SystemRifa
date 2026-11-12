@@ -184,23 +184,52 @@ export function AdminSolicitudesPage() {
         </p>
       </div>
 
-      <div className="w-full sm:w-64">
-        <Select
-          label="Filtrar por estado"
-          placeholder="Todos"
-          value={estado}
-          onChange={(e) => {
-            setEstado(e.target.value);
-            setPage(1);
-          }}
-          options={[
-            { value: 'REVISION', label: 'En revisión' },
-            { value: 'ESPERANDO_PAGO', label: 'Esperando pago' },
-            { value: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
-            { value: 'APROBADA', label: 'Aprobada' },
-            { value: 'RECHAZADA', label: 'Rechazada' },
-          ]}
-        />
+      <div className="grid gap-2 rounded-2xl border border-slate-200 bg-white p-3.5 text-xs text-slate-600 shadow-xs sm:grid-cols-3">
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            1
+          </span>
+          <span>Revisa la propuesta y habilita pago de tarifa</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            2
+          </span>
+          <span>Confirma referencia de tarifa recibida</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            3
+          </span>
+          <span>Aprueba para generar rifa y cargar premios</span>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {[
+          { key: '', label: 'Todas' },
+          { key: 'REVISION', label: 'En revisión' },
+          { key: 'ESPERANDO_PAGO', label: 'Esperando pago' },
+          { key: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
+          { key: 'APROBADA', label: 'Aprobadas' },
+          { key: 'RECHAZADA', label: 'Rechazadas' },
+        ].map((chip) => (
+          <button
+            key={chip.key || 'all'}
+            type="button"
+            onClick={() => {
+              setEstado(chip.key);
+              setPage(1);
+            }}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              estado === chip.key
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            {chip.label}
+          </button>
+        ))}
       </div>
 
       <DataTable
