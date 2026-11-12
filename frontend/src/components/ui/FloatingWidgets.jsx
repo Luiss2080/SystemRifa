@@ -13,7 +13,6 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../../features/auth/AuthContext.jsx';
-import { resolverAccesoRol } from '../../features/auth/roleAccess.js';
 
 const WHATSAPP_NUMBER = '59170020004';
 const WHATSAPP_DISPLAY = '+591 700 20004';

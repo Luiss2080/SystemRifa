@@ -6,7 +6,7 @@ import { ToastProvider } from './components/ui/Toast.jsx';
 import { InteractiveBackground } from './components/ui/InteractiveBackground.jsx';
 import { FloatingWidgets } from './components/ui/FloatingWidgets.jsx';
 import { FullPageSpinner } from './components/ui/Feedback.jsx';
-import { AdaptiveLayout, PanelLayout, PublicLayout } from './layouts/Layouts.jsx';
+import { AdaptiveLayout, AuthLayout, PanelLayout, PublicLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
 import { RequirePermiso } from './routes/RequirePermiso.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
@@ -87,7 +87,7 @@ export function App() {
               </Route>
 
               {/* Acceso y errores */}
-              <Route element={<PublicLayout />}>
+              <Route element={<AuthLayout />}>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/registro" element={<RegistroPage />} />
                 <Route path="/403" element={<ForbiddenPage />} />
