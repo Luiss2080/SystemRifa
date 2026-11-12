@@ -89,3 +89,4 @@ export async function desactivarPremio(usuario, premioId) {
   const desactivado = await premioRepo.updatePremio(premioId, { activo: false });
   return { premio: formatPremio(desactivado) };
 }
+

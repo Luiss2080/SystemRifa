@@ -48,3 +48,4 @@ export async function updatePremio(premioId, data, tx = prisma) {
     data
   });
 }
+

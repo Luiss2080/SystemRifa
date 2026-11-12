@@ -76,3 +76,4 @@ export function validarAnulacionTicket(ticket, rifa) {
     throw new AppError(409, 'INVALID_STATE_TRANSITION', 'El ticket ya se encuentra anulado.');
   }
 }
+

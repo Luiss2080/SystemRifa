@@ -445,3 +445,4 @@ describe('Rifas, Premios, Reservas y Concurrencia (Paso 7)', () => {
     expect(anulado.body.ticket.estado).toBe('ANULADO');
   });
 });
+

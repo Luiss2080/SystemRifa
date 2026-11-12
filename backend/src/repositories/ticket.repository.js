@@ -172,3 +172,4 @@ export async function releaseExpiredTicketsByIds(ticketIds, ahora, tx = prisma) 
     }
   });
 }
+

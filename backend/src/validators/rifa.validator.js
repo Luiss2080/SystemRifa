@@ -73,3 +73,4 @@ export const liberarReservasSchema = z
 export const anularTicketSchema = z.object({
   motivo: z.string().trim().min(3, 'El motivo de anulación es obligatorio.').max(500)
 });
+

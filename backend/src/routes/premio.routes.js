@@ -19,3 +19,4 @@ router.patch(
 router.delete('/:id', validate(idParamSchema, 'params'), deletePremio);
 
 export default router;
+

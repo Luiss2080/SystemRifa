@@ -52,3 +52,4 @@ export async function postAnularTicket(req, res, next) {
     next(err);
   }
 }
+
