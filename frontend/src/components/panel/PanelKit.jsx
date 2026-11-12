@@ -180,13 +180,14 @@ export function PanelFilterBar({
 }
 
 export function PanelSectionHeader({
-  icon: Icon = SlidersHorizontal,
+  icon = SlidersHorizontal,
   title,
   subtitle = 'Resultados de la consulta activa',
   badgeText,
   actions,
   accent = 'emerald',
 }) {
+  const IconComp = icon;
   const palette = ACCENT_MAP[accent] || ACCENT_MAP.emerald;
 
   return (
@@ -195,7 +196,7 @@ export function PanelSectionHeader({
         <span
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-xs ${palette.iconBox}`}
         >
-          <Icon className="h-4.5 w-4.5" />
+          <IconComp className="h-4.5 w-4.5" />
         </span>
         <div>
           <div className="flex items-center gap-2">
