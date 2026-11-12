@@ -9,6 +9,9 @@ import notificacionRoutes from './notificacion.routes.js';
 import tipoNotificacionRoutes from './tipoNotificacion.routes.js';
 import causaRoutes from './causa.routes.js';
 import solicitudRoutes from './solicitud.routes.js';
+import rifaRoutes from './rifa.routes.js';
+import premioRoutes from './premio.routes.js';
+import ticketRoutes from './ticket.routes.js';
 
 const router = Router();
 
@@ -22,5 +25,8 @@ router.use('/notificaciones', notificacionRoutes);
 router.use('/tipos-notificacion', tipoNotificacionRoutes);
 router.use('/causas', causaRoutes);
 router.use('/solicitudes', solicitudRoutes);
+router.use('/rifas', rifaRoutes);
+router.use('/premios', premioRoutes);
+router.use('/tickets', ticketRoutes);
 
 export default router;
