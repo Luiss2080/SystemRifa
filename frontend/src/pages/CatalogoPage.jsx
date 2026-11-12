@@ -24,7 +24,11 @@ import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
-import { CauseMarqueeTicker, HeroShowcase } from '../components/home/HeroShowcase.jsx';
+import {
+  CauseMarqueeTicker,
+  HeroShowcase,
+  PlatformContentSection,
+} from '../components/home/HeroShowcase.jsx';
 
 const HORAS_URGENCIA = 48;
 
@@ -37,11 +41,16 @@ export function CatalogoPage({ mode = 'landing' }) {
   const esVistaLanding = mode === 'landing' && !autenticado;
   const [searchParams, setSearchParams] = useSearchParams();
   const causaInicial = searchParams.get('causaId') || '';
+  const urgenteInicial = searchParams.get('urgente') === '1';
   const [causaId, setCausaId] = useState(causaInicial);
   const [busqueda, setBusqueda] = useState('');
-  const [soloCierraPronto, setSoloCierraPronto] = useState(false);
+  const [soloCierraPronto, setSoloCierraPronto] = useState(urgenteInicial);
   const [orden, setOrden] = useState('cierre');
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setSoloCierraPronto(searchParams.get('urgente') === '1');
+  }, [searchParams]);
 
   function seleccionarCausa(nextId) {
     setCausaId(nextId);
