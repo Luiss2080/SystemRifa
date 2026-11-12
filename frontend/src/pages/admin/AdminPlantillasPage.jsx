@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit2, Eye } from 'lucide-react';
+import { Edit2, Eye, PlusCircle } from 'lucide-react';
 import {
   actualizarTipoNotificacionApi,
   getTiposNotificacionApi,
@@ -42,6 +42,7 @@ export function AdminPlantillasPage() {
     queryFn: getTiposNotificacionApi,
   });
 
+  const [filtroEstado, setFiltroEstado] = useState('TODAS');
   const [editando, setEditando] = useState(null);
   const [form, setForm] = useState({
     plantillaTitulo: '',
@@ -59,10 +60,24 @@ export function AdminPlantillasPage() {
     });
   }
 
+  function insertarVariable(variable) {
+    setForm((f) => ({
+      ...f,
+      plantillaMensaje: `${f.plantillaMensaje}${f.plantillaMensaje.endsWith(' ') || !f.plantillaMensaje ? '' : ' '}{${variable}}`,
+    }));
+  }
+
   const varsAdmitidas = useMemo(
     () => (Array.isArray(editando?.variables) ? editando.variables : []),
     [editando]
   );
+
+  const items = useMemo(() => {
+    const base = data?.items || [];
+    if (filtroEstado === 'ACTIVAS') return base.filter((i) => i.estaActivo);
+    if (filtroEstado === 'INACTIVAS') return base.filter((i) => !i.estaActivo);
+    return base;
+  }, [data, filtroEstado]);
 
   async function handleGuardar(e) {
     e.preventDefault();
@@ -86,22 +101,43 @@ export function AdminPlantillasPage() {
 
   if (isLoading) return <FullPageSpinner message="Cargando plantillas de notificación..." />;
 
-  const items = data?.items || [];
-
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Plantillas de notificación</h1>
-        <p className="text-sm text-slate-500">
-          Personaliza títulos y mensajes respetando únicamente las variables admitidas de cada evento
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Plantillas de notificación</h1>
+          <p className="text-sm text-slate-500">
+            Personaliza títulos y mensajes respetando únicamente las variables admitidas de cada evento
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { key: 'TODAS', label: 'Todas' },
+            { key: 'ACTIVAS', label: 'Activas' },
+            { key: 'INACTIVAS', label: 'Inactivas' },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setFiltroEstado(tab.key)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                filtroEstado === tab.key
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         {items.map((tipo) => (
           <div
             key={tipo.tipoNotificacionId}
-            className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs"
+            className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-emerald-300"
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
@@ -142,11 +178,27 @@ export function AdminPlantillasPage() {
       >
         {editando && (
           <form onSubmit={handleGuardar} className="space-y-4">
-            <div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-600">
-              <strong>Variables admitidas:</strong>{' '}
-              {varsAdmitidas.length
-                ? varsAdmitidas.map((v) => `{${v}}`).join(', ')
-                : 'Ninguna'}
+            <div className="space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs text-slate-600">
+              <p className="font-semibold text-slate-700">
+                Variables admitidas (clic para insertar en el mensaje):
+              </p>
+              {varsAdmitidas.length ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {varsAdmitidas.map((v) => (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => insertarVariable(v)}
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 font-mono text-[11px] font-medium text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer"
+                    >
+                      <PlusCircle className="h-3 w-3" />
+                      {`{${v}}`}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <span>Ninguna</span>
+              )}
             </div>
 
             <Input
@@ -173,7 +225,7 @@ export function AdminPlantillasPage() {
               Notificación activa
             </label>
 
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-4 space-y-1">
+            <div className="space-y-1 rounded-xl border border-emerald-200 bg-emerald-50/70 p-4">
               <p className="flex items-center gap-1.5 text-xs font-bold uppercase text-emerald-800">
                 <Eye className="h-3.5 w-3.5" />
                 Vista previa con variables de ejemplo
@@ -200,4 +252,3 @@ export function AdminPlantillasPage() {
     </div>
   );
 }
-

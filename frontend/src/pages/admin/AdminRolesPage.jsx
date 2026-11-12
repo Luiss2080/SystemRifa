@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import {
   asignarPermisoRolApi,
   crearRolApi,
@@ -33,6 +33,7 @@ export function AdminRolesPage() {
   const [creandoRol, setCreandoRol] = useState(false);
 
   const [rolEditando, setRolEditando] = useState(null);
+  const [filtroPermiso, setFiltroPermiso] = useState('');
 
   const { data: rolesData, isLoading: loadingRoles } = useQuery({
     queryKey: ['admin-roles'],
@@ -86,11 +87,28 @@ export function AdminRolesPage() {
   }
 
   const roles = rolesData?.items || [];
-  const permisos = permisosData?.items || [];
+  const permisos = useMemo(() => permisosData?.items || [], [permisosData]);
   const rolSeleccionadoActual = roles.find((r) => r.rolId === rolEditando?.rolId) || rolEditando;
   const permisosDeRolSet = new Set(
     (rolSeleccionadoActual?.permisos || []).map((p) => p.permisoId)
   );
+
+  const permisosAgrupados = useMemo(() => {
+    const q = filtroPermiso.trim().toLowerCase();
+    const grupos = new Map();
+    for (const p of permisos) {
+      if (
+        q &&
+        !`${p.recurso}:${p.accion}`.toLowerCase().includes(q) &&
+        !p.nombre?.toLowerCase().includes(q)
+      ) {
+        continue;
+      }
+      if (!grupos.has(p.recurso)) grupos.set(p.recurso, []);
+      grupos.get(p.recurso).push(p);
+    }
+    return Array.from(grupos.entries());
+  }, [permisos, filtroPermiso]);
 
   const histColumns = [
     { key: 'fecha', label: 'Fecha', render: (r) => formatearFecha(r.fecha) },
@@ -103,18 +121,13 @@ export function AdminRolesPage() {
     {
       key: 'objetivo',
       label: 'Afectado',
-      render: (r) =>
-        r.rolAfectado?.nombre ||
-        r.usuarioAfectado?.alias ||
-        '—',
+      render: (r) => r.rolAfectado?.nombre || r.usuarioAfectado?.alias || '—',
     },
     {
       key: 'detalle',
       label: 'Rol / Permiso',
       render: (r) =>
-        r.permiso
-          ? `${r.permiso.recurso}:${r.permiso.accion}`
-          : r.rol?.nombre || '—',
+        r.permiso ? `${r.permiso.recurso}:${r.permiso.accion}` : r.rol?.nombre || '—',
     },
   ];
 
@@ -128,7 +141,7 @@ export function AdminRolesPage() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant={tab === 'roles' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('roles')}>
             Roles y matriz
           </Button>
@@ -158,7 +171,7 @@ export function AdminRolesPage() {
             {roles.map((rol) => (
               <div
                 key={rol.rolId}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs"
+                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-emerald-300"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -184,7 +197,10 @@ export function AdminRolesPage() {
                       variant="secondary"
                       size="sm"
                       className="w-full"
-                      onClick={() => setRolEditando(rol)}
+                      onClick={() => {
+                        setFiltroPermiso('');
+                        setRolEditando(rol);
+                      }}
                     >
                       Configurar permisos ({rol.permisos.length})
                     </Button>
@@ -237,37 +253,59 @@ export function AdminRolesPage() {
         open={Boolean(rolSeleccionadoActual)}
         onClose={() => setRolEditando(null)}
         title={`Permisos del rol · ${rolSeleccionadoActual?.nombre || ''}`}
+        description={`Activos actualmente: ${rolSeleccionadoActual?.permisos?.length || 0} de ${permisos.length}`}
         maxWidth="max-w-2xl"
       >
         {rolSeleccionadoActual && (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {permisos.map((permiso) => {
-              const asignado = permisosDeRolSet.has(permiso.permisoId);
-              return (
-                <button
-                  key={permiso.permisoId}
-                  type="button"
-                  onClick={() => handleTogglePermiso(rolSeleccionadoActual, permiso, asignado)}
-                  className={`flex items-center justify-between rounded-xl border px-3 py-2 text-left text-xs transition cursor-pointer ${
-                    asignado
-                      ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <div>
-                    <p className="font-bold">
-                      {permiso.recurso}:{permiso.accion}
-                    </p>
-                    <p className="text-[11px] opacity-75">{permiso.nombre}</p>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="search"
+                placeholder="Filtrar permisos (ej. pagos, usuarios, sorteos)..."
+                value={filtroPermiso}
+                onChange={(e) => setFiltroPermiso(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-2 pr-3 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+              />
+            </div>
+
+            <div className="max-h-96 space-y-4 overflow-y-auto pr-1">
+              {permisosAgrupados.map(([recurso, lista]) => (
+                <div key={recurso} className="space-y-1.5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                    {recurso}
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {lista.map((permiso) => {
+                      const asignado = permisosDeRolSet.has(permiso.permisoId);
+                      return (
+                        <button
+                          key={permiso.permisoId}
+                          type="button"
+                          onClick={() => handleTogglePermiso(rolSeleccionadoActual, permiso, asignado)}
+                          className={`flex items-center justify-between rounded-xl border px-3 py-2 text-left text-xs transition cursor-pointer ${
+                            asignado
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                              : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          <div>
+                            <p className="font-bold">
+                              {permiso.recurso}:{permiso.accion}
+                            </p>
+                            <p className="text-[11px] opacity-75">{permiso.nombre}</p>
+                          </div>
+                          <span className="font-bold">{asignado ? '✓' : '+'}</span>
+                        </button>
+                      );
+                    })}
                   </div>
-                  <span className="font-bold">{asignado ? '✓' : '+'}</span>
-                </button>
-              );
-            })}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </Modal>
     </div>
   );
 }
-

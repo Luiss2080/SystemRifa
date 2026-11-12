@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Shield, UserCheck, UserX } from 'lucide-react';
+import { Search, Shield, UserCheck, UserX, X } from 'lucide-react';
 import {
   asignarRolUsuarioApi,
   cambiarActivoUsuarioApi,
@@ -14,7 +14,6 @@ import { extraerErrorApi } from '../../utils/apiError.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
-import { Input } from '../../components/ui/Input.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
 
@@ -84,14 +83,14 @@ export function AdminUsuariosPage() {
   }
 
   const columns = [
-    { key: 'usuarioId', label: 'ID', render: (r) => `#${r.usuarioId}` },
+    { key: 'usuarioId', label: 'ID', render: (r) => <span className="font-mono">#{r.usuarioId}</span> },
     {
       key: 'usuario',
       label: 'Usuario',
       render: (r) => (
         <div>
           <p className="font-semibold text-slate-900">
-            {r.nombres} {r.apellidos} ({r.alias})
+            {r.nombres} {r.apellidos} <span className="text-slate-500">(@{r.alias})</span>
           </p>
           <p className="text-xs text-slate-500">{r.email}</p>
         </div>
@@ -145,22 +144,38 @@ export function AdminUsuariosPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Usuarios</h1>
           <p className="text-sm text-slate-500">Consulta cuentas, roles asignados y permisos efectivos</p>
         </div>
 
-        <div className="w-full sm:w-72">
-          <Input
-            label="Buscar por nombre, alias o email"
-            placeholder="Buscar..."
+        <div className="relative w-full sm:w-80">
+          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            placeholder="Buscar por nombre, alias o email..."
+            aria-label="Buscar usuarios"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
               setPage(1);
             }}
+            className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-9 pl-9 text-sm shadow-xs focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch('');
+                setPage(1);
+              }}
+              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+              aria-label="Limpiar búsqueda"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -193,13 +208,16 @@ export function AdminUsuariosPage() {
         open={Boolean(usuarioDetalleId)}
         onClose={() => setUsuarioDetalleId(null)}
         title={`Permisos y roles · ${detalleData?.usuario?.alias || ''}`}
+        description={detalleData?.usuario?.email}
         maxWidth="max-w-2xl"
       >
         {detalleData && (
           <div className="space-y-5">
             {tienePermiso('roles', 'administrar') && rolesData?.items && (
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-slate-900">Roles del usuario</h3>
+                <h3 className="mb-2 text-sm font-semibold text-slate-900">
+                  Roles asignados (clic para asignar/quitar)
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {rolesData.items.map((rol) => {
                     const asignado = rolesUsuarioSet.has(rol.rolId);
@@ -222,7 +240,7 @@ export function AdminUsuariosPage() {
               <h3 className="mb-2 text-sm font-semibold text-slate-900">
                 Permisos efectivos ({detalleData.permisosEfectivos?.length || 0})
               </h3>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 rounded-xl bg-slate-50 p-3">
                 {(detalleData.permisosEfectivos || []).map((p) => (
                   <Badge key={p} color="slate">
                     {p}
@@ -236,4 +254,3 @@ export function AdminUsuariosPage() {
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit2, Plus, Trash2 } from 'lucide-react';
+import { Edit2, Plus, Search, Trash2, X } from 'lucide-react';
 import { getCausasPublicas } from '../../features/rifas/publicApi.js';
 import {
   actualizarCausaApi,
@@ -24,12 +24,22 @@ export function AdminCausasPage() {
     queryFn: getCausasPublicas,
   });
 
+  const [busqueda, setBusqueda] = useState('');
   const [modal, setModal] = useState(null); // { modo: 'crear'|'editar', causa? }
   const [form, setForm] = useState({ nombre: '', descripcion: '', meta: '' });
   const [saving, setSaving] = useState(false);
 
   const [aEliminar, setAEliminar] = useState(null);
   const [eliminando, setEliminando] = useState(false);
+
+  const causasFiltradas = useMemo(() => {
+    const items = data?.items || [];
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(
+      (c) => c.nombre?.toLowerCase().includes(q) || c.descripcion?.toLowerCase().includes(q)
+    );
+  }, [data, busqueda]);
 
   function abrirCrear() {
     setForm({ nombre: '', descripcion: '', meta: '5000.00' });
@@ -86,7 +96,7 @@ export function AdminCausasPage() {
   }
 
   const columns = [
-    { key: 'causaId', label: 'ID', render: (r) => `#${r.causaId}` },
+    { key: 'causaId', label: 'ID', render: (r) => <span className="font-mono">#{r.causaId}</span> },
     {
       key: 'nombre',
       label: 'Causa',
@@ -97,17 +107,21 @@ export function AdminCausasPage() {
         </div>
       ),
     },
-    { key: 'meta', label: 'Meta', render: (r) => <span className="font-bold">{formatearBs(r.meta)}</span> },
+    {
+      key: 'meta',
+      label: 'Meta',
+      render: (r) => <span className="font-bold text-emerald-700">{formatearBs(r.meta)}</span>,
+    },
     { key: 'rifasCount', label: 'Rifas', render: (r) => r.rifasCount ?? 0 },
     {
       key: 'acciones',
       label: 'Acciones',
       render: (r) => (
         <div className="flex gap-1.5">
-          <Button size="sm" variant="secondary" onClick={() => abrirEditar(r)}>
+          <Button size="sm" variant="secondary" title="Editar causa" onClick={() => abrirEditar(r)}>
             <Edit2 className="h-3.5 w-3.5" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setAEliminar(r)}>
+          <Button size="sm" variant="ghost" title="Eliminar causa" onClick={() => setAEliminar(r)}>
             <Trash2 className="h-3.5 w-3.5 text-rose-600" />
           </Button>
         </div>
@@ -128,9 +142,31 @@ export function AdminCausasPage() {
         </Button>
       </div>
 
+      <div className="relative max-w-sm">
+        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <input
+          type="search"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar causa por nombre o descripción..."
+          aria-label="Buscar causas"
+          className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-9 pl-9 text-sm shadow-xs focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+        />
+        {busqueda && (
+          <button
+            type="button"
+            onClick={() => setBusqueda('')}
+            className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+            aria-label="Limpiar búsqueda"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       <DataTable
         columns={columns}
-        data={data?.items || []}
+        data={causasFiltradas}
         loading={isLoading}
         rowKey="causaId"
         emptyTitle="No hay causas registradas"
@@ -185,4 +221,3 @@ export function AdminCausasPage() {
     </div>
   );
 }
-

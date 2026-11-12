@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Clock, DollarSign, Ticket, Users } from 'lucide-react';
 import {
   Bar,
   BarChart,
@@ -60,7 +61,20 @@ export function AdminReportesPage() {
     {
       key: 'porcentajeAvance',
       label: 'Avance meta',
-      render: (r) => (r.porcentajeAvance !== null ? `${r.porcentajeAvance}%` : '—'),
+      render: (r) =>
+        r.porcentajeAvance !== null ? (
+          <div className="flex min-w-28 items-center gap-2">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="h-full rounded-full bg-emerald-500"
+                style={{ width: `${Math.min(100, Number(r.porcentajeAvance) || 0)}%` }}
+              />
+            </div>
+            <span className="text-xs font-semibold text-slate-700">{r.porcentajeAvance}%</span>
+          </div>
+        ) : (
+          '—'
+        ),
     },
   ];
 
@@ -76,26 +90,38 @@ export function AdminReportesPage() {
       {resumen && (
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <p className="text-xs text-slate-500">Recaudación confirmada</p>
-            <p className="mt-1 text-2xl font-extrabold text-emerald-700">
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Recaudación confirmada</span>
+              <DollarSign className="h-4 w-4 text-emerald-600" />
+            </div>
+            <p className="mt-1.5 text-2xl font-extrabold text-emerald-700">
               {formatearBs(resumen.recaudacionTotalConfirmada)}
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <p className="text-xs text-slate-500">Pendiente de verificar</p>
-            <p className="mt-1 text-2xl font-extrabold text-amber-600">
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Pendiente de verificar</span>
+              <Clock className="h-4 w-4 text-amber-500" />
+            </div>
+            <p className="mt-1.5 text-2xl font-extrabold text-amber-600">
               {formatearBs(resumen.recaudacionTotalPendiente)}
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <p className="text-xs text-slate-500">Tickets vendidos</p>
-            <p className="mt-1 text-2xl font-extrabold text-indigo-700">
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Tickets vendidos</span>
+              <Ticket className="h-4 w-4 text-indigo-600" />
+            </div>
+            <p className="mt-1.5 text-2xl font-extrabold text-indigo-700">
               {resumen.ticketsVendidos}
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-            <p className="text-xs text-slate-500">Usuarios activos / totales</p>
-            <p className="mt-1 text-2xl font-extrabold text-slate-900">
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Usuarios activos / totales</span>
+              <Users className="h-4 w-4 text-slate-500" />
+            </div>
+            <p className="mt-1.5 text-2xl font-extrabold text-slate-900">
               {resumen.usuarios?.activos} / {resumen.usuarios?.totales}
             </p>
           </div>
@@ -120,10 +146,10 @@ export function AdminReportesPage() {
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
           <h2 className="mb-4 text-base font-bold text-slate-900">Rifas por estado</h2>
-          <div className="h-72 w-full">
+          <div className="h-60 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={chartRifas} dataKey="value" nameKey="name" outerRadius={90} label>
+                <Pie data={chartRifas} dataKey="value" nameKey="name" outerRadius={85} label>
                   {chartRifas.map((entry, idx) => (
                     <Cell key={entry.name} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
                   ))}
@@ -131,6 +157,17 @@ export function AdminReportesPage() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          <div className="mt-2 flex flex-wrap justify-center gap-3 text-xs text-slate-600">
+            {chartRifas.map((entry, idx) => (
+              <span key={entry.name} className="inline-flex items-center gap-1.5">
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: PIE_COLORS[idx % PIE_COLORS.length] }}
+                />
+                {entry.name}: <strong>{entry.value}</strong>
+              </span>
+            ))}
           </div>
         </div>
       </section>
@@ -144,4 +181,3 @@ export function AdminReportesPage() {
     </div>
   );
 }
-
