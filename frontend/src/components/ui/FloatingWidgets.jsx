@@ -146,6 +146,7 @@ export function FloatingWidgets() {
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
   );
   const [botOpen, setBotOpen] = useState(false);
+  const [botExpanded, setBotExpanded] = useState(false);
   const [waOpen, setWaOpen] = useState(false);
   const [messages, setMessages] = useState(() => crearMensajeInicial());
   const [consulta, setConsulta] = useState('');
@@ -245,141 +246,164 @@ export function FloatingWidgets() {
         setWaOpen(false);
       }}
       aria-label="Abrir asistente virtual de ayuda"
-      title="Asistente RifaBot"
-      className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl cursor-pointer"
+      title="Asistente RifaBot 24/7"
+      className="group relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:brightness-105 hover:shadow-xl cursor-pointer"
     >
-      <Bot className="h-6 w-6" />
-      <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-amber-400" />
+      <Bot className="h-7 w-7 transition-transform duration-200 group-hover:scale-110" />
+      <span className="absolute -top-1 -right-1 flex h-4 w-4">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-300 opacity-80" />
+        <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
       </span>
     </button>
   );
 
   const botCard = (
-    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[336px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
-            {/* Cabecera verde de la web */}
-            <div className="relative bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 px-3.5 py-2.5 text-white">
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-emerald-300 via-amber-300 to-teal-300" />
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-xs">
-                    <Bot className="h-5 w-5" />
-                    <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-700 bg-emerald-300" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-extrabold leading-tight tracking-tight">RifaBot</p>
-                    <p className="text-[11px] font-medium text-emerald-100">
-                      Asistente Solidario
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={handleResetChat}
-                    title="Reiniciar conversación"
-                    aria-label="Reiniciar conversación"
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white/85 transition hover:bg-white/20 hover:text-white cursor-pointer"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBotOpen(false)}
-                    title="Cerrar asistente"
-                    aria-label="Cerrar asistente"
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 cursor-pointer"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Historial compacto con patrón sutil */}
-            <div className="bg-dot-matrix max-h-[225px] space-y-2.5 overflow-y-auto bg-slate-50/85 px-3 py-3">
-              <div className="flex justify-center">
-                <span className="rounded-full border border-emerald-100 bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 shadow-2xs">
-                  Hoy
+    <div
+      className={`animate-modal-in w-[calc(100vw-2rem)] overflow-hidden rounded-3xl border border-amber-300/80 bg-white shadow-2xl ring-1 ring-slate-900/5 transition-all duration-200 ${
+        botExpanded ? 'sm:w-[500px] max-w-[520px]' : 'sm:w-[430px] max-w-[440px]'
+      }`}
+    >
+      {/* Cabecera naranja-amarilla acorde al botón Crear cuenta */}
+      <div className="relative bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-4 py-3.5 text-slate-950">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-yellow-200 via-amber-200 to-orange-300" />
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-950/10 text-slate-950 ring-1 ring-slate-950/15 backdrop-blur-xs">
+              <Bot className="h-5.5 w-5.5" />
+              <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-amber-400 bg-emerald-500" />
+            </span>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <p className="text-base font-extrabold leading-tight tracking-tight">RifaBot</p>
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-slate-950/10 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-900">
+                  <Sparkles className="h-2.5 w-2.5" />
+                  En línea
                 </span>
               </div>
-
-              {messages.map((msg) =>
-                msg.role === 'user' ? (
-                  <div key={msg.id} className="flex flex-col items-end gap-0.5">
-                    <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-emerald-600 px-3 py-2 text-xs leading-relaxed text-white shadow-xs">
-                      {msg.texto}
-                    </div>
-                    <span className="px-1 text-[10px] text-slate-400">{msg.hora}</span>
-                  </div>
-                ) : (
-                  <div key={msg.id} className="flex items-start gap-2">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
-                      <Bot className="h-3.5 w-3.5" />
-                    </span>
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <div className="rounded-2xl rounded-tl-xs border border-slate-200/80 bg-white px-3 py-2 text-xs leading-relaxed text-slate-700 shadow-2xs">
-                        <p>{msg.texto}</p>
-                        {msg.ctaLabel && msg.ctaTo && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setBotOpen(false);
-                              const destino =
-                                msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
-                              navigate(destino);
-                            }}
-                            className="mt-2 inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200/80 transition hover:bg-emerald-100 cursor-pointer"
-                          >
-                            {msg.ctaLabel}
-                            <ArrowRight className="h-3 w-3" />
-                          </button>
-                        )}
-                      </div>
-                      <span className="block px-1 text-[10px] text-slate-400">{msg.hora}</span>
-                    </div>
-                  </div>
-                )
-              )}
-              <div ref={chatEndRef} />
-            </div>
-
-            {/* Accesos rápidos compactos + Input */}
-            <div className="space-y-2 border-t border-slate-100 bg-white px-3 py-2.5">
-              <div className="flex flex-wrap gap-1">
-                {FAQ_TOPICS.map((topic) => (
-                  <button
-                    key={topic.id}
-                    type="button"
-                    onClick={() => enviarConsulta(topic.pregunta, topic)}
-                    className="rounded-full border border-emerald-200/80 bg-emerald-50/70 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800 transition hover:bg-emerald-100 cursor-pointer"
-                  >
-                    {topic.chip}
-                  </button>
-                ))}
-              </div>
-
-              <form onSubmit={handleAskSubmit} className="flex items-center gap-1.5">
-                <input
-                  type="text"
-                  value={consulta}
-                  onChange={(e) => setConsulta(e.target.value)}
-                  placeholder="Escribe tu consulta..."
-                  className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={!consulta.trim()}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xs transition hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 cursor-pointer disabled:cursor-default"
-                  aria-label="Consultar asistente"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                </button>
-              </form>
+              <p className="text-xs font-semibold text-slate-800/90">
+                Asistente Solidario · Respuesta inmediata
+              </p>
             </div>
           </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setBotExpanded((v) => !v)}
+              title={botExpanded ? 'Tamaño estándar' : 'Ampliar ventana'}
+              aria-label={botExpanded ? 'Reducir ventana del chat' : 'Ampliar ventana del chat'}
+              className="hidden h-8 w-8 items-center justify-center rounded-full bg-slate-950/10 text-slate-900 transition hover:bg-slate-950/20 cursor-pointer sm:flex"
+            >
+              {botExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={handleResetChat}
+              title="Reiniciar conversación"
+              aria-label="Reiniciar conversación"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950/10 text-slate-900 transition hover:bg-slate-950/20 cursor-pointer"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setBotOpen(false)}
+              title="Cerrar asistente"
+              aria-label="Cerrar asistente"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950/15 text-slate-950 transition hover:bg-slate-950/25 cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Historial amplio con patrón sutil */}
+      <div
+        className={`bg-dot-matrix space-y-3 overflow-y-auto bg-slate-50/90 px-4 py-4 transition-all duration-200 ${
+          botExpanded ? 'h-[400px] sm:h-[450px]' : 'h-[320px] sm:h-[365px]'
+        }`}
+      >
+        <div className="flex justify-center">
+          <span className="rounded-full border border-amber-200/80 bg-white px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 shadow-2xs">
+            Hoy · Soporte 24/7
+          </span>
+        </div>
+
+        {messages.map((msg) =>
+          msg.role === 'user' ? (
+            <div key={msg.id} className="flex flex-col items-end gap-1">
+              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-3.5 py-2.5 text-[13px] font-medium leading-relaxed text-slate-950 shadow-xs">
+                {msg.texto}
+              </div>
+              <span className="px-1 text-[10px] text-slate-400">{msg.hora}</span>
+            </div>
+          ) : (
+            <div key={msg.id} className="flex items-start gap-2.5">
+              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-xs">
+                <Bot className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="rounded-2xl rounded-tl-xs border border-slate-200/80 bg-white px-3.5 py-2.5 text-[13px] leading-relaxed text-slate-700 shadow-2xs">
+                  <p>{msg.texto}</p>
+                  {msg.ctaLabel && msg.ctaTo && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBotOpen(false);
+                        const destino =
+                          msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
+                        navigate(destino);
+                      }}
+                      className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-100 to-orange-100 px-3 py-1.5 text-xs font-bold text-amber-950 ring-1 ring-amber-300/80 transition hover:from-amber-200 hover:to-orange-200 cursor-pointer"
+                    >
+                      {msg.ctaLabel}
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                <span className="block px-1 text-[10px] text-slate-400">{msg.hora}</span>
+              </div>
+            </div>
+          )
+        )}
+        <div ref={chatEndRef} />
+      </div>
+
+      {/* Accesos rápidos + Input */}
+      <div className="space-y-2.5 border-t border-slate-100 bg-white px-4 py-3">
+        <div className="flex flex-wrap gap-1.5">
+          {FAQ_TOPICS.map((topic) => (
+            <button
+              key={topic.id}
+              type="button"
+              onClick={() => enviarConsulta(topic.pregunta, topic)}
+              className="rounded-full border border-amber-300/80 bg-amber-50/80 px-3 py-1 text-[11px] font-bold text-amber-900 transition hover:bg-amber-100 cursor-pointer"
+            >
+              {topic.chip}
+            </button>
+          ))}
+        </div>
+
+        <form onSubmit={handleAskSubmit} className="flex items-center gap-2">
+          <input
+            type="text"
+            value={consulta}
+            onChange={(e) => setConsulta(e.target.value)}
+            placeholder="Escribe tu consulta aquí..."
+            className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200 focus:outline-none"
+          />
+          <button
+            type="submit"
+            disabled={!consulta.trim()}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
+            aria-label="Consultar asistente"
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </form>
+      </div>
+    </div>
   );
 
   const waCard = (

@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  AlertCircle,
   ArrowRight,
+  AtSign,
   Bell,
   CheckCircle2,
   Circle,
   HeartHandshake,
+  Lock,
+  Mail,
+  Phone,
   ShieldCheck,
   Ticket,
+  User,
   UserPlus,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
@@ -80,172 +86,261 @@ export function RegistroPage() {
     { ok: tieneLetra, label: 'Al menos una letra' },
     { ok: tieneNumero, label: 'Al menos un número' },
   ];
+  const puntajePassword = [tieneLargoMinimo, tieneLetra, tieneNumero].filter(Boolean).length;
+  const fuerzaTexto =
+    !form.password
+      ? 'Sin definir'
+      : puntajePassword === 3 && form.password.length >= 12
+      ? 'Muy segura'
+      : puntajePassword === 3
+      ? 'Segura'
+      : puntajePassword === 2
+      ? 'Media'
+      : 'Débil';
 
   return (
-    <div className="my-auto mx-auto w-full max-w-6xl py-2">
-      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda más compacta */}
-        <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-4">
-          <div className="mx-auto w-full space-y-3.5">
-            <div className="text-center">
-              <div className="mb-3 flex justify-center">
-                <BrandMark size="xl" />
-              </div>
-              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold backdrop-blur-xs">
+    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+      <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 ring-1 ring-slate-900/5 backdrop-blur-md lg:grid-cols-12">
+        {/* Columna izquierda informativa */}
+        <section className="relative flex flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-800 via-teal-800 to-slate-900 p-6 text-white sm:p-8 lg:col-span-5">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-cyan-400/15 blur-3xl" />
+
+          <div className="relative space-y-5">
+            <div className="flex items-center justify-between gap-3">
+              <BrandMark size="lg" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-emerald-100 ring-1 ring-white/20 backdrop-blur-xs">
                 <HeartHandshake className="h-3.5 w-3.5" />
-                Únete a Rifas Solidarias
+                Comunidad verificada
               </span>
-              <h1 className="mt-2.5 text-xl font-extrabold tracking-tight sm:text-2xl">
+            </div>
+
+            <div className="space-y-2">
+              <h1 className="text-2xl font-extrabold tracking-tight sm:text-[26px]">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="mt-1.5 text-justify text-xs leading-relaxed text-emerald-50">
-                Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
+              <p className="text-sm leading-relaxed text-emerald-50/90">
+                Elige tus números favoritos en tiempo real, valida comprobantes o propón campañas para causas verificadas.
               </p>
             </div>
 
-            <div className="space-y-2 border-t border-white/15 pt-3 text-[11px]">
-              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
-                <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
-                <div className="text-justify">
-                  <p className="font-bold">Reservas instantáneas de 15 min</p>
-                  <p className="text-emerald-50/90">Bloquea tus números mientras pagas.</p>
+            <div className="space-y-2.5 border-t border-white/15 pt-4 text-xs">
+              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+                  <Ticket className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="font-bold text-white">Reservas instantáneas de 15 min</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                    Bloquea tus números disponibles mientras envías tu comprobante.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
-                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
-                <div className="text-justify">
-                  <p className="font-bold">Privacidad por alias público</p>
-                  <p className="text-emerald-50/90">Tus datos privados permanecen protegidos.</p>
+              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="font-bold text-white">Privacidad con alias público</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                    Tu nombre y contacto se mantienen privados en tableros y sorteos.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
-                <Bell className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
-                <div className="text-justify">
-                  <p className="font-bold">Avisos automáticos</p>
-                  <p className="text-emerald-50/90">Alertas de pagos y resultados al instante.</p>
+              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+                  <Bell className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="font-bold text-white">Avisos automáticos</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                    Recibe alertas sobre validación de pagos y resultados del sorteo.
+                  </p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="border-t border-white/15 pt-2.5 text-center text-xs text-emerald-50">
-              ¿Ya tienes cuenta?{' '}
-              <Link
-                to="/login"
-                state={{ from: destino }}
-                className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
-              >
-                Inicia sesión
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
+          <div className="relative mt-6 flex items-center justify-between border-t border-white/15 pt-4 text-xs text-emerald-50">
+            <span>¿Ya tienes una cuenta?</span>
+            <Link
+              to="/login"
+              state={{ from: destino }}
+              className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
+            >
+              Inicia sesión
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </section>
 
-        {/* Columna derecha ampliada: Formulario */}
-        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-8">
-          <div className="mb-4 text-center sm:flex sm:items-center sm:justify-between sm:text-left">
-            <div>
-              <h2 className="text-xl font-extrabold text-slate-900">Datos de registro</h2>
-              <p className="text-xs text-slate-500">
-                Completa tus datos para habilitar tu cuenta solidaria
-              </p>
-            </div>
-            <div className="mx-auto mt-2 inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700 sm:mx-0 sm:mt-0">
-              <UserPlus className="h-5 w-5" />
+        {/* Columna derecha: Formulario */}
+        <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
+          <div className="mb-5 flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
+                <UserPlus className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+                  Crear cuenta
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Completa tus datos para habilitar tu acceso a la plataforma
+                </p>
+              </div>
             </div>
           </div>
 
           {errorMsg && (
             <div
               role="alert"
-              className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm text-rose-700"
+              className="mb-4 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700"
             >
-              {errorMsg}
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
+              <span>{errorMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                label="Nombres"
-                name="nombres"
-                required
-                minLength={2}
-                value={form.nombres}
-                onChange={handleChange}
-              />
-              <Input
-                label="Apellidos"
-                name="apellidos"
-                required
-                minLength={2}
-                value={form.apellidos}
-                onChange={handleChange}
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-3">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                Identidad y contacto
+              </p>
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <Input
+                  label="Nombres"
+                  name="nombres"
+                  icon={User}
+                  required
+                  minLength={2}
+                  placeholder="Ej. Ana María"
+                  value={form.nombres}
+                  onChange={handleChange}
+                />
+                <Input
+                  label="Apellidos"
+                  name="apellidos"
+                  icon={User}
+                  required
+                  minLength={2}
+                  placeholder="Ej. Rojas Pérez"
+                  value={form.apellidos}
+                  onChange={handleChange}
+                />
+              </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                label="Alias público"
-                name="alias"
-                required
-                minLength={3}
-                helperText="Visible en sorteos públicos en lugar de tus datos privados"
-                value={form.alias}
-                onChange={handleChange}
-              />
-              <Input
-                label="Teléfono (opcional)"
-                name="telefono"
-                placeholder="Ej. 70012345"
-                value={form.telefono}
-                onChange={handleChange}
-              />
-            </div>
-
-            <Input
-              label="Correo electrónico"
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-              value={form.email}
-              onChange={handleChange}
-            />
-
-            <div className="space-y-2">
-              <Input
-                label="Contraseña"
-                type="password"
-                name="password"
-                autoComplete="new-password"
-                required
-                minLength={8}
-                value={form.password}
-                onChange={handleChange}
-              />
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 rounded-xl bg-slate-50 px-3 py-2 text-xs">
-                {reglas.map((r) => (
-                  <span
-                    key={r.label}
-                    className={`inline-flex items-center gap-1 transition ${
-                      r.ok ? 'font-medium text-emerald-700' : 'text-slate-500'
-                    }`}
-                  >
-                    {r.ok ? (
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                    ) : (
-                      <Circle className="h-3.5 w-3.5 text-slate-300" />
-                    )}
-                    {r.label}
-                  </span>
-                ))}
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <Input
+                  label="Alias público"
+                  name="alias"
+                  icon={AtSign}
+                  required
+                  minLength={3}
+                  placeholder="ana_solidaria"
+                  helperText="Visible en sorteos en lugar de tu nombre"
+                  value={form.alias}
+                  onChange={handleChange}
+                />
+                <Input
+                  label="Teléfono (opcional)"
+                  name="telefono"
+                  icon={Phone}
+                  placeholder="Ej. 70012345"
+                  value={form.telefono}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
-            <Button type="submit" className="w-full" size="lg" loading={loading}>
+            <div className="space-y-3 border-t border-slate-100 pt-3">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                Credenciales de acceso
+              </p>
+
+              <Input
+                label="Correo electrónico"
+                type="email"
+                name="email"
+                icon={Mail}
+                autoComplete="email"
+                required
+                placeholder="nombre@correo.com"
+                value={form.email}
+                onChange={handleChange}
+              />
+
+              <div className="space-y-2">
+                <Input
+                  label="Contraseña"
+                  type="password"
+                  name="password"
+                  icon={Lock}
+                  autoComplete="new-password"
+                  required
+                  minLength={8}
+                  placeholder="Mínimo 8 caracteres"
+                  labelRight={
+                    form.password ? (
+                      <span
+                        className={`text-[11px] font-bold ${
+                          puntajePassword === 3
+                            ? 'text-emerald-700'
+                            : puntajePassword === 2
+                            ? 'text-amber-600'
+                            : 'text-rose-600'
+                        }`}
+                      >
+                        Seguridad: {fuerzaTexto}
+                      </span>
+                    ) : null
+                  }
+                  value={form.password}
+                  onChange={handleChange}
+                />
+
+                {form.password && (
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[1, 2, 3].map((nivel) => (
+                      <span
+                        key={nivel}
+                        className={`h-1.5 rounded-full transition-colors ${
+                          puntajePassword >= nivel
+                            ? puntajePassword === 3
+                              ? 'bg-emerald-500'
+                              : puntajePassword === 2
+                              ? 'bg-amber-400'
+                              : 'bg-rose-400'
+                            : 'bg-slate-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 rounded-xl border border-slate-100 bg-slate-50/90 px-3 py-2 text-xs">
+                  {reglas.map((r) => (
+                    <span
+                      key={r.label}
+                      className={`inline-flex items-center gap-1.5 transition ${
+                        r.ok ? 'font-semibold text-emerald-700' : 'text-slate-500'
+                      }`}
+                    >
+                      {r.ok ? (
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                      ) : (
+                        <Circle className="h-3.5 w-3.5 text-slate-300" />
+                      )}
+                      {r.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full shadow-md shadow-emerald-600/20" size="lg" loading={loading}>
               Crear mi cuenta solidaria
               <ArrowRight className="h-4 w-4" />
             </Button>
