@@ -9,7 +9,6 @@ import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
 import { Textarea } from '../../components/ui/Input.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
-import { Select } from '../../components/ui/Select.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
 
 export function AdminPagosPage() {
@@ -143,7 +142,7 @@ export function AdminPagosPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Verificación de pagos</h1>
           <p className="text-sm text-slate-500">
@@ -151,22 +150,38 @@ export function AdminPagosPage() {
           </p>
         </div>
 
-        <div className="w-full sm:w-56">
-          <Select
-            label="Estado"
-            placeholder="Todos"
-            value={estado}
-            onChange={(e) => {
-              setEstado(e.target.value);
-              setPage(1);
-            }}
-            options={[
-              { value: 'PENDIENTE', label: 'Pendientes' },
-              { value: 'CONFIRMADO', label: 'Confirmados' },
-              { value: 'RECHAZADO', label: 'Rechazados' },
-            ]}
-          />
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { key: 'PENDIENTE', label: 'Pendientes' },
+            { key: 'CONFIRMADO', label: 'Confirmados' },
+            { key: 'RECHAZADO', label: 'Rechazados' },
+            { key: '', label: 'Todos' },
+          ].map((tab) => (
+            <button
+              key={tab.key || 'all'}
+              type="button"
+              onClick={() => {
+                setEstado(tab.key);
+                setPage(1);
+              }}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                estado === tab.key
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600 shadow-xs">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+        <span>
+          Al confirmar un pago, sus tickets asociados pasan inmediatamente a <strong>VENDIDO</strong>{' '}
+          y se notifica al participante. Si se rechaza, los números regresan al tablero disponible.
+        </span>
       </div>
 
       <DataTable
@@ -192,7 +207,27 @@ export function AdminPagosPage() {
           pagoConfirmar?.monto
         )}? Los tickets pasarán a VENDIDO de forma permanente.`}
         confirmText="Confirmar pago"
-      />
+      >
+        {pagoConfirmar && (
+          <div className="mt-3 space-y-1 rounded-xl bg-slate-50 p-3 text-xs text-slate-700">
+            <p>
+              <strong>Participante:</strong> {pagoConfirmar.usuario?.alias || `ID ${pagoConfirmar.usuarioId}`}
+            </p>
+            <p>
+              <strong>Rifa:</strong> {pagoConfirmar.rifa?.nombre || `Rifa #${pagoConfirmar.rifaId}`}
+            </p>
+            <p>
+              <strong>Números:</strong>{' '}
+              {(pagoConfirmar.tickets || []).map((t) => `#${t.numeroTicket}`).join(', ') || '—'}
+            </p>
+            {pagoConfirmar.referencia && (
+              <p>
+                <strong>Referencia:</strong> {pagoConfirmar.referencia}
+              </p>
+            )}
+          </div>
+        )}
+      </ConfirmModal>
 
       <Modal
         open={Boolean(pagoRechazar)}

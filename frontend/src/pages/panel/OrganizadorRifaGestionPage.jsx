@@ -243,35 +243,89 @@ export function OrganizadorRifaGestionPage() {
         </div>
       </div>
 
-      {/* Reporte en vivo */}
-      {reporteData && (
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-            <p className="text-xs text-slate-500">Recaudado confirmado</p>
-            <p className="mt-1 text-xl font-extrabold text-emerald-700">
-              {formatearBs(reporteData.recaudacionConfirmada)}
-            </p>
+      {!esFinalizada && !rifa.premios?.length && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-950 shadow-xs">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+            <div>
+              <p className="font-bold">Falta cargar premios activos</p>
+              <p className="text-xs text-amber-800">
+                Registra al menos 1 premio para destacar los incentivos en el catálogo y habilitar el
+                sorteo cuando corresponda.
+              </p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-            <p className="text-xs text-slate-500">Pagos pendientes</p>
-            <p className="mt-1 text-xl font-extrabold text-amber-600">
-              {formatearBs(reporteData.recaudacionPendiente)}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-            <p className="text-xs text-slate-500">Tickets vendidos</p>
-            <p className="mt-1 text-xl font-extrabold text-indigo-700">
-              {reporteData.ticketsPorEstado.VENDIDO} / {reporteData.rifa.cantidadTickets}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-            <p className="text-xs text-slate-500">Avance de venta</p>
-            <p className="mt-1 text-xl font-extrabold text-slate-900">
-              {reporteData.porcentajeVendido}%
-            </p>
-          </div>
-        </section>
+          {tienePermiso('premios', 'crud') && (
+            <Button size="sm" variant="amber" onClick={abrirCrearPremio}>
+              <Plus className="h-4 w-4" />
+              Cargar primer premio
+            </Button>
+          )}
+        </div>
       )}
+
+      {/* Reporte en vivo */}
+      {reporteData && (() => {
+        const total = Math.max(1, reporteData.rifa.cantidadTickets || 1);
+        const vendidos = reporteData.ticketsPorEstado?.VENDIDO || 0;
+        const reservados = reporteData.ticketsPorEstado?.RESERVADO || 0;
+        const pctVend = Math.min(100, Math.round((vendidos / total) * 100));
+        const pctRes = Math.min(100 - pctVend, Math.round((reservados / total) * 100));
+        return (
+          <section className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+                <p className="text-xs text-slate-500">Recaudado confirmado</p>
+                <p className="mt-1 text-xl font-extrabold text-emerald-700">
+                  {formatearBs(reporteData.recaudacionConfirmada)}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+                <p className="text-xs text-slate-500">Pagos pendientes</p>
+                <p className="mt-1 text-xl font-extrabold text-amber-600">
+                  {formatearBs(reporteData.recaudacionPendiente)}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+                <p className="text-xs text-slate-500">Tickets vendidos</p>
+                <p className="mt-1 text-xl font-extrabold text-indigo-700">
+                  {vendidos} / {reporteData.rifa.cantidadTickets}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+                <p className="text-xs text-slate-500">Avance de venta</p>
+                <p className="mt-1 text-xl font-extrabold text-slate-900">
+                  {reporteData.porcentajeVendido}%
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+                <span className="font-semibold text-slate-800">Distribución del tablero</span>
+                <div className="flex flex-wrap gap-3">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />
+                    Vendidos ({vendidos})
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                    Reservados ({reservados})
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200" />
+                    Disponibles ({reporteData.ticketsPorEstado?.DISPONIBLE || 0})
+                  </span>
+                </div>
+              </div>
+              <div className="flex h-3 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full bg-indigo-500 transition-all" style={{ width: `${pctVend}%` }} />
+                <div className="h-full bg-amber-400 transition-all" style={{ width: `${pctRes}%` }} />
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Premios */}
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
