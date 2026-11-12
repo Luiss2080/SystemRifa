@@ -123,14 +123,7 @@ function WhatsAppIcon({ className = 'h-6 w-6' }) {
 export function FloatingWidgets() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { autenticado, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } = useAuth();
-  const { tieneAdminPanel, tieneOrganizadorPanel } = resolverAccesoRol({
-    autenticado,
-    esAdmin,
-    esOrganizador,
-    tienePermiso,
-    tieneAlgunPermiso,
-  });
+  const { autenticado } = useAuth();
   const [isLgScreen, setIsLgScreen] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
   );
@@ -144,9 +137,7 @@ export function FloatingWidgets() {
   const chatEndRef = useRef(null);
 
   const tienePanelSidebar =
-    autenticado &&
-    (tieneAdminPanel || tieneOrganizadorPanel) &&
-    !['/', '/login', '/registro', '/403'].includes(location.pathname);
+    autenticado && !['/', '/login', '/registro', '/403'].includes(location.pathname);
   const dockBotRight = tienePanelSidebar && isLgScreen;
 
   useEffect(() => {
