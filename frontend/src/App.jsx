@@ -9,6 +9,13 @@ import { RegistroPage } from './pages/RegistroPage.jsx';
 import { PerfilPage } from './pages/PerfilPage.jsx';
 import { ForbiddenPage } from './pages/ForbiddenPage.jsx';
 import { NotFoundPage } from './pages/NotFoundPage.jsx';
+import { CatalogoPage } from './pages/CatalogoPage.jsx';
+import { CausasPublicPage } from './pages/CausasPublicPage.jsx';
+import { RifaDetallePage } from './pages/RifaDetallePage.jsx';
+import { ResultadoPublicoPage } from './pages/ResultadoPublicoPage.jsx';
+import { MisTicketsPage } from './pages/MisTicketsPage.jsx';
+import { MisPagosPage } from './pages/MisPagosPage.jsx';
+import { NotificacionesPage } from './pages/NotificacionesPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,15 +26,6 @@ const queryClient = new QueryClient({
   },
 });
 
-function PlaceholderCatalogo() {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-      <h1 className="text-2xl font-bold text-slate-900">Rifas Solidarias</h1>
-      <p className="mt-2 text-sm text-slate-600">Catálogo en construcción (Paso 12).</p>
-    </div>
-  );
-}
-
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -36,7 +34,10 @@ export function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<PublicLayout />}>
-                <Route path="/" element={<PlaceholderCatalogo />} />
+                <Route path="/" element={<CatalogoPage />} />
+                <Route path="/causas" element={<CausasPublicPage />} />
+                <Route path="/rifas/:id" element={<RifaDetallePage />} />
+                <Route path="/rifas/:id/resultado" element={<ResultadoPublicoPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/registro" element={<RegistroPage />} />
                 <Route path="/403" element={<ForbiddenPage />} />
@@ -45,6 +46,9 @@ export function App() {
               <Route element={<RequireAuth />}>
                 <Route element={<UserLayout />}>
                   <Route path="/perfil" element={<PerfilPage />} />
+                  <Route path="/mis-tickets" element={<MisTicketsPage />} />
+                  <Route path="/mis-pagos" element={<MisPagosPage />} />
+                  <Route path="/notificaciones" element={<NotificacionesPage />} />
                 </Route>
               </Route>
 
