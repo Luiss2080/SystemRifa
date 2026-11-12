@@ -5,7 +5,12 @@ export default defineConfig({
     environment: 'node',
     globals: false,
     setupFiles: ['./tests/setup.js'],
-    fileParallelism: false
+    fileParallelism: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/**/*.js'],
+      exclude: ['src/server.js', 'src/config/openapi.js']
+    }
   }
 });
-

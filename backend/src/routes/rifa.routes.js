@@ -93,6 +93,7 @@ router.post(
 router.post(
   '/:id/reservas',
   authenticate,
+  reservasRateLimiter,
   authorize('tickets', 'comprar'),
   validate(idParamSchema, 'params'),
   validate(reservarTicketsSchema),

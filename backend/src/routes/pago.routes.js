@@ -20,7 +20,13 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post('/', authorize('pagos', 'registrar'), validate(crearPagoSchema), postPago);
+router.post(
+  '/',
+  pagosRateLimiter,
+  authorize('pagos', 'registrar'),
+  validate(crearPagoSchema),
+  postPago
+);
 router.get('/mios', validate(listarPagosQuerySchema, 'query'), getMisPagos);
 router.get(
   '/',
