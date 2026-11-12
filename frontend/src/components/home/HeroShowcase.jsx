@@ -289,10 +289,10 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                     .getElementById('catalogo-activo')
                     ?.scrollIntoView({ behavior: 'smooth' })
                 }
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-md shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-md shadow-amber-500/25 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
               >
                 <Ticket className="h-4 w-4" />
-                Ver rifas
+                Ver rifas activas
               </button>
 
               <Link
@@ -302,40 +302,57 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                 <HeartHandshake className="h-4 w-4" />
                 Ver causas
               </Link>
+
+              <Link
+                to="/solicitudes/nueva"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50/70 hover:text-emerald-900"
+              >
+                <FilePlus2 className="h-4 w-4 text-emerald-600" />
+                Organizar rifa
+              </Link>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <div className="flex items-center gap-1">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-500">
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-500">
-                  <HeartHandshake className="h-3.5 w-3.5" />
-                </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                </span>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 pt-4">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-500">
+                    <Star className="h-3.5 w-3.5 fill-current" />
+                  </span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-100 text-rose-500">
+                    <HeartHandshake className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  </span>
+                </div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  {rifas.length > 0 || causas.length > 0
+                    ? `${rifas.length} rifas activas · ${causas.length} causas verificadas`
+                    : 'Sorteos auditados · Reservas de 15 min'}
+                </p>
               </div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                +500 participantes y causas confían en Rifas Solidarias
-              </p>
+              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+                <Lock className="h-3 w-3 text-emerald-600" />
+                Sin doble reserva
+              </span>
             </div>
           </div>
 
-          {/* Columna Derecha: Abanico Interactivo de 5 Tarjetas (como las historias de la imagen) */}
+          {/* Columna Derecha: Abanico Interactivo de 5 Tarjetas */}
           <div className="lg:col-span-6">
-            <div className="relative mx-auto flex h-[340px] max-w-[520px] items-center justify-center sm:h-[380px]">
+            <div className="relative mx-auto flex h-[340px] max-w-[520px] items-center justify-center overflow-hidden sm:h-[385px] sm:overflow-visible">
               {cards.map((card, idx) => {
                 const offset = idx - activeIdx;
                 const isCenter = offset === 0;
                 const absOffset = Math.abs(offset);
 
-                const translateX = offset * 68;
+                const translateX = offset * fanStepX;
                 const translateY = absOffset * 12;
-                const rotate = offset * 6.5;
+                const rotate = offset * (isCompactScreen ? 5 : 6.5);
                 const scale = isCenter ? 1.04 : Math.max(0.78, 1 - absOffset * 0.09);
                 const zIndex = 30 - absOffset * 5;
                 const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.08;
+                const premioPrincipal = card.premios?.[0]?.nombre;
 
                 const pctAvance =
                   100 -

@@ -1,16 +1,28 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, ExternalLink, PlusCircle, Search, Settings2, Ticket, X } from 'lucide-react';
+import {
+  AlertTriangle,
+  Award,
+  CheckCircle2,
+  ClipboardList,
+  ExternalLink,
+  PlusCircle,
+  Settings2,
+  Ticket,
+  Trophy,
+} from 'lucide-react';
 import { getMisRifasApi } from '../../features/panel/panelApi.js';
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
+import { PaginationCard } from '../../components/ui/DataTable.jsx';
 import { EmptyState } from '../../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../../components/ui/Skeleton.jsx';
+import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../../components/panel/PanelKit.jsx';
 
 const ESTADOS_RIFA = [
-  { key: '', label: 'Todas' },
+  { key: '', label: 'Todas las rifas' },
   { key: 'ACTIVA', label: 'Activas' },
   { key: 'EXTENDIDA', label: 'Extendidas' },
   { key: 'FINALIZADA', label: 'Finalizadas' },
@@ -40,79 +52,96 @@ export function OrganizadorRifasPage() {
         r.nombre?.toLowerCase().includes(q) || r.causa?.nombre?.toLowerCase().includes(q)
     );
   }, [data, busqueda]);
-  const pagination = data?.pagination || { page: 1, totalPages: 1 };
+  const pagination = data?.pagination || { page: 1, totalPages: 1, total: items.length };
+
+  const rawItems = data?.items || [];
+  const activasCount = rawItems.filter((r) => r.estado === 'ACTIVA' || r.estado === 'EXTENDIDA').length;
+  const finalizadasCount = rawItems.filter((r) => r.estado === 'FINALIZADA').length;
+  const totalVendidos = rawItems.reduce((acc, r) => acc + (r.conteos?.VENDIDO ?? 0), 0);
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-            <Ticket className="h-3.5 w-3.5" />
-            Gestión de campañas
+      <PanelFilterBar
+        title="Gestión de Campañas & Rifas Aprobadas"
+        subtitle="Configura premios, controla fechas de cierre, ejecuta sorteos verificables y registra entregas."
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder="Buscar rifa por nombre o causa solidaria..."
+        hasActiveFilters={Boolean(busqueda || estado)}
+        onResetFilters={() => {
+          setBusqueda('');
+          setEstado('');
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Estado de rifa',
+            value: estado,
+            onChange: (val) => {
+              setEstado(val);
+              setPage(1);
+            },
+            options: ESTADOS_RIFA.map((t) => ({ value: t.key, label: t.label })),
+          },
+        ]}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/solicitudes/mias">
+              <Button variant="secondary" size="sm">
+                <ClipboardList className="h-4 w-4 text-slate-600" />
+                Mis solicitudes
+              </Button>
+            </Link>
+            <Link to="/solicitudes/nueva">
+              <Button size="sm">
+                <PlusCircle className="h-4 w-4" />
+                Nueva solicitud
+              </Button>
+            </Link>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis rifas aprobadas</h1>
-          <p className="text-sm text-slate-600">
-            Configura premios, controla fechas de cierre, ejecuta sorteos verificables y registra entregas.
-          </p>
-        </div>
+        }
+      />
 
-        <Link to="/solicitudes/nueva">
-          <Button size="sm">
-            <PlusCircle className="h-4 w-4" />
-            Nueva solicitud de rifa
-          </Button>
-        </Link>
-      </div>
+      <PanelSectionHeader
+        icon={Trophy}
+        title="Portafolio de Rifas del Organizador"
+        subtitle="Supervisión de inventario de tickets, premios y sorteos"
+        badgeText={`${pagination.total ?? items.length} Campañas registradas`}
+        accent="emerald"
+      />
 
-      {/* Barra de búsqueda + filtros y accesos rápidos */}
-      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="search"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar rifa por nombre o causa..."
-            aria-label="Buscar en mis rifas"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-9 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
-          />
-          {busqueda && (
-            <button
-              type="button"
-              onClick={() => setBusqueda('')}
-              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-              aria-label="Limpiar búsqueda"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          {ESTADOS_RIFA.map((tab) => (
-            <button
-              key={tab.key || 'all'}
-              type="button"
-              onClick={() => {
-                setEstado(tab.key);
-                setPage(1);
-              }}
-              className={`rounded-xl px-3 py-2 text-xs font-semibold transition cursor-pointer ${
-                estado === tab.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-          <Link to="/solicitudes/mias">
-            <Button variant="secondary" size="sm">
-              Mis solicitudes
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Rifas registradas',
+            value: pagination.total ?? rawItems.length,
+            trendText: 'Total de campañas',
+            icon: Ticket,
+            accent: 'emerald',
+          },
+          {
+            label: 'En curso (página)',
+            value: activasCount,
+            trendText: 'Activas o extendidas',
+            icon: CheckCircle2,
+            accent: 'sky',
+          },
+          {
+            label: 'Tickets vendidos (página)',
+            value: totalVendidos,
+            trendText: 'Participaciones confirmadas',
+            icon: Award,
+            accent: 'indigo',
+          },
+          {
+            label: 'Finalizadas (página)',
+            value: finalizadasCount,
+            trendText: 'Sorteos completados',
+            icon: Trophy,
+            accent: 'amber',
+          },
+        ]}
+      />
 
       {isLoading ? (
         <CardGridSkeleton count={4} />
@@ -148,12 +177,12 @@ export function OrganizadorRifasPage() {
             return (
               <div
                 key={r.rifaId}
-                className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
+                className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
               >
                 <div
                   className={`h-1.5 w-full bg-gradient-to-r ${
                     r.estado === 'FINALIZADA'
-                      ? 'from-slate-600 to-slate-800'
+                      ? 'from-slate-400 to-slate-600'
                       : r.estado === 'EXTENDIDA'
                       ? 'from-amber-400 to-orange-500'
                       : 'from-emerald-500 to-teal-500'
@@ -171,47 +200,50 @@ export function OrganizadorRifasPage() {
                       <Badge estado={r.estado} />
                     </div>
                     <p className="text-xs text-slate-500">
-                      Cierre programado: <span className="font-semibold text-slate-700">{formatearFechaCorta(r.fechaFin)}</span>
+                      Cierre programado:{' '}
+                      <span className="font-semibold text-slate-700">
+                        {formatearFechaCorta(r.fechaFin)}
+                      </span>
                     </p>
 
-                  {sinPremios && (
-                    <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
-                      <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
-                      Falta cargar al menos 1 premio activo
-                    </div>
-                  )}
+                    {sinPremios && (
+                      <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
+                        <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
+                        Falta cargar al menos 1 premio activo
+                      </div>
+                    )}
 
-                  <div className="grid grid-cols-4 gap-2 rounded-xl bg-slate-50 p-3 text-center text-xs">
-                    <div>
-                      <p className="text-slate-500">Precio</p>
-                      <p className="font-bold text-emerald-700">{formatearBs(r.precioTicket)}</p>
+                    <div className="grid grid-cols-4 gap-2 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 text-center text-xs">
+                      <div>
+                        <p className="text-slate-500">Precio</p>
+                        <p className="font-bold text-emerald-700">{formatearBs(r.precioTicket)}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500">Disp.</p>
+                        <p className="font-bold text-slate-800">{r.conteos?.DISPONIBLE ?? 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500">Vend.</p>
+                        <p className="font-bold text-indigo-700">{vendidos}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500">Premios</p>
+                        <p className="font-bold text-amber-700">{r.premiosActivosCount ?? 0}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-slate-500">Disp.</p>
-                      <p className="font-bold">{r.conteos?.DISPONIBLE ?? 0}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-500">Vend.</p>
-                      <p className="font-bold text-indigo-700">{vendidos}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-500">Premios</p>
-                      <p className="font-bold text-amber-700">{r.premiosActivosCount ?? 0}</p>
+
+                    <div className="space-y-1">
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all"
+                          style={{ width: `${pctVendido}%` }}
+                        />
+                      </div>
+                      <p className="text-right text-[11px] font-medium text-slate-500">
+                        {pctVendido}% vendido ({vendidos}/{r.cantidadTickets})
+                      </p>
                     </div>
                   </div>
-
-                  <div className="space-y-1">
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className="h-full rounded-full bg-indigo-500 transition-all"
-                        style={{ width: `${pctVendido}%` }}
-                      />
-                    </div>
-                    <p className="text-right text-[11px] font-medium text-slate-500">
-                      {pctVendido}% vendido ({vendidos}/{r.cantidadTickets})
-                    </p>
-                  </div>
-                </div>
 
                   <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
                     <Link to={`/organizador/rifas/${r.rifaId}`} className="flex-1">
@@ -234,23 +266,16 @@ export function OrganizadorRifasPage() {
         </div>
       )}
 
-      {pagination.totalPages > 1 && (
-        <div className="flex justify-center gap-3">
-          <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-            Anterior
-          </Button>
-          <span className="self-center text-sm text-slate-600">
-            Página {pagination.page} de {pagination.totalPages}
-          </span>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Siguiente
-          </Button>
-        </div>
+      {items.length > 0 && (
+        <PaginationCard
+          page={pagination.page || 1}
+          totalPages={pagination.totalPages || 1}
+          total={pagination.total || items.length}
+          showingFrom={(pagination.page - 1) * 12 + 1}
+          showingTo={(pagination.page - 1) * 12 + items.length}
+          onPageChange={setPage}
+          itemLabel="rifas"
+        />
       )}
     </div>
   );

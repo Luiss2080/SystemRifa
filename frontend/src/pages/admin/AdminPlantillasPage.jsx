@@ -92,6 +92,26 @@ export function AdminPlantillasPage() {
     );
   }, [data, filtroEstado, busqueda]);
 
+  async function handleGuardar(e) {
+    e.preventDefault();
+    if (!editando) return;
+    setSaving(true);
+    try {
+      await actualizarTipoNotificacionApi(editando.tipoNotificacionId, {
+        plantillaTitulo: form.plantillaTitulo,
+        plantillaMensaje: form.plantillaMensaje,
+        estaActivo: form.estaActivo,
+      });
+      setEditando(null);
+      queryClient.invalidateQueries({ queryKey: ['admin-plantillas'] });
+      toast.success('Plantilla actualizada');
+    } catch (err) {
+      toast.error('Error al actualizar plantilla', extraerErrorApi(err).message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (isLoading) return <FullPageSpinner message="Cargando plantillas de notificación..." />;
 
   const totalBase = data?.items || [];
