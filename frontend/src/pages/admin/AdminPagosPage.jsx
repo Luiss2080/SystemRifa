@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, X } from 'lucide-react';
+import { Check, Info, X } from 'lucide-react';
 import { getPagosAdminApi, verificarPagoAdminApi } from '../../features/panel/panelApi.js';
 import { extraerErrorApi } from '../../utils/apiError.js';
 import { formatearBs, formatearFecha } from '../../utils/format.js';
