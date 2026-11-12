@@ -24,6 +24,12 @@ async function loadUserEffectiveSet(usuarioId) {
   return value;
 }
 
+export async function userHasPermission(usuarioId, recurso, accion) {
+  const access = await loadUserEffectiveSet(usuarioId);
+  if (!access) return false;
+  return access.permisos.has(`${recurso}:${accion}`);
+}
+
 /**
  * Middleware que exige que el usuario autenticado posea el permiso `recurso:accion` activo.
  * @param {string} recurso
