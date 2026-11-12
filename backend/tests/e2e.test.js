@@ -89,18 +89,26 @@ describe('Flujo End-to-End Completo (Paso 14)', () => {
       .expect(201);
     const solId = solRes.body.solicitud.rifaSolicitadaId;
 
-    // 5. Admin revisa y aprueba solicitud
-    await request(app)
-      .patch(`/api/solicitudes/${solId}/estado`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ estado: 'ESPERANDO_PAGO' })
-      .expect(200);
+    // 5. Admin revisa y aprueba solicitud (respeta TARIFA_PUBLICACION)
+    if (Number(process.env.TARIFA_PUBLICACION ?? 0) > 0) {
+      await request(app)
+        .patch(`/api/solicitudes/${solId}/estado`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ estado: 'ESPERANDO_PAGO' })
+        .expect(200);
 
-    await request(app)
-      .patch(`/api/solicitudes/${solId}/estado`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ estado: 'PAGO_CONFIRMADO', referenciaPago: 'TARIFA-E2E-1' })
-      .expect(200);
+      await request(app)
+        .patch(`/api/solicitudes/${solId}/estado`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ estado: 'PAGO_CONFIRMADO', referenciaPago: 'TARIFA-E2E-1' })
+        .expect(200);
+    } else {
+      await request(app)
+        .patch(`/api/solicitudes/${solId}/estado`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ estado: 'PAGO_CONFIRMADO' })
+        .expect(200);
+    }
 
     const aprobRes = await request(app)
       .post(`/api/solicitudes/${solId}/aprobar`)
