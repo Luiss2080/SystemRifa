@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle,
+  ArrowLeft,
   Award,
   Calendar,
   Clock,
@@ -368,6 +369,23 @@ export function RifaDetallePage() {
 
   return (
     <div className={`space-y-6 ${rifaAbierta && seleccionados.length > 0 ? 'pb-20 lg:pb-0' : ''}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+        <Link
+          to={autenticado ? '/explorar' : '/'}
+          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-800"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Volver al catálogo
+        </Link>
+        <Link
+          to="/causas"
+          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3 py-1.5 text-emerald-800 transition hover:bg-emerald-100"
+        >
+          <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+          Ver causas solidarias
+        </Link>
+      </div>
+
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
           <div className="space-y-2">
@@ -441,12 +459,20 @@ export function RifaDetallePage() {
             Premios de la rifa
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {rifa.premios.map((p) => (
-              <div key={p.premioId} className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
-                <p className="font-semibold text-slate-900">{p.nombre}</p>
-                {p.descripcion && <p className="mt-1 text-xs text-slate-600">{p.descripcion}</p>}
+            {rifa.premios.map((p, idx) => (
+              <div
+                key={p.premioId}
+                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-slate-50/80 p-3.5 transition hover:border-amber-300 hover:bg-amber-50/30"
+              >
+                <div>
+                  <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
+                    {idx + 1}° Premio
+                  </span>
+                  <p className="mt-1.5 font-semibold text-slate-900">{p.nombre}</p>
+                  {p.descripcion && <p className="mt-1 text-xs text-slate-600">{p.descripcion}</p>}
+                </div>
                 {p.valor && (
-                  <p className="mt-2 text-xs font-semibold text-emerald-700">
+                  <p className="mt-2.5 text-xs font-semibold text-emerald-700">
                     Valor estimado: {formatearBs(p.valor)}
                   </p>
                 )}
@@ -712,6 +738,20 @@ export function RifaDetallePage() {
               <Button className="w-full" loading={reservando} onClick={handleReservar}>
                 {autenticado ? 'Reservar y pagar' : 'Iniciar sesión para reservar'}
               </Button>
+              {!autenticado && (
+                <div className="space-y-2 border-t border-slate-100 pt-2 text-center">
+                  <p className="text-[11px] text-slate-500">
+                    Tu selección se conserva al iniciar sesión.
+                  </p>
+                  <Link
+                    to="/registro"
+                    state={{ from: `${location.pathname}${location.search}` }}
+                    className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-slate-950 transition hover:brightness-105"
+                  >
+                    ¿Nuevo aquí? Crear cuenta gratis
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </aside>

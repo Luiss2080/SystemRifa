@@ -348,7 +348,7 @@ export function CausasPublicPage() {
                       </p>
                     </div>
 
-                    <Link to={`/?causaId=${causa.causaId}`}>
+                    <Link to={`${catalogoRuta}?causaId=${causa.causaId}`}>
                       <Button size="sm">
                         Ver rifas ({cantRifas})
                         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -360,6 +360,33 @@ export function CausasPublicPage() {
             );
           })}
         </div>
+      )}
+
+      {!isLoading && causas.length > 0 && (
+        <section className="flex flex-col items-start justify-between gap-4 rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/70 p-6 shadow-2xs sm:flex-row sm:items-center">
+          <div className="space-y-1">
+            <h2 className="text-lg font-extrabold text-slate-900">
+              ¿Quieres respaldar una de estas causas o crear una campaña?
+            </h2>
+            <p className="text-xs text-slate-600 sm:text-sm">
+              Explora las rifas activas asociadas o envía una solicitud para organizar un nuevo sorteo solidario.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link to={catalogoRuta}>
+              <Button variant="secondary" size="sm">
+                <Ticket className="h-4 w-4 text-emerald-600" />
+                Explorar catálogo
+              </Button>
+            </Link>
+            <Link to="/solicitudes/nueva">
+              <Button size="sm">
+                <FilePlus2 className="h-4 w-4" />
+                Proponer campaña
+              </Button>
+            </Link>
+          </div>
+        </section>
       )}
     </div>
   );
