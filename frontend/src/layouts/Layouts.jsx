@@ -29,18 +29,6 @@ export function AuthLayout() {
   );
 }
 
-export function AuthLayout() {
-  return (
-    <div className="relative z-10 flex min-h-screen flex-col overflow-x-clip bg-transparent">
-      <AppHeader variant="public" />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-6 sm:px-6 lg:px-8">
-        <Outlet />
-      </main>
-      <AppFooter />
-    </div>
-  );
-}
-
 export function UserLayout() {
   return (
     <RoleShell>
