@@ -86,113 +86,81 @@ export function CausasPublicPage() {
   }, [causasBase, busqueda, soloConRifas, orden]);
 
   return (
-    <div className="space-y-6">
-      {/* Hero Editorial claro con la identidad verde-esmeralda y pizarra de la web */}
-      <section className="overflow-hidden rounded-3xl border border-emerald-200/80 bg-white/90 p-6 shadow-sm backdrop-blur-md sm:p-8">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
-          <div className="space-y-3 lg:col-span-7">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
-              <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
-              Directorio editorial de impacto social
-            </span>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-              Causas solidarias con propósito real
-            </h1>
-            <p className="max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              Descubre las iniciativas comunitarias, de salud y educación que reciben respaldo directo
-              a través de campañas auditadas en tiempo real.
-            </p>
-            <div className="flex flex-wrap gap-2.5 pt-1">
-              {esAdmin ? (
-                <>
-                  <Link to="/admin/causas">
-                    <Button size="md">
-                      <ShieldCheck className="h-4 w-4" />
-                      Administrar causas
-                    </Button>
-                  </Link>
-                  <Link to="/admin/reportes">
-                    <Button variant="secondary" size="md">
-                      Ver reportes por causa
-                    </Button>
-                  </Link>
-                </>
-              ) : esOrganizador ? (
-                <>
-                  <Link to="/solicitudes/nueva">
-                    <Button size="md">
-                      <FilePlus2 className="h-4 w-4" />
-                      Nueva campaña para causa
-                    </Button>
-                  </Link>
-                  <Link to="/organizador/rifas">
-                    <Button variant="secondary" size="md">
-                      Gestionar mis rifas
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/solicitudes/nueva">
-                    <Button size="md">
-                      <FilePlus2 className="h-4 w-4" />
-                      Proponer una rifa para una causa
-                    </Button>
-                  </Link>
-                  <Link to={catalogoRuta}>
-                    <Button variant="secondary" size="md">
-                      <Ticket className="h-4 w-4 text-emerald-600" />
-                      Explorar catálogo activo
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Cabecera editorial centrada sin caja envolvente innecesaria */}
+      <section className="mx-auto max-w-3xl space-y-4 pt-2 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+          <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+          Directorio editorial de impacto social
+        </span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          Causas solidarias con propósito real
+        </h1>
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          Descubre las iniciativas comunitarias, de salud y educación que reciben respaldo directo a
+          través de campañas auditadas en tiempo real.
+        </p>
 
-          {/* Tarjetas horizontales apiladas en colores de la web */}
-          <div className="grid gap-2.5 lg:col-span-5">
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-800 shadow-xs">
-                  <HeartHandshake className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-xs font-medium text-slate-600">Causas respaldadas</p>
-                  <p className="text-sm font-bold text-slate-900">Verificadas por administración</p>
-                </div>
-              </div>
-              <span className="text-2xl font-extrabold text-slate-900">{metricas.totalCausas}</span>
-            </div>
+        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+          {esAdmin ? (
+            <>
+              <Link to="/admin/causas">
+                <Button size="md">
+                  <ShieldCheck className="h-4 w-4" />
+                  Administrar causas
+                </Button>
+              </Link>
+              <Link to="/admin/reportes">
+                <Button variant="secondary" size="md">
+                  Ver reportes por causa
+                </Button>
+              </Link>
+            </>
+          ) : esOrganizador ? (
+            <>
+              <Link to="/solicitudes/nueva">
+                <Button size="md">
+                  <FilePlus2 className="h-4 w-4" />
+                  Nueva campaña para causa
+                </Button>
+              </Link>
+              <Link to="/organizador/rifas">
+                <Button variant="secondary" size="md">
+                  Gestionar mis rifas
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to={catalogoRuta}>
+                <Button size="md">
+                  <Ticket className="h-4 w-4" />
+                  Explorar catálogo activo
+                </Button>
+              </Link>
+              <Link to="/solicitudes/nueva">
+                <Button variant="secondary" size="md">
+                  <FilePlus2 className="h-4 w-4 text-emerald-600" />
+                  Proponer una rifa
+                </Button>
+              </Link>
+            </>
+          )}
+        </div>
 
-            <div className="flex items-center justify-between rounded-2xl border border-teal-100 bg-teal-50/70 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-teal-700 shadow-xs">
-                  <Ticket className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-xs font-medium text-teal-700">Campañas vinculadas</p>
-                  <p className="text-sm font-bold text-slate-900">Rifas asociadas activas e históricas</p>
-                </div>
-              </div>
-              <span className="text-2xl font-extrabold text-teal-700">{metricas.totalRifas}</span>
-            </div>
-
-            <div className="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-xs">
-                  <Target className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-xs font-medium text-emerald-700">Meta solidaria acumulada</p>
-                  <p className="text-sm font-bold text-slate-900">Objetivo conjunto en bolivianos</p>
-                </div>
-              </div>
-              <span className="text-lg font-extrabold text-emerald-700">
-                {formatearBs(metricas.metaGlobal)}
-              </span>
-            </div>
-          </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs">
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 px-4 py-1.5 font-semibold text-slate-700 shadow-2xs">
+            <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+            <strong className="font-extrabold text-slate-900">{metricas.totalCausas}</strong> causas verificadas
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-teal-200/80 bg-white/90 px-4 py-1.5 font-semibold text-slate-700 shadow-2xs">
+            <Ticket className="h-3.5 w-3.5 text-teal-600" />
+            <strong className="font-extrabold text-teal-700">{metricas.totalRifas}</strong> campañas vinculadas
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-white/90 px-4 py-1.5 font-semibold text-slate-700 shadow-2xs">
+            <Target className="h-3.5 w-3.5 text-emerald-600" />
+            Meta acumulada: <strong className="font-extrabold text-emerald-700">{formatearBs(metricas.metaGlobal)}</strong>
+          </span>
         </div>
       </section>
 
