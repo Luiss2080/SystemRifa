@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Clock, CreditCard, Ticket, Trash2 } from 'lucide-react';
+import { ArrowRight, Clock, CreditCard, Search, Ticket, Trash2 } from 'lucide-react';
 import {
   getMisTickets,
   liberarReservasRifa,
@@ -155,34 +155,53 @@ export function MisTicketsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Mis tickets</h1>
-          <p className="text-sm text-slate-500">
-            Revisa tus números reservados, vendidos y completa pagos pendientes
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+            <Ticket className="h-3.5 w-3.5" />
+            Mi participación solidaria
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis tickets</h1>
+          <p className="text-sm text-slate-600">
+            Revisa tus números reservados o confirmados y registra el pago antes de que expire el contador.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {filtros.map((f) => (
-            <button
-              key={f.key || 'all'}
-              type="button"
-              onClick={() => setFiltroEstado(f.key)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
-                filtroEstado === f.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-2">
+          <Link to="/">
+            <Button variant="secondary" size="sm">
+              <Search className="h-4 w-4 text-emerald-600" />
+              Explorar rifas
+            </Button>
+          </Link>
+          <Link to="/mis-pagos">
+            <Button size="sm">
+              <CreditCard className="h-4 w-4" />
+              Ver mis pagos
+            </Button>
+          </Link>
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-xs">
+        {filtros.map((f) => (
+          <button
+            key={f.key || 'all'}
+            type="button"
+            onClick={() => setFiltroEstado(f.key)}
+            className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              filtroEstado === f.key
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
       {reservasSinPagoPorRifa.length > 0 && (
         <section className="space-y-3">
-          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-700">
+          <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-amber-700">
             <Clock className="h-4 w-4" />
             Reservas activas pendientes de pago
           </h2>
@@ -193,44 +212,49 @@ export function MisTicketsPage() {
               return (
                 <div
                   key={grupo.rifaId}
-                  className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 shadow-xs"
+                  className="overflow-hidden rounded-2xl border border-amber-200 bg-amber-50/70 shadow-sm"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-bold text-slate-900">{grupo.nombreRifa}</h3>
-                    <span className="font-bold text-emerald-800">{formatearBs(total)}</span>
-                  </div>
-
-                  {expira && <CountdownReserva targetIso={expira} />}
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {grupo.tickets.map((t) => (
-                      <span
-                        key={t.ticketId}
-                        className="rounded-md bg-white px-2 py-0.5 text-xs font-bold text-slate-800 ring-1 ring-amber-200"
-                      >
-                        #{t.numeroTicket}
+                  <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 to-orange-500" />
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-bold text-slate-900">{grupo.nombreRifa}</h3>
+                      <span className="rounded-lg bg-emerald-100 px-2.5 py-0.5 text-sm font-extrabold text-emerald-800">
+                        {formatearBs(total)}
                       </span>
-                    ))}
-                  </div>
+                    </div>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Button size="sm" onClick={() => setGrupoAPagar({ ...grupo, total })}>
-                      <CreditCard className="h-4 w-4" />
-                      Registrar pago
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() =>
-                        handleLiberar(
-                          grupo.rifaId,
-                          grupo.tickets.map((t) => t.numeroTicket)
-                        )
-                      }
-                    >
-                      <Trash2 className="h-4 w-4 text-rose-600" />
-                      Liberar reserva
-                    </Button>
+                    {expira && <CountdownReserva targetIso={expira} />}
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {grupo.tickets.map((t) => (
+                        <span
+                          key={t.ticketId}
+                          className="rounded-md bg-white px-2 py-0.5 text-xs font-bold text-slate-800 ring-1 ring-amber-200"
+                        >
+                          #{t.numeroTicket}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Button size="sm" onClick={() => setGrupoAPagar({ ...grupo, total })}>
+                        <CreditCard className="h-4 w-4" />
+                        Registrar pago
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          handleLiberar(
+                            grupo.rifaId,
+                            grupo.tickets.map((t) => t.numeroTicket)
+                          )
+                        }
+                      >
+                        <Trash2 className="h-4 w-4 text-rose-600" />
+                        Liberar reserva
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { RotateCcw } from 'lucide-react';
+import { History, RotateCcw } from 'lucide-react';
 import { getAuditoriaApi } from '../../features/panel/panelApi.js';
 import { formatearFecha } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
@@ -57,68 +57,76 @@ export function AdminAuditoriaPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Auditoría del sistema</h1>
-          <p className="text-sm text-slate-500">
-            Bitácora inmutable de acciones críticas realizadas en la plataforma
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
+            <History className="h-3.5 w-3.5" />
+            Trazabilidad e historial inmutable
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Auditoría del sistema</h1>
+          <p className="text-sm text-slate-600">
+            Bitácora verificable de aprobaciones, pagos, sorteos, anulaciones y cambios de permisos.
           </p>
         </div>
-
-        {(entidad || accion) && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              setEntidad('');
-              setAccion('');
-              setPage(1);
-            }}
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            Limpiar filtros
-          </Button>
-        )}
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        {ENTIDADES_RAPIDAS.map((ent) => (
-          <button
-            key={ent || 'all'}
-            type="button"
-            onClick={() => {
-              setEntidad(ent);
+      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-1.5">
+            {ENTIDADES_RAPIDAS.map((ent) => (
+              <button
+                key={ent || 'all'}
+                type="button"
+                onClick={() => {
+                  setEntidad(ent);
+                  setPage(1);
+                }}
+                className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition cursor-pointer ${
+                  entidad.toLowerCase() === ent
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
+                }`}
+              >
+                {ent || 'Todas las entidades'}
+              </button>
+            ))}
+          </div>
+
+          {(entidad || accion) && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setEntidad('');
+                setAccion('');
+                setPage(1);
+              }}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Limpiar filtros
+            </Button>
+          )}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+          <Input
+            label="Filtrar por entidad"
+            placeholder="Ej. pago, rifa, solicitud, usuario"
+            value={entidad}
+            onChange={(e) => {
+              setEntidad(e.target.value);
               setPage(1);
             }}
-            className={`rounded-full px-3 py-1 text-xs font-semibold capitalize transition cursor-pointer ${
-              entidad.toLowerCase() === ent
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            {ent || 'Todas las entidades'}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-2 lg:max-w-xl">
-        <Input
-          label="Filtrar por entidad"
-          placeholder="Ej. pago, rifa, solicitud, usuario"
-          value={entidad}
-          onChange={(e) => {
-            setEntidad(e.target.value);
-            setPage(1);
-          }}
-        />
-        <Input
-          label="Filtrar por acción"
-          placeholder="Ej. CONFIRMAR_PAGO, REALIZAR_SORTEO"
-          value={accion}
-          onChange={(e) => {
-            setAccion(e.target.value);
-            setPage(1);
-          }}
-        />
+          />
+          <Input
+            label="Filtrar por acción"
+            placeholder="Ej. CONFIRMAR_PAGO, REALIZAR_SORTEO"
+            value={accion}
+            onChange={(e) => {
+              setAccion(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
       </div>
 
       <DataTable

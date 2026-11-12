@@ -170,15 +170,40 @@ export function AdminUsuariosPage() {
   const rolesUsuarioSet = new Set((detalleData?.roles || []).map((r) => r.rolId));
   const permisosDirectosSet = new Set((detalleData?.permisosDirectos || []).map((p) => p.clave));
 
+  const usuariosVisibles = useMemo(() => {
+    const items = data?.items || [];
+    if (filtroEstado === 'active') return items.filter((u) => u.activo);
+    if (filtroEstado === 'inactive') return items.filter((u) => !u.activo);
+    return items;
+  }, [data, filtroEstado]);
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Usuarios</h1>
-          <p className="text-sm text-slate-500">Consulta cuentas, roles asignados y permisos efectivos</p>
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
+            <Users className="h-3.5 w-3.5" />
+            Control de identidad y accesos
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Usuarios y permisos</h1>
+          <p className="text-sm text-slate-600">
+            Administra cuentas registradas, activa o desactiva accesos y asigna roles o permisos granulares.
+          </p>
         </div>
 
-        <div className="relative w-full sm:w-80">
+        {tienePermiso('roles', 'administrar') && (
+          <Link to="/admin/roles">
+            <Button variant="secondary" size="sm">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              Gestionar roles
+            </Button>
+          </Link>
+        )}
+      </div>
+
+      {/* Buscador + botones rápidos en la misma fila */}
+      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
+        <div className="relative min-w-[220px] flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="search"
@@ -189,7 +214,7 @@ export function AdminUsuariosPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-9 pl-9 text-sm shadow-xs focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-9 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
           />
           {search && (
             <button
@@ -205,11 +230,32 @@ export function AdminUsuariosPage() {
             </button>
           )}
         </div>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          {[
+            { key: 'all', label: 'Todos' },
+            { key: 'active', label: 'Activos' },
+            { key: 'inactive', label: 'Inactivos' },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => setFiltroEstado(opt.key)}
+              className={`rounded-xl px-3 py-2 text-xs font-semibold transition cursor-pointer ${
+                filtroEstado === opt.key
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <DataTable
         columns={columns}
-        data={data?.items || []}
+        data={usuariosVisibles}
         loading={isLoading}
         rowKey="usuarioId"
         page={data?.pagination?.page || 1}
