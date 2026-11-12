@@ -78,14 +78,14 @@ export function SplashOverlay({ cargando = false }) {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    const startTime = performance.now();
+    const startTime = Date.now();
     let frameId = 0;
     let holdTimer = 0;
     let hideTimer = 0;
     let completed = false;
 
-    const tick = (now) => {
-      const elapsed = now - startTime;
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
       const ratio = Math.min(elapsed / MIN_SPLASH_MS, 1);
       const eased = 1 - Math.pow(1 - ratio, 2.2);
 
