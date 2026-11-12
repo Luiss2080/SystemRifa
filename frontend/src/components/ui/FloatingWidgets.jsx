@@ -26,16 +26,16 @@ const FAQ_TOPICS = [
     chip: 'Reservar',
     pregunta: '¿Cómo reservo mis números?',
     respuesta:
-      'Entra a cualquier rifa activa del catálogo, elige tus números disponibles en tiempo real y presiona "Reservar". Quedarán bloqueados para ti por 15 minutos.',
+      'Entra a cualquier rifa activa del catálogo, elige tus números disponibles en tiempo real (o usa "Al azar") y presiona "Reservar". Quedarán bloqueados exclusivamente para ti por 15 minutos.',
     ctaLabel: 'Explorar rifas',
     ctaTo: '/',
   },
   {
     id: 'pagos',
-    chip: 'Pagos',
+    chip: 'Pagos / QR',
     pregunta: '¿Cómo envío mi comprobante de pago?',
     respuesta:
-      'Con tus tickets reservados, abre "Mis pagos" o usa el botón de pago directo en la rifa para registrar tu referencia y comprobante. Se verifica en minutos.',
+      'Con tus tickets reservados, abre "Mis pagos" o usa el formulario tras confirmar tu reserva para registrar tu referencia de transferencia o QR. Administración lo verifica y te notifica al instante.',
     ctaLabel: 'Ir a Mis pagos',
     ctaTo: '/mis-pagos',
   },
@@ -44,7 +44,7 @@ const FAQ_TOPICS = [
     chip: 'Organizar',
     pregunta: '¿Cómo puedo organizar una rifa?',
     respuesta:
-      'Inicia sesión, entra a "Solicitar rifa" y envía tu propuesta indicando la causa social, premios y cantidad de boletos para revisión.',
+      'Crea una cuenta gratuita o inicia sesión, entra a "Solicitar nueva rifa" y envía tu propuesta indicando la causa social, premios, precio y fecha de cierre para revisión.',
     ctaLabel: 'Solicitar rifa',
     ctaTo: '/solicitudes/nueva',
   },
@@ -53,9 +53,18 @@ const FAQ_TOPICS = [
     chip: 'Sorteos',
     pregunta: '¿Cómo se garantizan los sorteos?',
     respuesta:
-      'Solo participan tickets con pago verificado. Cada sorteo queda registrado en auditoría inmutable y el resultado público muestra únicamente el alias ganador.',
+      'Solo participan tickets con pago verificado. Cada sorteo queda registrado en auditoría inmutable y el resultado público muestra únicamente el alias ganador protegiendo tu privacidad.',
     ctaLabel: 'Ver causas verificadas',
     ctaTo: '/causas',
+  },
+  {
+    id: 'cuenta',
+    chip: 'Crear cuenta',
+    pregunta: '¿Cómo creo mi cuenta para participar?',
+    respuesta:
+      'Haz clic en "Crear cuenta", completa tu nombre, correo, alias público y contraseña segura. Con tu cuenta podrás reservar boletos, subir comprobantes y recibir alertas de sorteos.',
+    ctaLabel: 'Crear cuenta gratis',
+    ctaTo: '/registro',
   },
 ];
 
@@ -76,7 +85,7 @@ function crearMensajeInicial() {
       role: 'bot',
       hora: horaActual(),
       texto:
-        '¡Hola! Soy RifaBot, asistente de Rifas Solidarias. Pregúntame sobre reservas, pagos o sorteos. ¿En qué te ayudo?',
+        '¡Hola! Soy RifaBot, asistente de Rifas Solidarias. Puedo ayudarte con reservas de números, pagos por QR/transferencia, creación de cuenta o cómo organizar tu propia campaña. ¿Qué deseas consultar?',
     },
   ];
 }
@@ -90,17 +99,23 @@ function buscarRespuestaBot(texto) {
       (q.includes('pago') && t.id === 'pagos') ||
       (q.includes('comprob') && t.id === 'pagos') ||
       (q.includes('qr') && t.id === 'pagos') ||
+      (q.includes('transfer') && t.id === 'pagos') ||
       (q.includes('reserv') && t.id === 'reservar') ||
       (q.includes('numero') && t.id === 'reservar') ||
+      (q.includes('número') && t.id === 'reservar') ||
       (q.includes('ticket') && t.id === 'reservar') ||
       (q.includes('bolet') && t.id === 'reservar') ||
       (q.includes('organiz') && t.id === 'organizar') ||
       (q.includes('solicit') && t.id === 'organizar') ||
-      (q.includes('crear') && t.id === 'organizar') ||
+      (q.includes('campa') && t.id === 'organizar') ||
       (q.includes('sorteo') && t.id === 'sorteo') ||
       (q.includes('ganador') && t.id === 'sorteo') ||
       (q.includes('auditor') && t.id === 'sorteo') ||
       (q.includes('segur') && t.id === 'sorteo') ||
+      (q.includes('causa') && t.id === 'sorteo') ||
+      (q.includes('cuenta') && t.id === 'cuenta') ||
+      (q.includes('registr') && t.id === 'cuenta') ||
+      (q.includes('crear') && t.id === 'cuenta') ||
       t.pregunta.toLowerCase().includes(q)
   );
 
@@ -109,7 +124,7 @@ function buscarRespuestaBot(texto) {
   return {
     id: 'general',
     respuesta:
-      'Puedo orientarte con reservas de números (15 min), registro de comprobantes de pago, solicitudes para organizar rifas o verificación de sorteos. Selecciona una opción rápida abajo o escríbenos por WhatsApp.',
+      'Puedo orientarte con reservas de números (15 min), registro de comprobantes de pago, creación de cuenta, solicitudes para organizar rifas o verificación de sorteos. Selecciona una opción rápida abajo o escríbenos por WhatsApp.',
     ctaLabel: 'Ver catálogo activo',
     ctaTo: '/',
   };
