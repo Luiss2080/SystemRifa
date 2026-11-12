@@ -5,10 +5,16 @@ import {
   Bell,
   Check,
   CheckCheck,
+  CreditCard,
   ExternalLink,
+  FilePlus2,
+  FolderKanban,
+  HeartHandshake,
+  LayoutDashboard,
   LogOut,
   Menu,
   Shield,
+  Sparkles,
   Ticket,
   User,
   X,
@@ -85,21 +91,28 @@ export function AppHeader() {
   const recientes = notifRecientes?.items || [];
 
   const navPublica = [
-    { to: '/', label: 'Rifas' },
-    { to: '/causas', label: 'Causas' },
+    { to: '/', label: 'Rifas', icon: Ticket, end: true },
+    { to: '/causas', label: 'Causas', icon: HeartHandshake },
+    ...(!autenticado
+      ? [
+          { to: '/#como-funciona', label: 'Cómo funciona', icon: Sparkles },
+          { to: '/solicitudes/nueva', label: 'Organizar rifa', icon: FilePlus2 },
+        ]
+      : []),
   ];
 
   const navParticipante = autenticado
     ? [
-        { to: '/mis-tickets', label: 'Mis tickets' },
-        { to: '/mis-pagos', label: 'Mis pagos' },
+        { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
+        { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
       ]
     : [];
 
   const navPanel = [];
   if (autenticado) {
     if (tienePermiso('solicitudes', 'crear')) {
-      navPanel.push({ to: '/solicitudes/mias', label: 'Mis solicitudes' });
+      navPanel.push({ to: '/solicitudes/nueva', label: 'Solicitar rifa', icon: FilePlus2 });
+      navPanel.push({ to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban });
     }
     if (
       tieneAlgunPermiso([
@@ -110,7 +123,7 @@ export function AppHeader() {
       ]) ||
       tienePermiso('rifas', 'leer')
     ) {
-      navPanel.push({ to: '/organizador/rifas', label: 'Mis rifas (Org)' });
+      navPanel.push({ to: '/organizador/rifas', label: 'Mis rifas', icon: Sparkles });
     }
     const tieneAdminPanel =
       esAdmin ||
@@ -129,9 +142,11 @@ export function AppHeader() {
         : tienePermiso('solicitudes', 'revisar')
           ? '/admin/solicitudes'
           : '/admin/pagos';
-      navPanel.push({ to: primerAdminDestino, label: 'Administración' });
+      navPanel.push({ to: primerAdminDestino, label: 'Admin', icon: LayoutDashboard });
     }
   }
+
+  const allNavItems = [...navPublica, ...navParticipante, ...navPanel];
 
   async function handleLogout() {
     setNotifAbierto(false);
@@ -141,40 +156,58 @@ export function AppHeader() {
   }
 
   const linkClass = ({ isActive }) =>
-    `rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-      isActive ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+    `inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium transition ${
+      isActive
+        ? 'bg-emerald-50 font-semibold text-emerald-700 ring-1 ring-emerald-200'
+        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
     }`;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xs">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 font-bold text-slate-900">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs transition hover:scale-105">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-xs">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-4 lg:gap-5">
+          <Link to="/" className="flex shrink-0 items-center gap-2 font-bold text-slate-900">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-600/20 transition hover:scale-105">
               <Ticket className="h-5 w-5" />
             </span>
             <span className="text-base tracking-tight">Rifas Solidarias</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            {[...navPublica, ...navParticipante, ...navPanel].map((item) => (
-              <NavLink key={item.to} to={item.to} className={linkClass} end={item.to === '/'}>
-                {item.label}
-              </NavLink>
-            ))}
+          <nav className="hidden items-center gap-1 lg:flex">
+            {allNavItems.map((item) => {
+              const Icon = item.icon;
+              if (item.to.includes('#')) {
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                  >
+                    <Icon className="h-4 w-4 text-emerald-600" />
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <NavLink key={item.to} to={item.to} className={linkClass} end={Boolean(item.end)}>
+                  <Icon className="h-4 w-4 opacity-80" />
+                  {item.label}
+                </NavLink>
+              );
+            })}
           </nav>
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden shrink-0 items-center gap-2 lg:flex">
           {autenticado ? (
             <>
               <div className="relative" ref={popoverRef}>
                 <button
                   type="button"
                   onClick={() => setNotifAbierto((v) => !v)}
-                  className={`relative rounded-lg p-2 transition cursor-pointer ${
+                  className={`relative rounded-xl p-2 transition cursor-pointer ${
                     notifAbierto
-                      ? 'bg-emerald-50 text-emerald-700'
+                      ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                   aria-label="Abrir notificaciones recientes"
@@ -268,7 +301,7 @@ export function AppHeader() {
 
               <Link
                 to="/perfil"
-                className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50/40"
               >
                 <User className="h-4 w-4 text-emerald-600" />
                 <span>{usuario?.alias}</span>
@@ -298,7 +331,7 @@ export function AppHeader() {
         <button
           type="button"
           onClick={() => setMenuAbierto((v) => !v)}
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden cursor-pointer"
+          className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 lg:hidden cursor-pointer"
           aria-label="Abrir menú"
         >
           {menuAbierto ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -306,19 +339,36 @@ export function AppHeader() {
       </div>
 
       {menuAbierto && (
-        <div className="animate-slide-up border-t border-slate-200 bg-white px-4 py-4 md:hidden">
+        <div className="animate-slide-up border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-1">
-            {[...navPublica, ...navParticipante, ...navPanel].map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setMenuAbierto(false)}
-                className={linkClass}
-                end={item.to === '/'}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {allNavItems.map((item) => {
+              const Icon = item.icon;
+              if (item.to.includes('#')) {
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setMenuAbierto(false)}
+                    className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  >
+                    <Icon className="h-4 w-4 text-emerald-600" />
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMenuAbierto(false)}
+                  className={linkClass}
+                  end={Boolean(item.end)}
+                >
+                  <Icon className="h-4 w-4 opacity-80" />
+                  {item.label}
+                </NavLink>
+              );
+            })}
           </nav>
 
           <div className="mt-4 border-t border-slate-100 pt-4">
@@ -327,7 +377,7 @@ export function AppHeader() {
                 <Link
                   to="/notificaciones"
                   onClick={() => setMenuAbierto(false)}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  className="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
                 >
                   <span className="flex items-center gap-2">
                     <Bell className="h-4 w-4" />
@@ -342,7 +392,7 @@ export function AppHeader() {
                 <Link
                   to="/perfil"
                   onClick={() => setMenuAbierto(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
                 >
                   <Shield className="h-4 w-4 text-emerald-600" />
                   Mi perfil ({usuario?.alias})

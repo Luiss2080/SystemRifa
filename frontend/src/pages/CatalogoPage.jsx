@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
+  ArrowRight,
   ArrowUpDown,
   Calendar,
   Clock,
   HeartHandshake,
+  RotateCcw,
   Search,
   Sparkles,
   Ticket,
@@ -100,28 +102,30 @@ export function CatalogoPage() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 p-6 text-white shadow-sm sm:p-8">
+      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-600 p-6 text-white shadow-md sm:p-8">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="max-w-2xl space-y-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
               <HeartHandshake className="h-3.5 w-3.5" />
-              Apoyo directo y sorteos transparentes
+              Apoyo directo y sorteos 100% auditables
             </span>
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Rifas solidarias activas
+              Participa en rifas solidarias activas
             </h1>
-            <p className="text-sm text-emerald-50 sm:text-base">
-              Elige tus números favoritos, apoya una causa social y sigue cada pago y sorteo en tiempo real.
+            <p className="text-sm leading-relaxed text-emerald-50 sm:text-base">
+              Escoge tus números favoritos en el tablero en tiempo real, reserva al instante por 15
+              minutos y apoya causas sociales verificadas con total transparencia.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <Link to="/causas">
-              <Button variant="secondary" className="border-0 bg-white text-emerald-800 hover:bg-emerald-50">
+              <Button variant="secondary" className="border-0 bg-white text-emerald-800 shadow-md hover:bg-emerald-50">
+                <HeartHandshake className="h-4 w-4" />
                 Ver causas solidarias
               </Button>
             </Link>
             <Link to="/solicitudes/nueva">
-              <Button className="bg-emerald-900/40 text-white hover:bg-emerald-900/60">
+              <Button className="bg-emerald-950/45 text-white ring-1 ring-white/25 hover:bg-emerald-950/65">
                 <Sparkles className="h-4 w-4" />
                 Organizar una rifa
               </Button>
@@ -129,20 +133,23 @@ export function CatalogoPage() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-2.5 border-t border-white/15 pt-5 text-xs sm:grid-cols-3">
-          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5">
+        <div
+          id="como-funciona"
+          className="mt-6 grid gap-2.5 border-t border-white/15 pt-5 text-xs sm:grid-cols-3"
+        >
+          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
               1
             </span>
             <span>Explora una causa y elige tus números disponibles</span>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5">
+          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
               2
             </span>
             <span>Resérvalos al instante por 15 minutos sin perderlos</span>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5">
+          <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
               3
             </span>
@@ -159,9 +166,9 @@ export function CatalogoPage() {
               type="search"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar por título, descripción o causa..."
+              placeholder="Buscar rifa por título, descripción o causa..."
               aria-label="Buscar rifas"
-              className="w-full rounded-xl border border-slate-300 bg-slate-50/50 py-2 pr-9 pl-9 text-sm text-slate-800 transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+              className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-2 pr-9 pl-9 text-sm text-slate-800 transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
             />
             {busqueda && (
               <button
@@ -181,15 +188,15 @@ export function CatalogoPage() {
               onClick={() => setSoloCierraPronto((v) => !v)}
               className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${
                 soloCierraPronto
-                  ? 'border-amber-400 bg-amber-50 text-amber-800'
-                  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                  ? 'border-amber-400 bg-amber-50 text-amber-800 shadow-xs'
+                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
               }`}
             >
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="h-3.5 w-3.5 text-amber-600" />
               Cierra pronto (&le; 48h)
             </button>
 
-            <label className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600">
+            <label className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600">
               <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
               <span>Ordenar:</span>
               <select
@@ -203,6 +210,20 @@ export function CatalogoPage() {
                 <option value="disponibles">Más disponibles</option>
               </select>
             </label>
+
+            {hayFiltrosLocales && (
+              <Button variant="secondary" size="sm" onClick={limpiarFiltros}>
+                <RotateCcw className="h-3.5 w-3.5" />
+                Limpiar
+              </Button>
+            )}
+
+            <Link to="/causas">
+              <Button size="sm">
+                <HeartHandshake className="h-4 w-4" />
+                Causas
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -211,7 +232,7 @@ export function CatalogoPage() {
             <button
               type="button"
               onClick={() => seleccionarCausa('')}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer ${
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 !causaId
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -226,7 +247,7 @@ export function CatalogoPage() {
                   key={c.causaId}
                   type="button"
                   onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer ${
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                     activa
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -263,7 +284,7 @@ export function CatalogoPage() {
         />
       ) : (
         <>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {rifasFiltradas.map((rifa) => {
               const disponibles = rifa.ticketsDisponibles ?? 0;
               const pctDisponible = Math.min(
@@ -277,79 +298,92 @@ export function CatalogoPage() {
               return (
                 <article
                   key={rifa.rifaId}
-                  className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
                 >
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
-                        <HeartHandshake className="h-3.5 w-3.5" />
-                        {rifa.causa?.nombre || 'Causa solidaria'}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {porCerrar && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800">
-                            <Clock className="h-3 w-3" />
-                            {Math.max(1, Math.ceil(hrs))}h
-                          </span>
-                        )}
-                        <Badge estado={rifa.estado} />
-                      </div>
-                    </div>
+                  <div
+                    className={`h-1.5 w-full ${
+                      porCerrar
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500'
+                        : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500'
+                    }`}
+                  />
 
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-900 transition group-hover:text-emerald-700">
-                        {rifa.nombre}
-                      </h3>
-                      {rifa.descripcion && (
-                        <p className="mt-1 line-clamp-2 text-sm text-slate-600">{rifa.descripcion}</p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-3 text-xs">
-                      <div>
-                        <p className="text-slate-500">Precio por ticket</p>
-                        <p className="text-base font-bold text-emerald-700">
-                          {formatearBs(rifa.precioTicket)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-slate-500">Disponibles</p>
-                        <p className="text-base font-bold text-slate-900">
-                          {disponibles} / {rifa.cantidadTickets}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300"
-                          style={{ width: `${pctAvance}%` }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-xs text-slate-500">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3.5 w-3.5" />
-                          Cierre: {formatearFechaCorta(rifa.fechaFin)}
+                  <div className="flex flex-1 flex-col justify-between p-5">
+                    <div className="space-y-3.5">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <span className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200/70">
+                          <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+                          {rifa.causa?.nombre || 'Causa solidaria'}
                         </span>
-                        <span className="font-medium text-slate-700">{pctAvance}% completado</span>
+                        <div className="flex items-center gap-1.5">
+                          {porCerrar && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-800">
+                              <Clock className="h-3 w-3" />
+                              {Math.max(1, Math.ceil(hrs))}h
+                            </span>
+                          )}
+                          <Badge estado={rifa.estado} />
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900 transition group-hover:text-emerald-700">
+                          {rifa.nombre}
+                        </h3>
+                        {rifa.descripcion && (
+                          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-600">
+                            {rifa.descripcion}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5 text-xs">
+                        <div>
+                          <p className="text-slate-500">Precio por ticket</p>
+                          <p className="mt-0.5 text-lg font-extrabold text-emerald-700">
+                            {formatearBs(rifa.precioTicket)}
+                          </p>
+                        </div>
+                        <div className="border-l border-slate-200 pl-3">
+                          <p className="text-slate-500">Disponibles</p>
+                          <p className="mt-0.5 text-base font-extrabold text-slate-900">
+                            {disponibles} / {rifa.cantidadTickets}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300"
+                            style={{ width: `${pctAvance}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                            Cierre: {formatearFechaCorta(rifa.fechaFin)}
+                          </span>
+                          <span className="font-bold text-slate-700">{pctAvance}% avanzado</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
-                    <Link to={`/rifas/${rifa.rifaId}`} className="flex-1">
-                      <Button className="w-full">
-                        {rifa.estado === 'FINALIZADA' ? 'Ver detalle' : 'Elegir números'}
-                      </Button>
-                    </Link>
-                    {rifa.estado === 'FINALIZADA' && (
-                      <Link to={`/rifas/${rifa.rifaId}/resultado`}>
-                        <Button variant="secondary" title="Ver resultado">
-                          <Trophy className="h-4 w-4 text-amber-600" />
+                    <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
+                      <Link to={`/rifas/${rifa.rifaId}`} className="flex-1">
+                        <Button className="w-full" size="md">
+                          {rifa.estado === 'FINALIZADA' ? 'Ver detalle' : 'Elegir mis números'}
+                          <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                         </Button>
                       </Link>
-                    )}
+                      {rifa.estado === 'FINALIZADA' && (
+                        <Link to={`/rifas/${rifa.rifaId}/resultado`}>
+                          <Button variant="amber" title="Ver resultado">
+                            <Trophy className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </article>
               );
