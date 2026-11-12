@@ -18,3 +18,33 @@ export async function patchMiPassword(req, res, next) {
   }
 }
 
+export async function getUsuarios(req, res, next) {
+  try {
+    const data = await usuarioService.listarUsuarios(req.query);
+    res.status(200).json(data);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUsuarioById(req, res, next) {
+  try {
+    const data = await usuarioService.obtenerUsuarioDetalle(req.params.id);
+    res.status(200).json(data);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function patchUsuarioActivo(req, res, next) {
+  try {
+    const data = await usuarioService.cambiarEstadoActivo(
+      req.user.usuarioId,
+      req.params.id,
+      req.body.activo
+    );
+    res.status(200).json(data);
+  } catch (err) {
+    next(err);
+  }
+}
