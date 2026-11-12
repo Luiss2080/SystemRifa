@@ -7,7 +7,15 @@ import { formatearBs, formatearFecha } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
-import { Select } from '../../components/ui/Select.jsx';
+
+const ESTADOS_SOLICITUD = [
+  { key: '', label: 'Todas' },
+  { key: 'REVISION', label: 'En revisión' },
+  { key: 'ESPERANDO_PAGO', label: 'Esperando pago' },
+  { key: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
+  { key: 'APROBADA', label: 'Aprobadas' },
+  { key: 'RECHAZADA', label: 'Rechazadas' },
+];
 
 export function MisSolicitudesPage() {
   const [estado, setEstado] = useState('');
@@ -88,23 +96,45 @@ export function MisSolicitudesPage() {
         </Link>
       </div>
 
-      <div className="w-full sm:w-64">
-        <Select
-          label="Filtrar por estado"
-          placeholder="Todos"
-          value={estado}
-          onChange={(e) => {
-            setEstado(e.target.value);
-            setPage(1);
-          }}
-          options={[
-            { value: 'REVISION', label: 'En revisión' },
-            { value: 'ESPERANDO_PAGO', label: 'Esperando pago' },
-            { value: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
-            { value: 'APROBADA', label: 'Aprobada' },
-            { value: 'RECHAZADA', label: 'Rechazada' },
-          ]}
-        />
+      <div className="grid gap-2 rounded-2xl border border-slate-200 bg-white p-3.5 text-xs text-slate-600 shadow-xs sm:grid-cols-3">
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            1
+          </span>
+          <span>Envías tu propuesta y pasa a revisión</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            2
+          </span>
+          <span>Se habilita tarifa y se confirma pago</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+            3
+          </span>
+          <span>Al aprobarse, cargas premios y gestionas tu rifa</span>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {ESTADOS_SOLICITUD.map((chip) => (
+          <button
+            key={chip.key || 'all'}
+            type="button"
+            onClick={() => {
+              setEstado(chip.key);
+              setPage(1);
+            }}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              estado === chip.key
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            {chip.label}
+          </button>
+        ))}
       </div>
 
       <DataTable
@@ -122,4 +152,3 @@ export function MisSolicitudesPage() {
     </div>
   );
 }
-

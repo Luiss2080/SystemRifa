@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FilePlus2 } from 'lucide-react';
+import { Calculator, CalendarClock, FilePlus2 } from 'lucide-react';
 import { getCausasPublicas } from '../../features/rifas/publicApi.js';
 import { crearSolicitudApi } from '../../features/panel/panelApi.js';
 import { extraerErrorApi } from '../../utils/apiError.js';
-import { deDatetimeLocalLaPazAUtcIso } from '../../utils/format.js';
+import {
+  deDatetimeLocalLaPazAUtcIso,
+  formatearBs,
+  multiplicarMontoBs,
+} from '../../utils/format.js';
 import { Button } from '../../components/ui/Button.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { Select } from '../../components/ui/Select.jsx';
@@ -35,6 +39,30 @@ export function NuevaSolicitudPage() {
     value: String(c.causaId),
     label: c.nombre,
   }));
+
+  const resumenEstimado = useMemo(() => {
+    const cantidad = Math.max(0, parseInt(form.cantidadTickets || '0', 10) || 0);
+    const total = multiplicarMontoBs(form.precioTicket || '0', cantidad);
+
+    let duracionTexto = 'Selecciona inicio y fin';
+    let fechasInvalidas = false;
+    if (form.fechaInicio && form.fechaFin) {
+      const inicioMs = new Date(deDatetimeLocalLaPazAUtcIso(form.fechaInicio)).getTime();
+      const finMs = new Date(deDatetimeLocalLaPazAUtcIso(form.fechaFin)).getTime();
+      const diffHoras = Math.round((finMs - inicioMs) / (1000 * 60 * 60));
+      if (diffHoras <= 0) {
+        fechasInvalidas = true;
+        duracionTexto = 'La fecha fin debe ser posterior al inicio';
+      } else if (diffHoras < 24) {
+        duracionTexto = `${diffHoras} hora(s)`;
+      } else {
+        const dias = Math.floor(diffHoras / 24);
+        const remH = diffHoras % 24;
+        duracionTexto = remH ? `${dias} día(s) y ${remH}h` : `${dias} día(s)`;
+      }
+    }
+    return { cantidad, total, duracionTexto, fechasInvalidas };
+  }, [form.cantidadTickets, form.precioTicket, form.fechaInicio, form.fechaFin]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -145,6 +173,35 @@ export function NuevaSolicitudPage() {
           />
         </div>
 
+        <div className="grid gap-3 rounded-xl border border-emerald-200 bg-emerald-50/70 p-4 text-xs sm:grid-cols-2">
+          <div className="flex items-center gap-2.5">
+            <Calculator className="h-4 w-4 shrink-0 text-emerald-700" />
+            <div>
+              <p className="text-emerald-800">Recaudación máxima estimada (100% vendido)</p>
+              <p className="text-base font-extrabold text-emerald-900">
+                {formatearBs(resumenEstimado.total)}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <CalendarClock
+              className={`h-4 w-4 shrink-0 ${
+                resumenEstimado.fechasInvalidas ? 'text-rose-600' : 'text-emerald-700'
+              }`}
+            />
+            <div>
+              <p className="text-emerald-800">Duración de campaña</p>
+              <p
+                className={`text-sm font-bold ${
+                  resumenEstimado.fechasInvalidas ? 'text-rose-700' : 'text-slate-900'
+                }`}
+              >
+                {resumenEstimado.duracionTexto}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="secondary" onClick={() => navigate('/solicitudes/mias')}>
             Cancelar
@@ -157,4 +214,3 @@ export function NuevaSolicitudPage() {
     </div>
   );
 }
-

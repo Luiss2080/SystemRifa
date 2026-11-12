@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   ArrowUpDown,
@@ -26,11 +26,23 @@ function horasRestantes(fechaFin) {
 }
 
 export function CatalogoPage() {
-  const [causaId, setCausaId] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const causaInicial = searchParams.get('causaId') || '';
+  const [causaId, setCausaId] = useState(causaInicial);
   const [busqueda, setBusqueda] = useState('');
   const [soloCierraPronto, setSoloCierraPronto] = useState(false);
   const [orden, setOrden] = useState('cierre');
   const [page, setPage] = useState(1);
+
+  function seleccionarCausa(nextId) {
+    setCausaId(nextId);
+    setPage(1);
+    if (nextId) {
+      setSearchParams({ causaId: nextId }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  }
 
   const { data: causasData } = useQuery({
     queryKey: ['causas-publicas'],
@@ -80,11 +92,10 @@ export function CatalogoPage() {
   const hayFiltrosLocales = Boolean(causaId || busqueda.trim() || soloCierraPronto);
 
   function limpiarFiltros() {
-    setCausaId('');
+    seleccionarCausa('');
     setBusqueda('');
     setSoloCierraPronto(false);
     setOrden('cierre');
-    setPage(1);
   }
 
   return (
@@ -199,10 +210,7 @@ export function CatalogoPage() {
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <button
               type="button"
-              onClick={() => {
-                setCausaId('');
-                setPage(1);
-              }}
+              onClick={() => seleccionarCausa('')}
               className={`rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer ${
                 !causaId
                   ? 'bg-emerald-600 text-white shadow-xs'
@@ -217,10 +225,7 @@ export function CatalogoPage() {
                 <button
                   key={c.causaId}
                   type="button"
-                  onClick={() => {
-                    setCausaId(activa ? '' : String(c.causaId));
-                    setPage(1);
-                  }}
+                  onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition cursor-pointer ${
                     activa
                       ? 'bg-emerald-600 text-white shadow-xs'

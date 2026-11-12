@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { KeyRound, User } from 'lucide-react';
+import { CheckCircle2, Circle, KeyRound, User } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { cambiarMiPasswordRequest, updateMiPerfilRequest } from '../features/auth/authApi.js';
 import { extraerErrorApi } from '../utils/apiError.js';
@@ -38,6 +38,12 @@ export function PerfilPage() {
     }
   }, [usuario]);
 
+  const tieneLargoMinimo = passwords.passwordNueva.length >= 8;
+  const tieneLetra = /[A-Za-z]/.test(passwords.passwordNueva);
+  const tieneNumero = /\d/.test(passwords.passwordNueva);
+  const coinciden =
+    Boolean(passwords.passwordNueva) && passwords.passwordNueva === passwords.confirmarPassword;
+
   async function handleGuardarPerfil(e) {
     e.preventDefault();
     setSavingPerfil(true);
@@ -59,7 +65,14 @@ export function PerfilPage() {
 
   async function handleCambiarPassword(e) {
     e.preventDefault();
-    if (passwords.passwordNueva !== passwords.confirmarPassword) {
+    if (!tieneLargoMinimo || !tieneLetra || !tieneNumero) {
+      toast.error(
+        'Contraseña débil',
+        'La nueva contraseña debe tener al menos 8 caracteres, una letra y un número.'
+      );
+      return;
+    }
+    if (!coinciden) {
       toast.error('Error', 'Las nuevas contraseñas no coinciden.');
       return;
     }
@@ -78,12 +91,30 @@ export function PerfilPage() {
     }
   }
 
+  const iniciales = `${(usuario?.nombres || '')[0] || ''}${(usuario?.apellidos || '')[0] || ''}`.toUpperCase() || 'RS';
+
+  const reglasPassword = [
+    { ok: tieneLargoMinimo, label: 'Mínimo 8 caracteres' },
+    { ok: tieneLetra, label: 'Una letra' },
+    { ok: tieneNumero, label: 'Un número' },
+    { ok: coinciden, label: 'Coinciden' },
+  ];
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Mi perfil</h1>
-          <p className="text-sm text-slate-500">{usuario?.email}</p>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-base font-bold text-white shadow-xs">
+            {iniciales}
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">
+              {usuario?.nombres} {usuario?.apellidos}
+            </h1>
+            <p className="text-sm text-slate-500">
+              @{usuario?.alias} · {usuario?.email}
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {roles.map((r) => (
@@ -115,8 +146,9 @@ export function PerfilPage() {
               onChange={(e) => setPerfil((p) => ({ ...p, apellidos: e.target.value }))}
             />
             <Input
-              label="Alias"
+              label="Alias público"
               required
+              helperText="Visible en resultados de sorteos"
               value={perfil.alias}
               onChange={(e) => setPerfil((p) => ({ ...p, alias: e.target.value }))}
             />
@@ -154,7 +186,6 @@ export function PerfilPage() {
               type="password"
               required
               minLength={8}
-              helperText="Mínimo 8 caracteres, letra y número"
               value={passwords.passwordNueva}
               onChange={(e) => setPasswords((p) => ({ ...p, passwordNueva: e.target.value }))}
             />
@@ -166,6 +197,23 @@ export function PerfilPage() {
               onChange={(e) => setPasswords((p) => ({ ...p, confirmarPassword: e.target.value }))}
             />
           </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5 rounded-xl bg-slate-50 px-3 py-2 text-xs">
+            {reglasPassword.map((r) => (
+              <span
+                key={r.label}
+                className={`inline-flex items-center gap-1 transition ${
+                  r.ok ? 'font-medium text-emerald-700' : 'text-slate-500'
+                }`}
+              >
+                {r.ok ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                ) : (
+                  <Circle className="h-3.5 w-3.5 text-slate-300" />
+                )}
+                {r.label}
+              </span>
+            ))}
+          </div>
           <div className="flex justify-end">
             <Button type="submit" variant="amber" loading={savingPassword}>
               Actualizar contraseña
@@ -176,4 +224,3 @@ export function PerfilPage() {
     </div>
   );
 }
-

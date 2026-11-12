@@ -33,6 +33,7 @@ export function NotificacionesPage() {
   function invalidar() {
     queryClient.invalidateQueries({ queryKey: ['mis-notificaciones'] });
     queryClient.invalidateQueries({ queryKey: ['notificaciones-badge'] });
+    queryClient.invalidateQueries({ queryKey: ['notificaciones-popover'] });
   }
 
   async function handleMarcarLeida(id) {
@@ -79,16 +80,32 @@ export function NotificacionesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant={soloNoLeidas ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => {
-              setSoloNoLeidas((v) => !v);
-              setPage(1);
-            }}
-          >
-            {soloNoLeidas ? 'Viendo solo no leídas' : 'Filtrar no leídas'}
-          </Button>
+          <div className="inline-flex rounded-full bg-white p-0.5 ring-1 ring-slate-200">
+            <button
+              type="button"
+              onClick={() => {
+                setSoloNoLeidas(false);
+                setPage(1);
+              }}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
+                !soloNoLeidas ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Todas
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSoloNoLeidas(true);
+                setPage(1);
+              }}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
+                soloNoLeidas ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Sin leer ({data?.noLeidasCount || 0})
+            </button>
+          </div>
           {(data?.noLeidasCount || 0) > 0 && (
             <Button variant="secondary" size="sm" onClick={handleMarcarTodas}>
               <CheckCheck className="h-4 w-4" />
