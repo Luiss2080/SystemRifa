@@ -11,6 +11,11 @@ import {
   getTicketsRifa,
   postReservarTickets
 } from '../controllers/ticket.controller.js';
+import {
+  getResultadoRifa,
+  postFinalizarRifa,
+  postSorteoRifa
+} from '../controllers/sorteo.controller.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { authorize, exigirPropietarioORAdmin } from '../middlewares/authorize.js';
 import { validate } from '../middlewares/validate.js';
@@ -23,6 +28,7 @@ import {
   listarRifasPublicasQuerySchema,
   reservarTicketsSchema
 } from '../validators/rifa.validator.js';
+import { finalizarRifaSchema, realizarSorteoSchema } from '../validators/sorteo.validator.js';
 
 const router = Router();
 
@@ -40,8 +46,28 @@ router.get('/', validate(listarRifasPublicasQuerySchema, 'query'), getCatalogoPu
 router.get('/:id', validate(idParamSchema, 'params'), getRifaById);
 router.get('/:id/tickets', validate(idParamSchema, 'params'), getTicketsRifa);
 router.get('/:id/premios', validate(idParamSchema, 'params'), getPremiosRifa);
+router.get('/:id/resultado', validate(idParamSchema, 'params'), getResultadoRifa);
 
-// Gestión de rifa y premios (admin o creador)
+// Gestión de rifa, premios y sorteo (admin o creador)
+router.post(
+  '/:id/sorteo',
+  authenticate,
+  authorize('sorteos', 'realizar'),
+  validate(idParamSchema, 'params'),
+  exigirPropietarioORAdmin('id'),
+  validate(realizarSorteoSchema),
+  postSorteoRifa
+);
+
+router.post(
+  '/:id/finalizar',
+  authenticate,
+  authorize('rifas', 'administrar'),
+  validate(idParamSchema, 'params'),
+  exigirPropietarioORAdmin('id'),
+  validate(finalizarRifaSchema),
+  postFinalizarRifa
+);
 router.patch(
   '/:id/extender',
   authenticate,
