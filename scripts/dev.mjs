@@ -1,16 +1,14 @@
 import { spawn } from 'node:child_process';
 
-const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-
 const procs = [
-  { name: 'backend', args: ['--prefix', 'backend', 'run', 'dev'] },
-  { name: 'frontend', args: ['--prefix', 'frontend', 'run', 'dev'] }
+  { name: 'backend', cmd: 'npm --prefix backend run dev' },
+  { name: 'frontend', cmd: 'npm --prefix frontend run dev' }
 ];
 
-const children = procs.map(({ name, args }) => {
-  const child = spawn(npmCmd, args, {
+const children = procs.map(({ name, cmd }) => {
+  const child = spawn(cmd, {
     stdio: ['inherit', 'pipe', 'pipe'],
-    shell: process.platform === 'win32'
+    shell: true
   });
 
   child.stdout.on('data', (chunk) => {
