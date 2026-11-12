@@ -8,12 +8,12 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
-  Ticket,
   UserCheck,
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { extraerErrorApi } from '../utils/apiError.js';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
@@ -130,8 +130,10 @@ export function LoginPage() {
         <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-6 lg:col-span-4">
           <div className="mx-auto w-full space-y-4">
             <div className="text-center">
+              <div className="mb-3 flex justify-center">
+                <BrandMark size="xl" />
+              </div>
               <div className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
-                <Ticket className="h-3.5 w-3.5" />
                 Portal Rifas Solidarias
               </div>
               <h1 className="mt-2.5 text-xl font-extrabold tracking-tight sm:text-2xl">

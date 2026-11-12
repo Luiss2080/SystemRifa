@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { extraerErrorApi } from '../utils/apiError.js';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
@@ -87,6 +88,9 @@ export function RegistroPage() {
         <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-4">
           <div className="mx-auto w-full space-y-3.5">
             <div className="text-center">
+              <div className="mb-3 flex justify-center">
+                <BrandMark size="xl" />
+              </div>
               <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold backdrop-blur-xs">
                 <HeartHandshake className="h-3.5 w-3.5" />
                 Únete a Rifas Solidarias
