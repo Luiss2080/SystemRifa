@@ -212,9 +212,11 @@ export function HeroShowcase({
                   </span>
                 </div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  {rifas.length > 0 || causas.length > 0
-                    ? `${rifas.length} rifas activas · ${causas.length} causas verificadas`
-                    : 'Sorteos auditados · Reservas de 15 min'}
+                  {metricas
+                    ? `${metricas.participantesActivos} participantes · ${metricas.ticketsVendidosTotal} tickets vendidos · ${metricas.causasActivas} causas verificadas`
+                    : rifas.length > 0 || causas.length > 0
+                      ? `${rifas.length} rifas activas · ${causas.length} causas verificadas`
+                      : 'Cargando estadísticas en vivo...'}
                 </p>
               </div>
               <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200/80">
@@ -227,7 +229,46 @@ export function HeroShowcase({
           {/* Columna Derecha: Carteles / Rifas en Vertical */}
           <div className="lg:col-span-6">
             <div className="relative mx-auto flex h-[390px] max-w-[560px] items-center justify-center overflow-hidden sm:h-[430px] sm:overflow-visible">
-              {cards.map((card, idx) => {
+              {loadingRifas && cards.length === 0 ? (
+                <div className="flex h-[370px] w-[264px] flex-col justify-between rounded-[24px] border border-emerald-200 bg-white/90 p-5 shadow-xl">
+                  <div className="h-32 animate-pulse rounded-2xl bg-emerald-100/70" />
+                  <div className="space-y-2.5">
+                    <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
+                    <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100" />
+                  </div>
+                  <div className="h-10 animate-pulse rounded-xl bg-emerald-100/60" />
+                </div>
+              ) : cards.length === 0 ? (
+                <div className="flex h-[370px] w-[280px] flex-col items-center justify-center gap-4 rounded-[24px] border border-emerald-200 bg-white/95 p-6 text-center shadow-xl">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                    <HeartHandshake className="h-6 w-6" />
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-extrabold text-slate-900">
+                      Próximas campañas solidarias
+                    </p>
+                    <p className="text-xs leading-relaxed text-slate-600">
+                      Explora nuestras causas verificadas o solicita organizar una nueva rifa.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      to="/causas"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700"
+                    >
+                      Ver causas activas
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                    <Link
+                      to="/solicitudes/nueva"
+                      className="text-xs font-bold text-emerald-700 hover:underline"
+                    >
+                      Organizar una rifa
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                cards.map((card, idx) => {
                 const offset = idx - activeIdx;
                 const isCenter = offset === 0;
                 const absOffset = Math.abs(offset);
@@ -364,10 +405,12 @@ export function HeroShowcase({
                     </div>
                   </div>
                 );
-              })}
+              })
+              )}
             </div>
 
             {/* Controles e indicadores del showcase vertical */}
+            {cards.length > 1 && (
             <div className="mt-3 flex items-center justify-center gap-3">
               <button
                 type="button"
@@ -401,6 +444,7 @@ export function HeroShowcase({
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
+            )}
           </div>
         </div>
       </section>
@@ -734,11 +778,8 @@ export function GarantiasSection() {
 
 export function LandingFinalCta() {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-emerald-200/85 bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/75 px-6 py-10 text-center text-slate-900 shadow-sm sm:px-10">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full bg-amber-300/25 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-emerald-300/25 blur-3xl" />
-
-      <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
+    <section className="py-6 text-center text-slate-900">
+      <div className="mx-auto flex max-w-2xl flex-col items-center gap-5">
         <div className="space-y-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
             <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
@@ -762,13 +803,126 @@ export function LandingFinalCta() {
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            to="/solicitudes/nueva"
+            to="/causas"
             className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-white px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-emerald-800 shadow-2xs transition hover:-translate-y-0.5 hover:bg-emerald-50"
           >
-            <FilePlus2 className="h-4 w-4 text-emerald-600" />
-            Organizar una rifa
+            <HeartHandshake className="h-4 w-4 text-emerald-600" />
+            Explorar causas
           </Link>
         </div>
+      </div>
+    </section>
+  );
+}
+
+export function UltimosSorteosSection({ sorteos = [] }) {
+  if (!sorteos.length) return null;
+
+  return (
+    <section id="ultimos-sorteos" className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
+            <Trophy className="h-3.5 w-3.5 text-amber-600" />
+            Resultados reales verificados
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            Últimos sorteos auditados y ganadores
+          </h2>
+          <p className="text-sm text-slate-600">
+            Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
+          </p>
+        </div>
+        <Link
+          to="/explorar"
+          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700"
+        >
+          Ver rifas activas
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {sorteos.map((sorteo) => (
+          <article
+            key={sorteo.sorteoId}
+            className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-xs transition hover:border-emerald-300 hover:shadow-md"
+          >
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">
+                  <HeartHandshake className="h-3 w-3" />
+                  {sorteo.causa?.nombre || 'Causa verificada'}
+                </span>
+                {sorteo.premioPrincipal ? (
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+                      sorteo.premioPrincipal.reclamado
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
+                    }`}
+                  >
+                    <CheckCircle2 className="h-3 w-3" />
+                    {sorteo.premioPrincipal.reclamado ? 'Premio entregado' : 'Entrega en curso'}
+                  </span>
+                ) : null}
+              </div>
+
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900">{sorteo.nombreRifa}</h3>
+                {sorteo.premioPrincipal && (
+                  <p className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700">
+                    <Award className="h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      {sorteo.premioPrincipal.nombre}
+                      {sorteo.premiosCount > 1 ? ` (+${sorteo.premiosCount - 1} más)` : ''}
+                    </span>
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/90 px-3.5 py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-700 text-xs font-extrabold text-white">
+                    {sorteo.ganador?.iniciales || 'RF'}
+                  </span>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                      Ganador verificado
+                    </p>
+                    <p className="text-sm font-extrabold text-slate-900">
+                      {sorteo.ganador?.alias ? `@${sorteo.ganador.alias}` : 'Participante'}
+                    </p>
+                  </div>
+                </div>
+                {sorteo.numeroGanadorPrincipal !== null &&
+                  sorteo.numeroGanadorPrincipal !== undefined && (
+                    <div className="text-right">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                        Ticket ganador
+                      </p>
+                      <span className="inline-block rounded-lg bg-amber-100 px-2.5 py-0.5 font-mono text-sm font-extrabold text-amber-900">
+                        #{sorteo.numeroGanadorPrincipal}
+                      </span>
+                    </div>
+                  )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+              <span className="text-slate-500">
+                Sorteado el {formatearFechaCorta(sorteo.fechaSorteo)}
+              </span>
+              <Link
+                to={`/rifas/${sorteo.rifaId}/resultado`}
+                className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:text-emerald-800"
+              >
+                Ver resultado
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -797,8 +951,10 @@ const FAQS = [
   },
 ];
 
-export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
+export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metricas = null }) {
   const [openFaq, setOpenFaq] = useState(0);
+  const rifasCount = metricas?.rifasActivas ?? totalRifas;
+  const causasCount = metricas?.causasActivas ?? totalCausas;
 
   return (
     <div className="space-y-12 pt-4">
@@ -815,13 +971,23 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
           <p className="text-sm text-slate-600">
             Cada rol cuenta con herramientas claras para participar, recaudar y verificar sorteos en tiempo real.
           </p>
-          <div className="flex items-center justify-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-emerald-700">
-              <strong className="font-extrabold">{totalRifas}</strong> rifas en catálogo
+              <strong className="font-extrabold">{rifasCount}</strong> rifas activas
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-amber-700">
-              <strong className="font-extrabold">{totalCausas}</strong> causas activas
+              <strong className="font-extrabold">{causasCount}</strong> causas activas
             </span>
+            {metricas && (
+              <>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-teal-700">
+                  <strong className="font-extrabold">{metricas.ticketsVendidosTotal}</strong> tickets vendidos
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-slate-700">
+                  <strong className="font-extrabold">{metricas.premiosEntregados}</strong> premios entregados
+                </span>
+              </>
+            )}
           </div>
         </div>
 

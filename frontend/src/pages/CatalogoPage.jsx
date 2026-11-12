@@ -19,7 +19,11 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
-import { getCatalogoRifas, getCausasPublicas } from '../features/rifas/publicApi.js';
+import {
+  getCatalogoRifas,
+  getCausasPublicas,
+  getResumenPublico,
+} from '../features/rifas/publicApi.js';
 import { formatearBs, formatearFechaCorta, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
@@ -34,6 +38,7 @@ import {
   HeroShowcase,
   LandingFinalCta,
   PlatformContentSection,
+  UltimosSorteosSection,
 } from '../components/home/HeroShowcase.jsx';
 
 const HORAS_URGENCIA = 48;
@@ -82,6 +87,12 @@ export function CatalogoPage({ mode = 'landing' }) {
   const { data: causasData } = useQuery({
     queryKey: ['causas-publicas'],
     queryFn: getCausasPublicas,
+  });
+
+  const { data: resumenPublico } = useQuery({
+    queryKey: ['resumen-publico'],
+    queryFn: getResumenPublico,
+    enabled: esVistaLanding,
   });
 
   const { data, isLoading, isError } = useQuery({
@@ -142,7 +153,13 @@ export function CatalogoPage({ mode = 'landing' }) {
   return (
     <div className={esVistaLanding ? 'space-y-8' : 'space-y-5'}>
       {esVistaLanding ? (
-        <HeroShowcase rifas={rifasBase} causas={causas} onSelectCausa={seleccionarCausa} />
+        <HeroShowcase
+          rifas={rifasBase}
+          causas={causas}
+          resumenPublico={resumenPublico}
+          loadingRifas={isLoading}
+          onSelectCausa={seleccionarCausa}
+        />
       ) : (
         <>
           <PanelFilterBar
@@ -574,8 +591,13 @@ export function CatalogoPage({ mode = 'landing' }) {
       {esVistaLanding && (
         <>
           <CausasDestacadasSection causas={causas} onSelectCausa={seleccionarCausa} />
+          <UltimosSorteosSection sorteos={resumenPublico?.ultimosSorteos || []} />
           <GarantiasSection />
-          <PlatformContentSection totalRifas={rifasBase.length} totalCausas={causas.length} />
+          <PlatformContentSection
+            totalRifas={rifasBase.length}
+            totalCausas={causas.length}
+            metricas={resumenPublico?.metricas}
+          />
           <LandingFinalCta />
         </>
       )}

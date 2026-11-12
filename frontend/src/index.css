@@ -117,6 +117,23 @@
   animation: shimmerProgress 1.35s ease-in-out infinite;
 }
 
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 9s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spinSlow 6s linear infinite reverse;
+}
+
 .marquee-wrapper:hover .animate-marquee {
   animation-play-state: paused;
 }
