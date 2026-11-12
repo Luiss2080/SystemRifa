@@ -63,7 +63,7 @@ export function PaginationCard({
             aria-current={p === page ? 'page' : undefined}
             className={`flex h-8 min-w-8 items-center justify-center rounded-xl px-2.5 text-xs font-extrabold transition cursor-pointer ${
               p === page
-                ? 'bg-slate-900 text-white shadow-xs'
+                ? 'bg-emerald-600 text-white shadow-xs'
                 : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800'
             }`}
           >

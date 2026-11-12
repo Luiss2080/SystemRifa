@@ -26,11 +26,11 @@ import {
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
 
 const CARD_PALETTES = [
-  'from-emerald-800 via-teal-800 to-slate-900',
-  'from-slate-900 via-emerald-900 to-teal-950',
-  'from-teal-800 via-emerald-700 to-emerald-950',
-  'from-amber-800 via-orange-900 to-slate-950',
-  'from-cyan-900 via-slate-900 to-emerald-950',
+  'from-emerald-600 via-teal-600 to-emerald-800',
+  'from-teal-600 via-cyan-600 to-teal-800',
+  'from-emerald-700 via-emerald-600 to-teal-700',
+  'from-amber-500 via-orange-500 to-rose-500',
+  'from-cyan-600 via-sky-600 to-emerald-700',
 ];
 
 export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = true }) {

@@ -126,55 +126,55 @@ export function SplashOverlay({ cargando = false }) {
       role="status"
       aria-live="polite"
       aria-label="Cargando Rifas Solidarias"
-      className={`fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 px-4 transition-all duration-400 ${
+      className={`fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 px-4 transition-all duration-400 ${
         fading ? 'pointer-events-none scale-[1.015] opacity-0' : 'scale-100 opacity-100'
       }`}
     >
-      {/* Textura y halos ambientales */}
-      <div className="bg-dot-matrix pointer-events-none absolute inset-0 opacity-15" />
-      <div className="pointer-events-none absolute -top-28 -left-24 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-teal-400/15 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/10" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-teal-300/10" />
+      {/* Textura y halos ambientales claros */}
+      <div className="bg-dot-matrix pointer-events-none absolute inset-0 opacity-35" />
+      <div className="pointer-events-none absolute -top-28 -left-24 h-80 w-80 rounded-full bg-emerald-200/45 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 -bottom-28 h-80 w-80 rounded-full bg-teal-200/45 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-200/60" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-teal-200/80" />
 
-      {/* Tarjeta central glassmorphism */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-emerald-400/20 bg-slate-900/80 px-7 py-8 text-center shadow-2xl ring-1 ring-white/10 backdrop-blur-xl sm:px-9 sm:py-9">
-        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400" />
+      {/* Tarjeta central luminosa */}
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-emerald-200/90 bg-white/95 px-7 py-8 text-center shadow-[0_24px_60px_-20px_rgba(16,185,129,0.22)] ring-1 ring-emerald-950/5 backdrop-blur-xl sm:px-9 sm:py-9">
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400" />
 
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-300 uppercase">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-700 uppercase">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
           Plataforma de Sorteos Verificados
         </div>
 
         {/* Emblema animado */}
         <div className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center">
-          <span className="pointer-events-none absolute -inset-3 rounded-full bg-emerald-500/20 blur-xl" />
-          <span className="animate-spin-slow motion-reduce:animate-none absolute inset-0 rounded-3xl border border-dashed border-emerald-400/40" />
-          <span className="animate-spin-reverse motion-reduce:animate-none absolute inset-1.5 rounded-2xl border-2 border-emerald-500/20 border-t-emerald-400 border-r-teal-300" />
-          <div className="relative rounded-2xl shadow-lg ring-1 ring-white/15">
+          <span className="pointer-events-none absolute -inset-3 rounded-full bg-emerald-300/35 blur-xl" />
+          <span className="animate-spin-slow motion-reduce:animate-none absolute inset-0 rounded-3xl border border-dashed border-emerald-300" />
+          <span className="animate-spin-reverse motion-reduce:animate-none absolute inset-1.5 rounded-2xl border-2 border-emerald-200/70 border-t-emerald-500 border-r-teal-500" />
+          <div className="relative rounded-2xl shadow-md ring-1 ring-emerald-200/70">
             <BrandMark size="xl" />
           </div>
         </div>
 
-        <h1 className="text-xl font-black tracking-tight text-white sm:text-2xl">
-          RIFAS <span className="bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent">SOLIDARIAS</span>
+        <h1 className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
+          RIFAS <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">SOLIDARIAS</span>
         </h1>
-        <p className="mt-1.5 text-xs font-medium text-slate-300 sm:text-sm">
+        <p className="mt-1.5 text-xs font-medium text-slate-500 sm:text-sm">
           {statusText}
         </p>
 
         {/* Barra de progreso real con porcentaje */}
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between text-[11px] font-bold">
-            <span className="text-emerald-300/90">Preparando experiencia</span>
-            <span className="tabular-nums text-white">{progress}%</span>
+            <span className="text-emerald-700">Preparando experiencia</span>
+            <span className="tabular-nums text-slate-800">{progress}%</span>
           </div>
-          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-800 ring-1 ring-white/10">
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-emerald-100 ring-1 ring-emerald-200/70">
             <div
-              className="relative h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-300 transition-[width] duration-150 ease-out"
+              className="relative h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 transition-[width] duration-150 ease-out"
               style={{ width: `${progress}%` }}
             >
-              <div className="animate-shimmer-bar absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+              <div className="animate-shimmer-bar absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
             </div>
           </div>
         </div>
@@ -190,16 +190,16 @@ export function SplashOverlay({ cargando = false }) {
                 key={step.label}
                 className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2 text-[10px] font-semibold transition-colors ${
                   done
-                    ? 'border-emerald-400/35 bg-emerald-500/15 text-emerald-200'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                     : active
-                      ? 'border-teal-400/35 bg-white/10 text-white'
-                      : 'border-white/5 bg-white/[0.03] text-slate-400'
+                      ? 'border-teal-200 bg-teal-50/70 text-teal-900'
+                      : 'border-slate-200 bg-slate-50 text-slate-400'
                 }`}
               >
                 {done ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-300" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                 ) : (
-                  <StepIcon className={`h-3.5 w-3.5 ${active ? 'text-teal-300' : 'text-slate-500'}`} />
+                  <StepIcon className={`h-3.5 w-3.5 ${active ? 'text-teal-600' : 'text-slate-400'}`} />
                 )}
                 <span className="leading-tight">{step.label}</span>
               </div>
