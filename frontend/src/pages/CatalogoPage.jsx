@@ -133,77 +133,166 @@ export function CatalogoPage({ mode = 'landing' }) {
     setOrden('cierre');
   }
 
+  const totalDisponiblesCatalogo = rifasBase.reduce((acc, r) => acc + (r.ticketsDisponibles ?? 0), 0);
+  const urgentesCount = rifasBase.filter((r) => {
+    const h = horasRestantes(r.fechaFin);
+    return r.estado !== 'FINALIZADA' && h > 0 && h <= HORAS_URGENCIA;
+  }).length;
+
   return (
-    <div className="space-y-8">
+    <div className={esVistaLanding ? 'space-y-8' : 'space-y-5'}>
       {esVistaLanding ? (
         <HeroShowcase rifas={rifasBase} causas={causas} onSelectCausa={seleccionarCausa} />
       ) : (
         <>
-          <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/90 px-5 py-4 shadow-xs backdrop-blur-md">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
-                Catálogo en vivo · Sesión @{usuario?.alias}
-              </p>
-              <h1 className="text-xl font-extrabold text-slate-900 sm:text-2xl">
-                Rifas solidarias disponibles
-              </h1>
-            </div>
+          <PanelFilterBar
+            title={`Catálogo en Vivo · Sesión @${usuario?.alias || 'usuario'}`}
+            subtitle="Explora rifas activas, filtra por causa solidaria y reserva tus números en tiempo real."
+            searchValue={busqueda}
+            onSearchChange={setBusqueda}
+            searchPlaceholder="Buscar rifa por título, descripción o causa..."
+            hasActiveFilters={hayFiltrosLocales}
+            onResetFilters={limpiarFiltros}
+            selects={[
+              {
+                label: 'Causa solidaria',
+                value: causaId,
+                onChange: seleccionarCausa,
+                options: [
+                  { value: '', label: 'Todas las causas' },
+                  ...causas.map((c) => ({ value: String(c.causaId), label: c.nombre })),
+                ],
+              },
+              {
+                label: 'Ordenar por',
+                value: orden,
+                onChange: setOrden,
+                options: [
+                  { value: 'cierre', label: 'Cierre más próximo' },
+                  { value: 'precio', label: 'Menor precio' },
+                  { value: 'disponibles', label: 'Más disponibles' },
+                ],
+              },
+            ]}
+            rightActions={
+              <div className="flex flex-wrap items-center gap-2">
+                {esAdmin ? (
+                  <>
+                    <Link to="/admin/reportes">
+                      <Button size="sm">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Panel Admin
+                      </Button>
+                    </Link>
+                    <Link to="/admin/pagos">
+                      <Button variant="secondary" size="sm">
+                        <CheckSquare className="h-4 w-4 text-emerald-600" />
+                        Verificar pagos
+                      </Button>
+                    </Link>
+                  </>
+                ) : esOrganizador ? (
+                  <>
+                    <Link to="/organizador/rifas">
+                      <Button size="sm">
+                        <Sparkles className="h-4 w-4" />
+                        Mis rifas
+                      </Button>
+                    </Link>
+                    <Link to="/solicitudes/nueva">
+                      <Button variant="secondary" size="sm">
+                        Nueva solicitud
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/mis-tickets">
+                      <Button size="sm">
+                        <Ticket className="h-4 w-4" />
+                        Mis tickets
+                      </Button>
+                    </Link>
+                    <Link to="/mis-pagos">
+                      <Button variant="secondary" size="sm">
+                        <CreditCard className="h-4 w-4 text-emerald-600" />
+                        Mis pagos
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            }
+            extraContent={
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSoloCierraPronto((v) => !v)}
+                  className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                    soloCierraPronto
+                      ? 'border-amber-400 bg-amber-50 text-amber-800 shadow-2xs'
+                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Clock className="h-3.5 w-3.5 text-amber-600" />
+                  Cierra pronto (&le; 48h)
+                </button>
+                <Link
+                  to="/causas"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline"
+                >
+                  <HeartHandshake className="h-3.5 w-3.5" />
+                  Explorar directorio de causas
+                </Link>
+              </div>
+            }
+          />
 
-            <div className="flex flex-wrap gap-2">
-              {esAdmin ? (
-                <>
-                  <Link to="/admin/reportes">
-                    <Button size="sm">
-                      <LayoutDashboard className="h-4 w-4" />
-                      Panel Admin
-                    </Button>
-                  </Link>
-                  <Link to="/admin/pagos">
-                    <Button variant="secondary" size="sm">
-                      <CheckSquare className="h-4 w-4 text-emerald-600" />
-                      Verificar pagos
-                    </Button>
-                  </Link>
-                </>
-              ) : esOrganizador ? (
-                <>
-                  <Link to="/organizador/rifas">
-                    <Button size="sm">
-                      <Sparkles className="h-4 w-4" />
-                      Gestionar mis rifas
-                    </Button>
-                  </Link>
-                  <Link to="/solicitudes/nueva">
-                    <Button variant="secondary" size="sm">
-                      Nueva solicitud
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/mis-tickets">
-                    <Button size="sm">
-                      <Ticket className="h-4 w-4" />
-                      Mis tickets
-                    </Button>
-                  </Link>
-                  <Link to="/mis-pagos">
-                    <Button variant="secondary" size="sm">
-                      <CreditCard className="h-4 w-4 text-emerald-600" />
-                      Mis pagos
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </section>
+          <PanelSectionHeader
+            icon={Ticket}
+            title="Rifas Solidarias Disponibles"
+            subtitle="Campañas activas con tablero de números sincronizado"
+            badgeText={`${rifasFiltradas.length} Campañas visibles`}
+            accent="emerald"
+          />
 
-          <CauseMarqueeTicker causas={causas} onSelectCausa={seleccionarCausa} fullBleed={false} />
+          <PanelKpiGrid
+            items={[
+              {
+                label: 'Campañas en catálogo',
+                value: pagination.total ?? rifasBase.length,
+                trendText: 'Sorteos verificados',
+                icon: Ticket,
+                accent: 'emerald',
+              },
+              {
+                label: 'Números disponibles',
+                value: totalDisponiblesCatalogo,
+                trendText: 'Listos para reservar',
+                icon: Sparkles,
+                accent: 'sky',
+              },
+              {
+                label: 'Cierran en ≤ 48h',
+                value: urgentesCount,
+                trendText: 'Últimas oportunidades',
+                icon: Clock,
+                accent: 'amber',
+              },
+              {
+                label: 'Causas activas',
+                value: causas.length,
+                trendText: 'Iniciativas solidarias',
+                icon: HeartHandshake,
+                accent: 'indigo',
+              },
+            ]}
+          />
         </>
       )}
 
-      <section id="catalogo-activo" className="space-y-5">
-        {esVistaLanding && (
+      {esVistaLanding && (
+        <section id="catalogo-activo" className="space-y-5">
           <div className="mx-auto max-w-2xl space-y-2 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
               <Ticket className="h-3.5 w-3.5 text-emerald-600" />
@@ -213,112 +302,111 @@ export function CatalogoPage({ mode = 'landing' }) {
               Rifas solidarias disponibles para participar
             </h2>
           </div>
-        )}
 
-        <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-xs backdrop-blur-md">
+          <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-xs backdrop-blur-md">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="search"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar rifa por título, descripción o causa..."
+                  aria-label="Buscar rifas"
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-2 pr-9 pl-9 text-sm text-slate-800 transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                />
+                {busqueda && (
+                  <button
+                    type="button"
+                    onClick={() => setBusqueda('')}
+                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    aria-label="Limpiar búsqueda"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="search"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar rifa por título, descripción o causa..."
-              aria-label="Buscar rifas"
-              className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-2 pr-9 pl-9 text-sm text-slate-800 transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
-            />
-            {busqueda && (
-              <button
-                type="button"
-                onClick={() => setBusqueda('')}
-                className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-                aria-label="Limpiar búsqueda"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setSoloCierraPronto((v) => !v)}
-              className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${
-                soloCierraPronto
-                  ? 'border-amber-400 bg-amber-50 text-amber-800 shadow-xs'
-                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <Clock className="h-3.5 w-3.5 text-amber-600" />
-              Cierra pronto (&le; 48h)
-            </button>
-
-            <label className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
-              <span>Ordenar:</span>
-              <select
-                value={orden}
-                onChange={(e) => setOrden(e.target.value)}
-                aria-label="Ordenar catálogo"
-                className="bg-transparent font-semibold text-slate-800 focus:outline-none cursor-pointer"
-              >
-                <option value="cierre">Cierre más próximo</option>
-                <option value="precio">Menor precio</option>
-                <option value="disponibles">Más disponibles</option>
-              </select>
-            </label>
-
-            {hayFiltrosLocales && (
-              <Button variant="secondary" size="sm" onClick={limpiarFiltros}>
-                <RotateCcw className="h-3.5 w-3.5" />
-                Limpiar
-              </Button>
-            )}
-
-            <Link to="/causas">
-              <Button size="sm">
-                <HeartHandshake className="h-4 w-4" />
-                Causas
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {causas.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <button
-              type="button"
-              onClick={() => seleccionarCausa('')}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
-                !causaId
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              Todas las causas
-            </button>
-            {causas.map((c) => {
-              const activa = String(causaId) === String(c.causaId);
-              return (
+              <div className="flex flex-wrap items-center gap-2">
                 <button
-                  key={c.causaId}
                   type="button"
-                  onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
+                  onClick={() => setSoloCierraPronto((v) => !v)}
+                  className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition cursor-pointer ${
+                    soloCierraPronto
+                      ? 'border-amber-400 bg-amber-50 text-amber-800 shadow-xs'
+                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Clock className="h-3.5 w-3.5 text-amber-600" />
+                  Cierra pronto (&le; 48h)
+                </button>
+
+                <label className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" />
+                  <span>Ordenar:</span>
+                  <select
+                    value={orden}
+                    onChange={(e) => setOrden(e.target.value)}
+                    aria-label="Ordenar catálogo"
+                    className="bg-transparent font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                  >
+                    <option value="cierre">Cierre más próximo</option>
+                    <option value="precio">Menor precio</option>
+                    <option value="disponibles">Más disponibles</option>
+                  </select>
+                </label>
+
+                {hayFiltrosLocales && (
+                  <Button variant="secondary" size="sm" onClick={limpiarFiltros}>
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Limpiar
+                  </Button>
+                )}
+
+                <Link to="/causas">
+                  <Button size="sm">
+                    <HeartHandshake className="h-4 w-4" />
+                    Causas
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {causas.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => seleccionarCausa('')}
                   className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
-                    activa
+                    !causaId
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
-                  {c.nombre}
+                  Todas las causas
                 </button>
-              );
-            })}
+                {causas.map((c) => {
+                  const activa = String(causaId) === String(c.causaId);
+                  return (
+                    <button
+                      key={c.causaId}
+                      type="button"
+                      onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
+                        activa
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {c.nombre}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-        </div>
-      </section>
+        </section>
+      )}
 
       {isLoading ? (
         <CardGridSkeleton count={6} />
@@ -471,29 +559,15 @@ export function CatalogoPage({ mode = 'landing' }) {
             })}
           </div>
 
-          {pagination.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 pt-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Anterior
-              </Button>
-              <span className="text-sm text-slate-600">
-                Página {pagination.page} de {pagination.totalPages}
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page >= pagination.totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Siguiente
-              </Button>
-            </div>
-          )}
+          <PaginationCard
+            page={pagination.page || 1}
+            totalPages={pagination.totalPages || 1}
+            total={pagination.total || rifasFiltradas.length}
+            showingFrom={(pagination.page - 1) * 9 + 1}
+            showingTo={(pagination.page - 1) * 9 + rifasFiltradas.length}
+            onPageChange={setPage}
+            itemLabel="rifas"
+          />
         </>
       )}
 

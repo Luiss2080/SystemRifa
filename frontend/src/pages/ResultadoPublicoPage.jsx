@@ -9,6 +9,7 @@ import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { EmptyState, FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
+import { PanelKpiGrid, PanelSectionHeader } from '../components/panel/PanelKit.jsx';
 
 export function ResultadoPublicoPage() {
   const { id } = useParams();
