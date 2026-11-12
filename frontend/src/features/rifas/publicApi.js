@@ -71,3 +71,4 @@ export async function eliminarNotificacion(id) {
   const { data } = await apiClient.delete(`/notificaciones/${id}`);
   return data;
 }
+

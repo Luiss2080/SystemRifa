@@ -144,3 +144,4 @@ export function AdminReportesPage() {
     </div>
   );
 }
+

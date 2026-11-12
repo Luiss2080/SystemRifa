@@ -58,3 +58,4 @@ export const openApiSpec = {
     '/auditoria': { get: { summary: 'Bitácora de auditoría (Admin)', security: [{ bearerAuth: [] }], tags: ['Reportes'] } }
   }
 };
+

@@ -88,3 +88,4 @@ export function deDatetimeLocalLaPazAUtcIso(valorLocal) {
   if (Number.isNaN(fecha.getTime())) return null;
   return fecha.toISOString();
 }
+

@@ -23,3 +23,4 @@ export function RequirePermiso({ recurso, accion, anyOf, children }) {
 
   return children || <Outlet />;
 }
+

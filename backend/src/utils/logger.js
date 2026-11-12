@@ -50,3 +50,4 @@ export function logError(event, err, meta = {}) {
     })
   );
 }
+

@@ -92,3 +92,4 @@ export function LoginPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$DbHost = "127.0.0.1",
   [int]$DbPort = 3306,
   [string]$DbUser = "root",
@@ -59,3 +59,4 @@ foreach ($file in $oldBackups) {
 }
 
 Write-Host "Respaldo generado correctamente: $outFile"
+

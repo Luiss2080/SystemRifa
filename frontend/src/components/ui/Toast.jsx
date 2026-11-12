@@ -71,3 +71,4 @@ export function useToast() {
   if (!ctx) throw new Error('useToast debe usarse dentro de ToastProvider');
   return ctx;
 }
+

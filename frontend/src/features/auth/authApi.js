@@ -29,3 +29,4 @@ export async function cambiarMiPasswordRequest(payload) {
   const { data } = await apiClient.patch('/usuarios/me/password', payload);
   return data;
 }
+

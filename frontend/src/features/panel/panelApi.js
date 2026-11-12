@@ -191,3 +191,4 @@ export async function getAuditoriaApi(params) {
   const { data } = await apiClient.get('/auditoria', { params });
   return data;
 }
+

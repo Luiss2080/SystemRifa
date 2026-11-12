@@ -34,3 +34,4 @@
 | **RNF-08** | Tolerancia a fallos en notificaciones (post-commit) | Regla 9 en `notificacion.service.js` y `tests/notificaciones.test.js` | Cubierto |
 | **RNF-09** | Portabilidad, Docker multi-stage no-root y respaldo MySQL | `Dockerfile`, `docker-compose.prod.yml`, `scripts/backup-mysql.*` | Cubierto |
 | **RNF-10** | Mantenibilidad y documentación OpenAPI dev | `routes → controllers → services → repositories`, `openapi.js` (`/api/docs`) | Cubierto |
+

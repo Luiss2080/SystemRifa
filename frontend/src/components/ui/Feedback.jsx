@@ -36,3 +36,4 @@ export function EmptyState({ icon: Icon, title = 'Sin resultados', description, 
     </div>
   );
 }
+

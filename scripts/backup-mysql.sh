@@ -25,3 +25,4 @@ mysqldump \
 ls -1t "${BACKUP_DIR}/${DB_NAME}_"*.sql 2>/dev/null | tail -n +"$((KEEP_LAST + 1))" | xargs -r rm -f
 
 echo "Respaldo generado correctamente: $OUT_FILE"
+

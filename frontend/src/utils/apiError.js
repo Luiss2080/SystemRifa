@@ -46,3 +46,4 @@ export function extraerErrorApi(error) {
     status: error.response?.status,
   };
 }
+

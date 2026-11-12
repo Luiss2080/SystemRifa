@@ -619,3 +619,4 @@ export function RifaDetallePage() {
     </div>
   );
 }
+

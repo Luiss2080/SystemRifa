@@ -39,3 +39,4 @@ export function Badge({ children, color, estado, className = '' }) {
     </span>
   );
 }
+
