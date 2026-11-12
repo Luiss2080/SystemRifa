@@ -20,6 +20,7 @@ import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
+import { PanelKpiGrid, PanelSectionHeader } from '../components/panel/PanelKit.jsx';
 
 export function PerfilPage() {
   const { usuario, roles, recargarPerfil } = useAuth();
@@ -137,13 +138,13 @@ export function PerfilPage() {
   const enSeguridad = location.hash === '#seguridad';
 
   return (
-    <div className="mx-auto my-auto w-full max-w-5xl space-y-6 py-2">
+    <div className="space-y-5">
       {/* Cabecera superior con franja de acento y resumen completo de cuenta */}
-      <section className="overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/95 shadow-lg shadow-slate-900/5 ring-1 ring-slate-900/5 backdrop-blur-md">
-        <div className="h-2 w-full bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500" />
-        <div className="flex flex-wrap items-center justify-between gap-5 px-6 py-6 sm:px-7">
+      <section className="overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs">
+        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
+        <div className="flex flex-wrap items-center justify-between gap-5 px-6 py-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-slate-800 text-xl font-extrabold tracking-wide text-white shadow-md ring-4 ring-emerald-50">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 text-lg font-extrabold tracking-wide text-white shadow-sm ring-4 ring-emerald-50">
               {iniciales}
             </div>
             <div className="min-w-0">
@@ -154,7 +155,7 @@ export function PerfilPage() {
                 {roles.map((r) => (
                   <Badge
                     key={r}
-                    color={r === 'ADMINISTRADOR' ? 'slate' : r === 'ORGANIZADOR' ? 'teal' : 'emerald'}
+                    color={r === 'ADMINISTRADOR' ? 'indigo' : r === 'ORGANIZADOR' ? 'teal' : 'emerald'}
                   >
                     {r}
                   </Badge>
@@ -199,6 +200,40 @@ export function PerfilPage() {
           </div>
         </div>
       </section>
+
+      <PanelSectionHeader
+        icon={User}
+        title="Identidad de Cuenta & Seguridad"
+        subtitle="Gestión de datos personales verificados y protección de acceso"
+        badgeText={roles[0] || 'PARTICIPANTE'}
+        accent="emerald"
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Alias público',
+            value: `@${usuario?.alias || 'usuario'}`,
+            trendText: 'Visible en sorteos y premios',
+            icon: AtSign,
+            accent: 'emerald',
+          },
+          {
+            label: 'Estado de cuenta',
+            value: 'Activa y verificada',
+            trendText: usuario?.email || 'Correo vinculado',
+            icon: ShieldCheck,
+            accent: 'sky',
+          },
+          {
+            label: 'Roles asignados',
+            value: roles.length || 1,
+            trendText: roles.join(' · ') || 'PARTICIPANTE',
+            icon: KeyRound,
+            accent: 'indigo',
+          },
+        ]}
+      />
 
       {/* Doble columna simétrica: Datos personales + Seguridad y contraseña */}
       <div className="grid gap-6 lg:grid-cols-2">

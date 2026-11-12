@@ -95,7 +95,7 @@ const CARD_PALETTES = [
   'from-cyan-900 via-slate-900 to-emerald-950',
 ];
 
-export function CauseMarqueeTicker({ causas = [], onSelectCausa }) {
+export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = true }) {
   const items = useMemo(() => {
     if (causas.length > 0) {
       return causas.map((c, idx) => ({
@@ -114,12 +114,16 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa }) {
     ];
   }, [causas]);
 
-  const looped = [...items, ...items, ...items];
+  const looped = [...items, ...items, ...items, ...items];
 
   return (
     <section
       aria-label="Causas verificadas en plataforma"
-      className="marquee-wrapper -mx-4 overflow-hidden border-y border-emerald-950/30 bg-gradient-to-r from-emerald-900 via-teal-800 to-emerald-900 py-4 shadow-md sm:-mx-6 lg:-mx-8"
+      className={`marquee-wrapper overflow-hidden border-y border-emerald-950/30 bg-gradient-to-r from-emerald-900 via-teal-800 to-emerald-900 py-4 shadow-md ${
+        fullBleed
+          ? 'relative left-1/2 w-screen -translate-x-1/2'
+          : '-mx-4 sm:-mx-6 lg:-mx-8'
+      }`}
     >
       <div className="animate-marquee items-center gap-4 px-4">
         {looped.map((c, idx) => (
@@ -132,7 +136,7 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa }) {
                 document.getElementById('catalogo-activo')?.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="flex min-w-[250px] shrink-0 items-center gap-3 rounded-2xl border border-white/80 bg-white px-4 py-2.5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
+            className="flex min-w-[245px] shrink-0 items-center gap-3 rounded-2xl border border-white/80 bg-white px-4 py-2.5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
               <HeartHandshake className="h-5 w-5" />
@@ -145,18 +149,10 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa }) {
               <p className="truncate text-[11px] font-medium text-slate-500">
                 {c.meta ? `Meta: ${formatearBs(c.meta)}` : `${c.rifasCount} rifa(s) asociadas`}
               </p>
-              <div className="mt-0.5 flex items-center gap-1.5">
-                <span className="flex items-center text-amber-400">
-                  <Star className="h-3 w-3 fill-current" />
-                  <Star className="h-3 w-3 fill-current" />
-                  <Star className="h-3 w-3 fill-current" />
-                  <Star className="h-3 w-3 fill-current" />
-                  <Star className="h-3 w-3 fill-current" />
-                </span>
-                <span className="text-[10px] font-extrabold uppercase text-emerald-700">
-                  Verificada: 100%
-                </span>
-              </div>
+              <span className="mt-0.5 inline-flex items-center gap-1 text-[10px] font-extrabold uppercase text-emerald-700">
+                <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                Causa verificada
+              </span>
             </div>
           </button>
         ))}
@@ -209,51 +205,21 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
   }, [rifas]);
 
   const activeIdx = Math.min(centerIndex, cards.length - 1);
-  const fanStepX = isCompactScreen ? 42 : 68;
+  const fanStepX = isCompactScreen ? 56 : 86;
 
   return (
-    <div className="space-y-6">
-      {/* Hero comercial de 2 columnas con abanico interactivo */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white/85 px-6 py-8 shadow-sm backdrop-blur-md sm:px-10 sm:py-12">
-        {/* Líneas tecnológicas sutiles decorativas como en la imagen de referencia */}
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 800 400"
-          className="pointer-events-none absolute inset-0 h-full w-full opacity-35"
-          fill="none"
-        >
-          <path
-            d="M0 160 H180 L210 190 H320"
-            stroke="#10b981"
-            strokeOpacity="0.35"
-            strokeWidth="1.2"
-          />
-          <circle cx="180" cy="160" r="3" fill="#10b981" fillOpacity="0.45" />
-          <path
-            d="M0 240 H140 L170 210 H280"
-            stroke="#f59e0b"
-            strokeOpacity="0.35"
-            strokeWidth="1.2"
-          />
-          <circle cx="140" cy="240" r="3" fill="#f59e0b" fillOpacity="0.45" />
-          <path
-            d="M800 120 H640 L600 160 H490"
-            stroke="#0ea5e9"
-            strokeOpacity="0.3"
-            strokeWidth="1.2"
-          />
-          <circle cx="640" cy="120" r="3" fill="#0ea5e9" fillOpacity="0.45" />
-        </svg>
-
-        <div className="relative grid items-center gap-10 lg:grid-cols-12">
+    <div className="space-y-12">
+      {/* Hero abierto sin caja envolvente innecesaria + Tarjetas verticales de rifas */}
+      <section className="relative py-2 sm:py-6">
+        <div className="grid items-center gap-10 lg:grid-cols-12">
           {/* Columna Izquierda: Titular, Subtítulo, CTAs y Prueba Social */}
-          <div className="space-y-5 lg:col-span-6">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">
+          <div className="space-y-6 text-center lg:col-span-6 lg:text-left">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
               Plataforma auditada · Bolivia
             </span>
 
-            <h1 className="text-4xl font-extrabold leading-[1.06] tracking-tight text-slate-900 sm:text-5xl xl:text-[54px]">
+            <h1 className="text-4xl font-extrabold leading-[1.06] tracking-tight text-slate-900 sm:text-5xl xl:text-[56px]">
               La transparencia
               <br />
               que tu causa{' '}
@@ -275,13 +241,13 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
               </span>
             </h1>
 
-            <p className="max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+            <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base lg:mx-0">
               <strong className="font-bold text-slate-900">Rifas Solidarias</strong> es una
               plataforma de campañas y sorteos digitales auditados, diseñada para apoyar causas
               reales con reservas instantáneas de 15 minutos y verificación transparente de pagos.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1 lg:justify-start">
               <button
                 type="button"
                 onClick={() =>
@@ -302,17 +268,9 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                 <HeartHandshake className="h-4 w-4" />
                 Ver causas
               </Link>
-
-              <Link
-                to="/solicitudes/nueva"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50/70 hover:text-emerald-900"
-              >
-                <FilePlus2 className="h-4 w-4 text-emerald-600" />
-                Organizar rifa
-              </Link>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 pt-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pt-2 lg:justify-start">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-amber-500">
@@ -331,27 +289,26 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                     : 'Sorteos auditados · Reservas de 15 min'}
                 </p>
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200/80">
                 <Lock className="h-3 w-3 text-emerald-600" />
                 Sin doble reserva
               </span>
             </div>
           </div>
 
-          {/* Columna Derecha: Abanico Interactivo de 5 Tarjetas */}
+          {/* Columna Derecha: Carteles / Rifas en Vertical */}
           <div className="lg:col-span-6">
-            <div className="relative mx-auto flex h-[340px] max-w-[520px] items-center justify-center overflow-hidden sm:h-[385px] sm:overflow-visible">
+            <div className="relative mx-auto flex h-[390px] max-w-[560px] items-center justify-center overflow-hidden sm:h-[430px] sm:overflow-visible">
               {cards.map((card, idx) => {
                 const offset = idx - activeIdx;
                 const isCenter = offset === 0;
                 const absOffset = Math.abs(offset);
 
                 const translateX = offset * fanStepX;
-                const translateY = absOffset * 12;
-                const rotate = offset * (isCompactScreen ? 5 : 6.5);
-                const scale = isCenter ? 1.04 : Math.max(0.78, 1 - absOffset * 0.09);
+                const translateY = absOffset * 14;
+                const scale = isCenter ? 1 : Math.max(0.76, 1 - absOffset * 0.11);
                 const zIndex = 30 - absOffset * 5;
-                const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.08;
+                const opacity = absOffset > 2 ? 0 : isCenter ? 1 : absOffset === 1 ? 0.92 : 0.72;
                 const premioPrincipal = card.premios?.[0]?.nombre;
 
                 const pctAvance =
@@ -387,87 +344,108 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                       }
                     }}
                     style={{
-                      transform: `translateX(${translateX}px) translateY(${translateY}px) rotate(${rotate}deg) scale(${scale})`,
+                      transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale})`,
                       zIndex,
                       opacity,
                     }}
-                    className={`absolute flex h-[300px] w-[196px] flex-col justify-between overflow-hidden rounded-[26px] bg-gradient-to-br ${card.palette} p-4 text-white shadow-2xl transition-all duration-300 cursor-pointer sm:h-[336px] sm:w-[222px] ${
+                    className={`absolute flex h-[356px] w-[198px] flex-col justify-between overflow-hidden rounded-[26px] bg-gradient-to-b ${card.palette} text-white shadow-2xl transition-all duration-300 cursor-pointer sm:h-[396px] sm:w-[224px] ${
                       isCenter
-                        ? 'ring-3 ring-emerald-400 shadow-emerald-950/35'
+                        ? 'ring-3 ring-emerald-400 shadow-emerald-950/40'
                         : 'ring-2 ring-white/80 hover:ring-amber-300'
                     }`}
                   >
-                    {/* Header de tarjeta tipo story */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-xs">
-                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                        {card.estado === 'FINALIZADA' ? 'Sorteada' : 'Activa'}
-                      </span>
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 backdrop-blur-xs">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-                      </span>
-                    </div>
+                    {/* Cabecera visual vertical tipo cartel/póster de rifa */}
+                    <div className="relative flex flex-col justify-between bg-black/20 px-4 pt-3.5 pb-4">
+                      <div className="pointer-events-none absolute -top-8 -right-8 h-28 w-28 rounded-full bg-white/10 blur-xl" />
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-xs">
+                          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                          {card.estado === 'FINALIZADA' ? 'Sorteada' : 'Activa'}
+                        </span>
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 backdrop-blur-xs">
+                          <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+                        </span>
+                      </div>
 
-                    {/* Centro visual */}
-                    <div className="my-auto space-y-2 py-1.5">
-                      <span className="inline-flex max-w-full items-center gap-1 truncate rounded-lg bg-white/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-200 backdrop-blur-xs">
-                        <HeartHandshake className="h-3 w-3 shrink-0" />
-                        <span className="truncate">{card.causa?.nombre || 'Causa Solidaria'}</span>
-                      </span>
-
-                      <h3 className="line-clamp-2 text-base font-extrabold leading-snug text-white sm:text-lg">
-                        {card.nombre}
-                      </h3>
-
-                      {premioPrincipal && (
-                        <p className="inline-flex max-w-full items-center gap-1 truncate rounded-md bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
-                          <Award className="h-3 w-3 shrink-0 text-amber-300" />
-                          <span className="truncate">{premioPrincipal}</span>
-                        </p>
-                      )}
-
-                      <div className="rounded-xl bg-black/25 p-2.5 backdrop-blur-xs">
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-[10px] font-medium text-slate-300">Ticket</span>
-                          <span className="text-base font-extrabold text-amber-300">
-                            {formatearBs(card.precioTicket)}
+                      {/* Ilustración vertical de premio / boleto */}
+                      <div className="mt-3 flex flex-col items-center py-1 text-center">
+                        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/25 backdrop-blur-xs sm:h-20 sm:w-20">
+                          <Ticket className="h-8 w-8 text-amber-300 sm:h-9 sm:w-9" />
+                          <span className="absolute -right-1.5 -bottom-1.5 flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-sm ring-2 ring-slate-900/40">
+                            <Award className="h-3.5 w-3.5" />
                           </span>
                         </div>
-                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-amber-300"
-                            style={{ width: `${Math.max(12, pctAvance)}%` }}
-                          />
-                        </div>
-                        <div className="mt-1 flex items-center justify-between text-[10px] text-slate-300">
-                          <span>{card.ticketsDisponibles} disp.</span>
-                          <span>{pctAvance}%</span>
-                        </div>
+                        <span className="mt-2.5 inline-flex max-w-full items-center gap-1 truncate rounded-full bg-white/12 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-200">
+                          <HeartHandshake className="h-3 w-3 shrink-0" />
+                          <span className="truncate">{card.causa?.nombre || 'Causa Solidaria'}</span>
+                        </span>
                       </div>
                     </div>
 
-                    {/* Footer de tarjeta */}
-                    <div className="flex items-center justify-between gap-2 border-t border-white/15 pt-2.5">
-                      <span className="truncate text-[10px] font-medium text-slate-200">
-                        {card.fechaFin ? `Cierra ${formatearFechaCorta(card.fechaFin)}` : 'Reserva 15 min'}
-                      </span>
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-extrabold text-slate-900">
-                        {isCenter ? 'Participar' : 'Ver'}
-                        <ArrowRight className="h-3 w-3" />
-                      </span>
+                    {/* Muesca divisoria horizontal de ticket */}
+                    <div className="relative flex items-center">
+                      <span className="h-4 w-2 rounded-r-full bg-slate-50/95" />
+                      <div className="mx-1.5 flex-1 border-t border-dashed border-white/30" />
+                      <span className="h-4 w-2 rounded-l-full bg-slate-50/95" />
+                    </div>
+
+                    {/* Cuerpo vertical de detalle */}
+                    <div className="flex flex-1 flex-col justify-between px-4 pt-2 pb-4">
+                      <div className="space-y-1.5 text-center">
+                        <h3 className="line-clamp-2 text-sm font-extrabold leading-snug text-white sm:text-base">
+                          {card.nombre}
+                        </h3>
+                        {premioPrincipal && (
+                          <p className="inline-flex max-w-full items-center justify-center gap-1 truncate rounded-md bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
+                            <Award className="h-3 w-3 shrink-0 text-amber-300" />
+                            <span className="truncate">{premioPrincipal}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="rounded-xl bg-black/25 p-2.5 backdrop-blur-xs">
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[10px] font-medium text-slate-300">Ticket</span>
+                            <span className="text-base font-extrabold text-amber-300">
+                              {formatearBs(card.precioTicket)}
+                            </span>
+                          </div>
+                          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-amber-300"
+                              style={{ width: `${Math.max(12, pctAvance)}%` }}
+                            />
+                          </div>
+                          <div className="mt-1 flex items-center justify-between text-[10px] text-slate-300">
+                            <span>{card.ticketsDisponibles} disp.</span>
+                            <span>{pctAvance}%</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-2 pt-0.5">
+                          <span className="truncate text-[10px] font-medium text-slate-200">
+                            {card.fechaFin ? `Cierra ${formatearFechaCorta(card.fechaFin)}` : 'Reserva 15 min'}
+                          </span>
+                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-extrabold text-slate-900">
+                            {isCenter ? 'Participar' : 'Ver'}
+                            <ArrowRight className="h-3 w-3" />
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Controles e indicadores del abanico */}
-            <div className="mt-2 flex items-center justify-center gap-3">
+            {/* Controles e indicadores del showcase vertical */}
+            <div className="mt-3 flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => setCenterIndex((cur) => (cur - 1 + cards.length) % cards.length)}
-                aria-label="Tarjeta anterior"
-                className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+                aria-label="Rifa anterior"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -478,7 +456,7 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
                     key={`dot-${c.id}-${idx}`}
                     type="button"
                     onClick={() => setCenterIndex(idx)}
-                    aria-label={`Destacar tarjeta ${idx + 1}`}
+                    aria-label={`Destacar rifa ${idx + 1}`}
                     className={`h-2 rounded-full transition-all cursor-pointer ${
                       idx === activeIdx ? 'w-6 bg-emerald-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
                     }`}
@@ -489,8 +467,8 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
               <button
                 type="button"
                 onClick={() => setCenterIndex((cur) => (cur + 1) % cards.length)}
-                aria-label="Siguiente tarjeta"
-                className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+                aria-label="Siguiente rifa"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -499,20 +477,18 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
         </div>
       </section>
 
-      {/* Banner Marquee Deslizante de Causas Verificadas */}
-      <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} />
+      {/* Banner Marquee Deslizante en Pantalla Completa */}
+      <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} fullBleed />
 
-      {/* Cómo funciona: 4 pasos simples */}
-      <section id="como-funciona" className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-          <div>
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
-              Proceso simple en 4 pasos
-            </span>
-            <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
-              Cómo participar de forma segura
-            </h2>
-          </div>
+      {/* Cómo funciona: 4 pasos simples con cabecera centrada */}
+      <section id="como-funciona" className="space-y-6">
+        <div className="mx-auto max-w-2xl space-y-2 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
+            Proceso simple en 4 pasos
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            Cómo participar de forma segura
+          </h2>
           <button
             type="button"
             onClick={() =>

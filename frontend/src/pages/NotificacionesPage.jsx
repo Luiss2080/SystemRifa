@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bell, Check, CheckCheck, Trash2 } from 'lucide-react';
+import { Bell, BellRing, Check, CheckCheck, MailCheck, Trash2 } from 'lucide-react';
 import {
   eliminarNotificacion,
   getMisNotificaciones,
@@ -11,13 +11,21 @@ import { extraerErrorApi } from '../utils/apiError.js';
 import { formatearFecha } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { PaginationCard } from '../components/ui/DataTable.jsx';
 import { EmptyState, FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../components/panel/PanelKit.jsx';
 
 export function NotificacionesPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
   const [soloNoLeidas, setSoloNoLeidas] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -64,97 +72,121 @@ export function NotificacionesPage() {
     }
   }
 
+  const itemsFiltrados = useMemo(() => {
+    const raw = data?.items || [];
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return raw;
+    return raw.filter(
+      (n) =>
+        (n.titulo || '').toLowerCase().includes(q) ||
+        (n.mensaje || '').toLowerCase().includes(q)
+    );
+  }, [data, busqueda]);
+
   if (isLoading) return <FullPageSpinner message="Cargando notificaciones..." />;
 
-  const items = data?.items || [];
-  const pagination = data?.pagination || { page: 1, totalPages: 1 };
+  const pagination = data?.pagination || { page: 1, totalPages: 1, total: itemsFiltrados.length };
+  const totalAlertas = pagination.total ?? (data?.items?.length || 0);
+  const sinLeer = data?.noLeidasCount || 0;
+  const leidas = Math.max(0, totalAlertas - sinLeer);
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-5">
-      <section className="overflow-hidden rounded-3xl border border-emerald-200/80 bg-white/95 shadow-xs backdrop-blur-md">
-        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
-        <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:px-6">
-          <div className="flex items-center gap-3.5">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80 shadow-2xs">
-              <Bell className="h-5 w-5" />
-            </span>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-                  Notificaciones
-                </h1>
-                <Badge color={(data?.noLeidasCount || 0) > 0 ? 'amber' : 'emerald'}>
-                  {data?.noLeidasCount || 0} sin leer
-                </Badge>
-              </div>
-              <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
-                Avisos en tiempo real sobre tus reservas, pagos verificados y resultados de sorteos.
-              </p>
-            </div>
-          </div>
+    <div className="space-y-5">
+      <PanelFilterBar
+        title="Centro de Notificaciones & Alertas"
+        subtitle="Avisos en tiempo real sobre reservas, comprobantes verificados, solicitudes y sorteos."
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder="Buscar por asunto o detalle de la notificación..."
+        hasActiveFilters={Boolean(busqueda || soloNoLeidas)}
+        onResetFilters={() => {
+          setBusqueda('');
+          setSoloNoLeidas(false);
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Filtrar lectura',
+            value: soloNoLeidas ? 'NO_LEIDAS' : 'TODAS',
+            onChange: (val) => {
+              setSoloNoLeidas(val === 'NO_LEIDAS');
+              setPage(1);
+            },
+            options: [
+              { value: 'TODAS', label: 'Todas las notificaciones' },
+              { value: 'NO_LEIDAS', label: `Sin leer (${sinLeer})` },
+            ],
+          },
+        ]}
+        rightActions={
+          sinLeer > 0 ? (
+            <Button variant="secondary" size="sm" onClick={handleMarcarTodas}>
+              <CheckCheck className="h-4 w-4 text-emerald-600" />
+              Marcar todas leídas
+            </Button>
+          ) : null
+        }
+      />
 
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 p-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setSoloNoLeidas(false);
-                  setPage(1);
-                }}
-                className={`rounded-full px-3.5 py-1 text-xs font-bold transition cursor-pointer ${
-                  !soloNoLeidas ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Todas
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSoloNoLeidas(true);
-                  setPage(1);
-                }}
-                className={`rounded-full px-3.5 py-1 text-xs font-bold transition cursor-pointer ${
-                  soloNoLeidas ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Sin leer ({data?.noLeidasCount || 0})
-              </button>
-            </div>
-            {(data?.noLeidasCount || 0) > 0 && (
-              <Button variant="secondary" size="sm" onClick={handleMarcarTodas}>
-                <CheckCheck className="h-4 w-4 text-emerald-600" />
-                Marcar todas leídas
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
+      <PanelSectionHeader
+        icon={Bell}
+        title="Bandeja de Avisos Recibidos"
+        subtitle="Sincronización automática con la actividad de tu cuenta"
+        badgeText={`${sinLeer} Sin leer`}
+        accent={sinLeer > 0 ? 'amber' : 'emerald'}
+      />
 
-      {items.length === 0 ? (
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total notificaciones',
+            value: totalAlertas,
+            trendText: 'Historial acumulado',
+            icon: BellRing,
+            accent: 'indigo',
+          },
+          {
+            label: 'Sin leer',
+            value: sinLeer,
+            trendText: sinLeer > 0 ? 'Requieren revisión' : 'Todo al día',
+            icon: Bell,
+            accent: 'amber',
+          },
+          {
+            label: 'Leídas',
+            value: leidas,
+            trendText: 'Avisos atendidos',
+            icon: MailCheck,
+            accent: 'emerald',
+          },
+        ]}
+      />
+
+      {itemsFiltrados.length === 0 ? (
         <EmptyState
           icon={Bell}
           title="No hay notificaciones"
           description={
-            soloNoLeidas
-              ? 'No tienes notificaciones pendientes por leer.'
+            soloNoLeidas || busqueda
+              ? 'No tienes notificaciones que coincidan con el filtro aplicado.'
               : 'Aquí aparecerán tus avisos de reservas, pagos y sorteos.'
           }
         />
       ) : (
         <div className="space-y-3">
-          {items.map((n) => (
+          {itemsFiltrados.map((n) => (
             <div
               key={n.notificacionId}
               className={`relative overflow-hidden rounded-3xl border p-4 shadow-xs transition hover:-translate-y-0.5 hover:shadow-md sm:px-5 ${
                 n.leida
-                  ? 'border-slate-200/90 bg-white/95'
+                  ? 'border-slate-200/85 bg-white'
                   : 'border-emerald-300 bg-emerald-50/55 ring-1 ring-emerald-200/60'
               }`}
             >
               {!n.leida && (
-                <span className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-emerald-500 to-teal-500" />
+                <span className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-emerald-500 to-teal-500" />
               )}
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3 pl-1">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-sm font-extrabold text-slate-900">{n.titulo}</h2>
@@ -166,25 +198,21 @@ export function NotificacionesPage() {
                   </p>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="flex shrink-0 items-center gap-1.5">
                   {!n.leida && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <RowActionButton
+                      icon={Check}
                       title="Marcar como leída"
+                      tone="primary"
                       onClick={() => handleMarcarLeida(n.notificacionId)}
-                    >
-                      <Check className="h-4 w-4 text-emerald-700" />
-                    </Button>
+                    />
                   )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    title="Eliminar"
+                  <RowActionButton
+                    icon={Trash2}
+                    title="Eliminar notificación"
+                    tone="danger"
                     onClick={() => handleEliminar(n.notificacionId)}
-                  >
-                    <Trash2 className="h-4 w-4 text-rose-600" />
-                  </Button>
+                  />
                 </div>
               </div>
             </div>
@@ -192,30 +220,17 @@ export function NotificacionesPage() {
         </div>
       )}
 
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-2xs">
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Anterior
-          </Button>
-          <span className="text-xs font-bold text-slate-600">
-            Página {pagination.page} de {pagination.totalPages}
-          </span>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= pagination.totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Siguiente
-          </Button>
-        </div>
+      {itemsFiltrados.length > 0 && (
+        <PaginationCard
+          page={pagination.page || 1}
+          totalPages={pagination.totalPages || 1}
+          total={totalAlertas}
+          showingFrom={(pagination.page - 1) * 15 + 1}
+          showingTo={(pagination.page - 1) * 15 + itemsFiltrados.length}
+          onPageChange={setPage}
+          itemLabel="notificaciones"
+        />
       )}
     </div>
   );
 }
-

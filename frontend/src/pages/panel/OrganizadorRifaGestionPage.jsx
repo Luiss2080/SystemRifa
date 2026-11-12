@@ -5,12 +5,21 @@ import {
   AlertTriangle,
   Award,
   Ban,
+  BarChart3,
   CalendarClock,
   CheckCircle2,
+  Clock,
+  DollarSign,
+  Edit2,
+  ExternalLink,
+  Hash,
   Plus,
-  Search,
+  SlidersHorizontal,
+  Ticket,
   Trash2,
+  TrendingUp,
   Trophy,
+  UserCheck,
 } from 'lucide-react';
 import { getDetalleRifa, getTicketsRifa } from '../../features/rifas/publicApi.js';
 import {
@@ -34,10 +43,17 @@ import {
 } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
+import { DataTable } from '../../components/ui/DataTable.jsx';
 import { FullPageSpinner } from '../../components/ui/Feedback.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 export function OrganizadorRifaGestionPage() {
   const { id } = useParams();
@@ -87,6 +103,7 @@ export function OrganizadorRifaGestionPage() {
   const [guardandoEntrega, setGuardandoEntrega] = useState(false);
 
   const [busquedaTicket, setBusquedaTicket] = useState('');
+  const [estadoTicket, setEstadoTicket] = useState('');
   const [ticketAAnular, setTicketAAnular] = useState(null);
   const [motivoAnular, setMotivoAnular] = useState('');
   const [anulandoTicket, setAnulandoTicket] = useState(false);
@@ -94,9 +111,12 @@ export function OrganizadorRifaGestionPage() {
   const ticketsFiltrados = useMemo(() => {
     const items = ticketsData?.items || [];
     const q = busquedaTicket.trim();
-    if (!q) return items.slice(0, 30);
-    return items.filter((t) => String(t.numeroTicket).includes(q)).slice(0, 30);
-  }, [ticketsData, busquedaTicket]);
+    return items.filter((t) => {
+      if (estadoTicket && t.estado !== estadoTicket) return false;
+      if (q && !String(t.numeroTicket).includes(q)) return false;
+      return true;
+    });
+  }, [ticketsData, busquedaTicket, estadoTicket]);
 
   function invalidar() {
     queryClient.invalidateQueries({ queryKey: ['rifa-detalle', id] });
@@ -262,38 +282,102 @@ export function OrganizadorRifaGestionPage() {
     }
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900">{rifa.nombre}</h1>
-            <Badge estado={rifa.estado} />
-          </div>
-          <p className="mt-1 text-sm text-slate-500">
-            Cierre actual: {formatearFecha(rifa.fechaFin)} · Precio: {formatearBs(rifa.precioTicket)}
-          </p>
-        </div>
+  const ticketColumns = [
+    {
+      key: 'numeroTicket',
+      label: 'N° Ticket',
+      icon: Hash,
+      render: (t) => <span className="font-mono text-sm font-extrabold text-slate-900">#{t.numeroTicket}</span>,
+    },
+    {
+      key: 'estado',
+      label: 'Estado',
+      icon: SlidersHorizontal,
+      render: (t) => <Badge estado={t.estado} />,
+    },
+    {
+      key: 'reservadoHasta',
+      label: 'Expiración reserva',
+      icon: CalendarClock,
+      render: (t) =>
+        t.reservadoHasta ? (
+          <span className="text-xs text-slate-600">{formatearFecha(t.reservadoHasta)}</span>
+        ) : (
+          <span className="text-xs text-slate-400">—</span>
+        ),
+    },
+    {
+      key: 'acciones',
+      label: 'Acciones',
+      icon: UserCheck,
+      render: (t) =>
+        t.estado !== 'ANULADO' ? (
+          <RowActionButton
+            icon={Ban}
+            label="Anular"
+            title={`Anular ticket #${t.numeroTicket}`}
+            tone="danger"
+            onClick={() => {
+              setTicketAAnular(t);
+              setMotivoAnular('');
+            }}
+          />
+        ) : (
+          <span className="text-xs font-medium text-slate-400">Anulado</span>
+        ),
+    },
+  ];
 
-        <div className="flex flex-wrap gap-2">
-          <Link to={`/rifas/${rifa.rifaId}`}>
-            <Button variant="secondary" size="sm">
-              Vista pública
-            </Button>
-          </Link>
-          {esFinalizada && (
-            <Link to={`/rifas/${rifa.rifaId}/resultado`}>
-              <Button variant="amber" size="sm">
-                <Trophy className="h-4 w-4" />
-                Ver resultado público
+  return (
+    <div className="space-y-5">
+      <PanelFilterBar
+        title={`${rifa.nombre}`}
+        subtitle={`Cierre actual: ${formatearFecha(rifa.fechaFin)} · Precio unitario: ${formatearBs(rifa.precioTicket)}`}
+        searchValue={busquedaTicket}
+        onSearchChange={setBusquedaTicket}
+        searchPlaceholder="Buscar ticket por número (ej. 15, 042)..."
+        hasActiveFilters={Boolean(busquedaTicket || estadoTicket)}
+        onResetFilters={() => {
+          setBusquedaTicket('');
+          setEstadoTicket('');
+        }}
+        selects={[
+          {
+            label: 'Estado del ticket',
+            value: estadoTicket,
+            onChange: setEstadoTicket,
+            options: [
+              { value: '', label: 'Todos los estados' },
+              { value: 'DISPONIBLE', label: 'Disponible' },
+              { value: 'RESERVADO', label: 'Reservado' },
+              { value: 'VENDIDO', label: 'Vendido' },
+              { value: 'ANULADO', label: 'Anulado' },
+            ],
+          },
+        ]}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge estado={rifa.estado} />
+            <Link to={`/rifas/${rifa.rifaId}`}>
+              <Button variant="secondary" size="sm">
+                <ExternalLink className="h-3.5 w-3.5" />
+                Vista pública
               </Button>
             </Link>
-          )}
-        </div>
-      </div>
+            {esFinalizada && (
+              <Link to={`/rifas/${rifa.rifaId}/resultado`}>
+                <Button variant="amber" size="sm">
+                  <Trophy className="h-4 w-4" />
+                  Resultado público
+                </Button>
+              </Link>
+            )}
+          </div>
+        }
+      />
 
       {!esFinalizada && !rifa.premios?.length && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-950 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-950 shadow-xs">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
             <div>
@@ -322,36 +406,50 @@ export function OrganizadorRifaGestionPage() {
         const pctRes = Math.min(100 - pctVend, Math.round((reservados / total) * 100));
         return (
           <section className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-                <p className="text-xs text-slate-500">Recaudado confirmado</p>
-                <p className="mt-1 text-xl font-extrabold text-emerald-700">
-                  {formatearBs(reporteData.recaudacionConfirmada)}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-                <p className="text-xs text-slate-500">Pagos pendientes</p>
-                <p className="mt-1 text-xl font-extrabold text-amber-600">
-                  {formatearBs(reporteData.recaudacionPendiente)}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-                <p className="text-xs text-slate-500">Tickets vendidos</p>
-                <p className="mt-1 text-xl font-extrabold text-indigo-700">
-                  {vendidos} / {reporteData.rifa.cantidadTickets}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-                <p className="text-xs text-slate-500">Avance de venta</p>
-                <p className="mt-1 text-xl font-extrabold text-slate-900">
-                  {reporteData.porcentajeVendido}%
-                </p>
-              </div>
-            </div>
+            <PanelSectionHeader
+              icon={BarChart3}
+              title="Rendimiento en Tiempo Real de la Campaña"
+              subtitle="Recaudación confirmada · reservas activas · ocupación del tablero"
+              badgeText={`${reporteData.porcentajeVendido}% Vendido`}
+              accent="emerald"
+            />
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-2">
+            <PanelKpiGrid
+              items={[
+                {
+                  label: 'Recaudado confirmado',
+                  value: formatearBs(reporteData.recaudacionConfirmada),
+                  trendText: 'Pagos aprobados',
+                  icon: DollarSign,
+                  accent: 'emerald',
+                },
+                {
+                  label: 'Pagos pendientes',
+                  value: formatearBs(reporteData.recaudacionPendiente),
+                  trendText: 'Por verificar',
+                  icon: Clock,
+                  accent: 'amber',
+                },
+                {
+                  label: 'Tickets vendidos',
+                  value: `${vendidos} / ${reporteData.rifa.cantidadTickets}`,
+                  trendText: 'Participaciones válidas',
+                  icon: Ticket,
+                  accent: 'indigo',
+                },
+                {
+                  label: 'Avance de venta',
+                  value: `${reporteData.porcentajeVendido}%`,
+                  trendText: `${reservados} reservados actualmente`,
+                  icon: TrendingUp,
+                  accent: 'sky',
+                },
+              ]}
+            />
+
+            <div className="space-y-2 rounded-3xl border border-slate-200/85 bg-white p-5 shadow-xs">
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-                <span className="font-semibold text-slate-800">Distribución del tablero</span>
+                <span className="font-bold text-slate-800">Distribución del tablero</span>
                 <div className="flex flex-wrap gap-3">
                   <span className="inline-flex items-center gap-1.5">
                     <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" />
@@ -377,11 +475,11 @@ export function OrganizadorRifaGestionPage() {
       })()}
 
       {/* Premios */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+      <section className="space-y-4 rounded-3xl border border-slate-200/85 bg-white p-6 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+          <h2 className="flex items-center gap-2 text-base font-extrabold text-slate-900">
             <Award className="h-5 w-5 text-amber-500" />
-            Premios ({rifa.premios?.length || 0})
+            Premios de la campaña ({rifa.premios?.length || 0})
           </h2>
           {!esFinalizada && tienePermiso('premios', 'crud') && (
             <Button size="sm" onClick={abrirCrearPremio}>
@@ -400,13 +498,13 @@ export function OrganizadorRifaGestionPage() {
             {rifa.premios.map((p) => (
               <div
                 key={p.premioId}
-                className="flex flex-col justify-between rounded-xl border border-slate-200 p-4"
+                className="flex flex-col justify-between rounded-2xl border border-slate-200/85 bg-slate-50/40 p-4 transition hover:border-emerald-200 hover:bg-white"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-bold text-slate-900">{p.nombre}</h3>
+                    <h3 className="font-extrabold text-slate-900">{p.nombre}</h3>
                     {p.valor && (
-                      <span className="text-xs font-semibold text-emerald-700">
+                      <span className="rounded-lg bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">
                         {formatearBs(p.valor)}
                       </span>
                     )}
@@ -416,13 +514,19 @@ export function OrganizadorRifaGestionPage() {
 
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
                   {!esFinalizada && tienePermiso('premios', 'crud') && (
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="secondary" onClick={() => abrirEditarPremio(p)}>
-                        Editar
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setPremioAEliminar(p)}>
-                        <Trash2 className="h-4 w-4 text-rose-600" />
-                      </Button>
+                    <div className="flex items-center gap-1.5">
+                      <RowActionButton
+                        icon={Edit2}
+                        label="Editar"
+                        tone="primary"
+                        onClick={() => abrirEditarPremio(p)}
+                      />
+                      <RowActionButton
+                        icon={Trash2}
+                        title={`Desactivar premio ${p.nombre}`}
+                        tone="danger"
+                        onClick={() => setPremioAEliminar(p)}
+                      />
                     </div>
                   )}
 
@@ -457,10 +561,10 @@ export function OrganizadorRifaGestionPage() {
 
       {/* Extensión y Sorteo */}
       {!esFinalizada && (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {tienePermiso('rifas', 'administrar') && (
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
-              <h2 className="flex items-center gap-2 text-base font-bold text-slate-900">
+            <section className="space-y-4 rounded-3xl border border-slate-200/85 bg-white p-6 shadow-xs">
+              <h2 className="flex items-center gap-2 text-base font-extrabold text-slate-900">
                 <CalendarClock className="h-5 w-5 text-sky-600" />
                 Extender fecha de cierre
               </h2>
@@ -479,12 +583,12 @@ export function OrganizadorRifaGestionPage() {
             </section>
           )}
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
-            <h2 className="flex items-center gap-2 text-base font-bold text-slate-900">
+          <section className="space-y-4 rounded-3xl border border-slate-200/85 bg-white p-6 shadow-xs">
+            <h2 className="flex items-center gap-2 text-base font-extrabold text-slate-900">
               <Trophy className="h-5 w-5 text-amber-500" />
               Cierre y sorteo
             </h2>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs leading-relaxed text-slate-600">
               El sorteo selecciona ganadores aleatoriamente entre los tickets VENDIDOS y cierra la rifa de forma irreversible.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -504,62 +608,27 @@ export function OrganizadorRifaGestionPage() {
         </div>
       )}
 
-      {/* Administración de tickets (anulación con motivo) */}
+      {/* Administración de tickets (anulación con motivo) en DataTable paginada */}
       {!esFinalizada && tienePermiso('rifas', 'administrar') && (
-        <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="flex items-center gap-2 text-base font-bold text-slate-900">
-                <Ban className="h-5 w-5 text-rose-600" />
-                Control de tickets (Anulación)
-              </h2>
-              <p className="text-xs text-slate-500">
-                Busca un número específico si necesitas anularlo con motivo auditado. Los tickets anulados no participan en el sorteo.
-              </p>
-            </div>
-            <div className="relative w-full sm:w-60">
-              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                type="search"
-                placeholder="Buscar N° de ticket..."
-                aria-label="Buscar número de ticket"
-                value={busquedaTicket}
-                onChange={(e) => setBusquedaTicket(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-1.5 pr-3 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
-              />
-            </div>
-          </div>
+        <div className="space-y-3">
+          <PanelSectionHeader
+            icon={Ban}
+            title="Control & Anulación de Tickets"
+            subtitle="Filtra arriba por número o estado · los tickets anulados quedan excluidos del sorteo"
+            badgeText={`${ticketsFiltrados.length} Tickets filtrados`}
+            accent="rose"
+          />
 
-          <div className="grid gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6">
-            {ticketsFiltrados.map((t) => (
-              <div
-                key={t.ticketId}
-                className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs"
-              >
-                <div>
-                  <p className="font-bold text-slate-900">#{t.numeroTicket}</p>
-                  <Badge estado={t.estado} />
-                </div>
-                {t.estado !== 'ANULADO' && (
-                  <button
-                    type="button"
-                    title={`Anular ticket #${t.numeroTicket}`}
-                    onClick={() => {
-                      setTicketAAnular(t);
-                      setMotivoAnular('');
-                    }}
-                    className="rounded-lg p-1.5 text-rose-600 transition hover:bg-rose-100 cursor-pointer"
-                  >
-                    <Ban className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-          {ticketsFiltrados.length === 0 && (
-            <p className="text-xs text-slate-500">No se encontraron tickets para esa búsqueda.</p>
-          )}
-        </section>
+          <DataTable
+            columns={ticketColumns}
+            data={ticketsFiltrados}
+            rowKey="ticketId"
+            clientPageSize={10}
+            itemLabel="tickets"
+            emptyTitle="No se encontraron tickets"
+            emptyDescription="Ajusta el número o estado buscado en los filtros superiores."
+          />
+        </div>
       )}
 
       {/* Modal Crear/Editar Premio */}

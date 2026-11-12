@@ -270,13 +270,13 @@ export function NuevaSolicitudPage() {
         {/* Vista previa en tiempo real */}
         <aside className="space-y-4 lg:col-span-5">
           <div className="overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/95 shadow-md shadow-slate-900/5 backdrop-blur-md lg:sticky lg:top-24">
-            <div className="relative bg-gradient-to-br from-emerald-800 via-teal-700 to-slate-900 px-6 py-5 text-white">
+            <div className="relative bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 px-6 py-5 text-white">
               <div className="flex items-center justify-between gap-2">
-                <p className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-100">
+                <p className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-50">
                   <Sparkles className="h-3 w-3" />
                   Vista previa en vivo
                 </p>
-                <span className="rounded-full bg-amber-400/20 px-2.5 py-0.5 text-[10px] font-bold text-amber-200 ring-1 ring-amber-300/30">
+                <span className="rounded-full bg-amber-300/25 px-2.5 py-0.5 text-[10px] font-bold text-amber-100 ring-1 ring-amber-200/40">
                   EN REVISIÓN
                 </span>
               </div>
