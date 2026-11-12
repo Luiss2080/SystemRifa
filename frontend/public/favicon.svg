@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="rs-bg" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="55%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="rs-ticket" x1="11" y1="17" x2="53" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#ecfdf5" />
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#rs-bg)" />
+  <rect x="3" y="3" width="58" height="58" rx="15" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1.5" />
+
+  <path
+    d="M16 17H48C50.761 17 53 19.239 53 22V27.5C50.515 27.5 48.5 29.515 48.5 32C48.5 34.485 50.515 36.5 53 36.5V42C53 44.761 50.761 47 48 47H16C13.239 47 11 44.761 11 42V36.5C13.485 36.5 15.5 34.485 15.5 32C15.5 29.515 13.485 27.5 11 27.5V22C11 19.239 13.239 17 16 17Z"
+    fill="url(#rs-ticket)"
+  />
+
+  <path
+    d="M26 38.8C26 38.8 18.5 34.2 18.5 29.2C18.5 26.8 20.3 25 22.6 25C24.1 25 25.3 25.8 26 27C26.7 25.8 27.9 25 29.4 25C31.7 25 33.5 26.8 33.5 29.2C33.5 34.2 26 38.8 26 38.8Z"
+    fill="#059669"
+  />
+
+  <circle cx="38.5" cy="23.5" r="1.4" fill="#0d9488" fill-opacity="0.45" />
+  <circle cx="38.5" cy="32" r="1.4" fill="#0d9488" fill-opacity="0.45" />
+  <circle cx="38.5" cy="40.5" r="1.4" fill="#0d9488" fill-opacity="0.45" />
+
+  <path
+    d="M45 27.5L46.2 30.8L49.5 32L46.2 33.2L45 36.5L43.8 33.2L40.5 32L43.8 30.8L45 27.5Z"
+    fill="#f59e0b"
+  />
+</svg>
