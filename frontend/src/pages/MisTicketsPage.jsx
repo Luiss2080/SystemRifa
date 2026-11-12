@@ -327,11 +327,18 @@ export function MisTicketsPage() {
       {tickets.length === 0 ? (
         <EmptyState
           icon={Ticket}
-          title={filtroEstado ? 'Sin tickets en este estado' : 'No tienes tickets registrados'}
+          title={filtroEstado || busqueda ? 'Sin coincidencias en tus tickets' : 'No tienes tickets registrados'}
           description="Explora el catálogo de rifas solidarias para reservar tus números."
           action={
-            filtroEstado ? (
-              <Button variant="secondary" onClick={() => setFiltroEstado('')}>
+            filtroEstado || busqueda ? (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setFiltroEstado('');
+                  setBusqueda('');
+                  setPage(1);
+                }}
+              >
                 Ver todos
               </Button>
             ) : (
@@ -342,72 +349,84 @@ export function MisTicketsPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {tickets.map((t) => {
-            const stubBg =
-              t.estado === 'VENDIDO'
-                ? 'bg-gradient-to-b from-emerald-600 to-teal-700 text-white border-emerald-200/70'
-                : t.estado === 'RESERVADO'
-                ? 'bg-gradient-to-b from-amber-500 to-orange-600 text-white border-amber-200/70'
-                : 'bg-gradient-to-b from-slate-500 to-slate-600 text-white border-slate-300';
-            return (
-              <div
-                key={t.ticketId}
-                className="flex overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md"
-              >
-                {/* Talón perforado izquierdo con el número */}
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            {ticketsPaginados.map((t) => {
+              const stubBg =
+                t.estado === 'VENDIDO'
+                  ? 'bg-gradient-to-b from-emerald-600 to-teal-700 text-white border-emerald-200/70'
+                  : t.estado === 'RESERVADO'
+                  ? 'bg-gradient-to-b from-amber-500 to-orange-600 text-white border-amber-200/70'
+                  : 'bg-gradient-to-b from-slate-500 to-slate-600 text-white border-slate-300';
+              return (
                 <div
-                  className={`flex w-28 shrink-0 flex-col items-center justify-center border-r-2 border-dashed p-3 text-center ${stubBg}`}
+                  key={t.ticketId}
+                  className="flex overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
                 >
-                  <span className="text-[10px] font-semibold uppercase tracking-widest opacity-85">
-                    Ticket
-                  </span>
-                  <span className="mt-0.5 font-mono text-2xl font-black tracking-tight">
-                    #{t.numeroTicket}
-                  </span>
-                  <span className="mt-1.5 rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-bold">
-                    {t.estado}
-                  </span>
-                </div>
+                  {/* Talón perforado izquierdo con el número */}
+                  <div
+                    className={`flex w-28 shrink-0 flex-col items-center justify-center border-r-2 border-dashed p-3 text-center ${stubBg}`}
+                  >
+                    <span className="text-[10px] font-semibold uppercase tracking-widest opacity-85">
+                      Ticket
+                    </span>
+                    <span className="mt-0.5 font-mono text-2xl font-black tracking-tight">
+                      #{t.numeroTicket}
+                    </span>
+                    <span className="mt-1.5 rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-bold">
+                      {t.estado}
+                    </span>
+                  </div>
 
-                {/* Cuerpo del comprobante */}
-                <div className="flex flex-1 flex-col justify-between p-4">
-                  <div className="space-y-1.5 text-sm">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold text-slate-900">{t.rifa?.nombre}</p>
-                      <Badge estado={t.estado} />
+                  {/* Cuerpo del comprobante */}
+                  <div className="flex flex-1 flex-col justify-between p-4">
+                    <div className="space-y-1.5 text-sm">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-bold text-slate-900">{t.rifa?.nombre}</p>
+                        <Badge estado={t.estado} />
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        Valor unitario:{' '}
+                        <span className="font-bold text-emerald-700">
+                          {formatearBs(t.rifa?.precioTicket || '0')}
+                        </span>
+                      </p>
+                      {t.pago && (
+                        <p className="text-xs text-slate-600">
+                          Pago #{t.pago.pagoId}: <Badge estado={t.pago.estado} />
+                        </p>
+                      )}
+                      {t.estado === 'RESERVADO' && t.reservadoHasta && !t.pagoId && (
+                        <p className="text-xs font-medium text-amber-700">
+                          Reserva vence: {formatearFecha(t.reservadoHasta)}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-xs text-slate-500">
-                      Valor unitario:{' '}
-                      <span className="font-bold text-emerald-700">
-                        {formatearBs(t.rifa?.precioTicket || '0')}
-                      </span>
-                    </p>
-                    {t.pago && (
-                      <p className="text-xs text-slate-600">
-                        Pago #{t.pago.pagoId}: <Badge estado={t.pago.estado} />
-                      </p>
-                    )}
-                    {t.estado === 'RESERVADO' && t.reservadoHasta && !t.pagoId && (
-                      <p className="text-xs font-medium text-amber-700">
-                        Reserva vence: {formatearFecha(t.reservadoHasta)}
-                      </p>
-                    )}
-                  </div>
 
-                  <div className="mt-3 flex justify-end border-t border-slate-100 pt-2.5">
-                    <Link to={`/rifas/${t.rifaId}`}>
-                      <Button variant="secondary" size="sm">
-                        Ver rifa
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Button>
-                    </Link>
+                    <div className="mt-3 flex justify-end border-t border-slate-100 pt-2.5">
+                      <Link to={`/rifas/${t.rifaId}`}>
+                        <Button variant="secondary" size="sm">
+                          Ver rifa
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          <PaginationCard
+            page={safePage}
+            totalPages={totalPages}
+            total={tickets.length}
+            showingFrom={(safePage - 1) * pageSize + 1}
+            showingTo={Math.min(safePage * pageSize, tickets.length)}
+            onPageChange={setPage}
+            itemLabel="tickets"
+          />
+        </>
       )}
 
       <Modal

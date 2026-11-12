@@ -166,7 +166,7 @@ export function AdminCausasPage() {
       icon: SlidersHorizontal,
       render: (r) => (
         <div className="flex items-center gap-1.5">
-          <Link to={`/?causaId=${r.causaId}`}>
+          <Link to={`/explorar?causaId=${r.causaId}`}>
             <RowActionButton icon={ExternalLink} title="Ver rifas asociadas" tone="view" />
           </Link>
           <RowActionButton
@@ -288,34 +288,43 @@ export function AdminCausasPage() {
         open={Boolean(modal)}
         onClose={() => setModal(null)}
         title={modal?.modo === 'editar' ? 'Editar causa solidaria' : 'Nueva causa solidaria'}
+        description="Define el propósito, el mensaje público para los donantes y la meta de recaudación."
+        maxWidth="max-w-xl"
       >
         <form onSubmit={handleGuardar} className="space-y-4">
           <Input
-            label="Nombre"
+            label="Nombre de la causa"
+            icon={HeartHandshake}
             required
+            placeholder="Ej. Albergue Patitas Felices"
             value={form.nombre}
             onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
           />
           <Textarea
-            label="Descripción"
+            label="Descripción e impacto"
             required
+            rows={4}
+            placeholder="Explica a qué se destinarán los fondos y quiénes se benefician."
             value={form.descripcion}
             onChange={(e) => setForm((f) => ({ ...f, descripcion: e.target.value }))}
           />
           <Input
             label="Meta de recaudación (Bs)"
             type="number"
+            icon={DollarSign}
             step="0.01"
             min="1"
+            placeholder="5000.00"
+            helperText="Se mostrará como referencia de progreso para las campañas vinculadas."
             value={form.meta}
             onChange={(e) => setForm((f) => ({ ...f, meta: e.target.value }))}
           />
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2.5 border-t border-slate-100 pt-4">
             <Button variant="secondary" onClick={() => setModal(null)}>
               Cancelar
             </Button>
             <Button type="submit" loading={saving}>
-              Guardar
+              {modal?.modo === 'editar' ? 'Guardar cambios' : 'Crear causa'}
             </Button>
           </div>
         </form>

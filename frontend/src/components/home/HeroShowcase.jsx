@@ -882,7 +882,11 @@ const FAQS = [
   },
   {
     q: '¿Qué métodos de pago se aceptan y cuánto tarda la verificación?',
-    a: 'Puedes registrar transferencias bancarias o pagos QR indicando tu número de referencia y adjuntando el comprobante. Nuestro equipo administrativo verifica cada comprobante y recibirás una notificación automática en tu perfil cuando tus tickets pasen a estado VENDIDO.',
+    a: 'Puedes registrar transferencias bancarias, pagos QR o efectivo indicando tu número de referencia. Nuestro equipo administrativo verifica cada comprobante y recibirás una notificación automática en tu perfil cuando tus tickets pasen a estado VENDIDO.',
+  },
+  {
+    q: '¿Puedo elegir números al azar o liberar una reserva?',
+    a: 'Sí. En el tablero de cada rifa puedes usar los botones "+1", "+3" o "+5" para seleccionar números disponibles al azar, y si ya confirmaste una reserva antes de pagar, puedes liberarla manualmente desde el modal de pago o desde "Mis tickets".',
   },
   {
     q: '¿Qué necesito para organizar una rifa solidaria?',
