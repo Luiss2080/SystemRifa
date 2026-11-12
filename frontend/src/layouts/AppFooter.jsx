@@ -11,7 +11,6 @@ import {
   HelpCircle,
   LayoutDashboard,
   Lightbulb,
-  Lock,
   Mail,
   MapPin,
   Phone,
@@ -294,17 +293,6 @@ export function AppFooter() {
             </p>
 
             <SocialLinks />
-
-            <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-800">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                Pagos auditados
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-slate-700">
-                <Lock className="h-3.5 w-3.5 text-amber-500" />
-                ACID · Zona La Paz
-              </span>
-            </div>
           </div>
 
           {/* Columna 2: SERVICIOS */}

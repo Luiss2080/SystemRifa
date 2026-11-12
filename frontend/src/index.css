@@ -104,6 +104,19 @@
   animation: marqueeScroll 34s linear infinite;
 }
 
+@keyframes shimmerProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-shimmer-bar {
+  animation: shimmerProgress 1.35s ease-in-out infinite;
+}
+
 .marquee-wrapper:hover .animate-marquee {
   animation-play-state: paused;
 }
