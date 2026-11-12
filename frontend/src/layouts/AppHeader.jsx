@@ -698,7 +698,7 @@ export function AppHeader({ variant = 'public' }) {
 
           {rolEtiqueta && (
             <span
-              className={`hidden shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 2xl:inline-flex ${rolEtiqueta.cls}`}
+              className={`hidden shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 xl:inline-flex ${rolEtiqueta.cls}`}
             >
               {rolEtiqueta.label}
             </span>
@@ -816,7 +816,7 @@ export function AppHeader({ variant = 'public' }) {
               {tienePermiso('solicitudes', 'crear') && (
                 <Link
                   to="/solicitudes/nueva"
-                  className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-100 2xl:inline-flex"
+                  className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-100 xl:inline-flex"
                 >
                   <FilePlus2 className="h-3.5 w-3.5 text-emerald-600" />
                   Nueva rifa
@@ -958,7 +958,7 @@ export function AppHeader({ variant = 'public' }) {
                     <div className="h-1.5 w-full bg-gradient-to-r from-emerald-700 via-teal-600 to-amber-500" />
 
                     <div className="flex flex-col items-center px-5 pt-5 pb-4 text-center">
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-700 via-teal-700 to-slate-900 text-xl font-extrabold tracking-tight text-white shadow-md ring-4 ring-emerald-50">
+                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-500 text-xl font-extrabold tracking-tight text-white shadow-md ring-4 ring-emerald-50">
                         {iniciales}
                       </span>
                       <p className="mt-3 max-w-full truncate text-base font-extrabold tracking-tight text-slate-900">

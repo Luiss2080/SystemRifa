@@ -19,73 +19,11 @@ import {
   Star,
   Target,
   Ticket,
+  Trophy,
   UserPlus,
   Users,
 } from 'lucide-react';
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
-
-const FALLBACK_CARDS = [
-  {
-    id: 'demo-1',
-    nombre: 'Gran Rifa Solidaria Pro-Salud',
-    causa: { nombre: 'Salud Comunitaria' },
-    precioTicket: 20,
-    ticketsDisponibles: 64,
-    cantidadTickets: 100,
-    estado: 'ACTIVA',
-    fechaFin: null,
-    isDemo: true,
-    palette: 'from-emerald-700 via-teal-700 to-emerald-900',
-  },
-  {
-    id: 'demo-2',
-    nombre: 'Kit Robótica y Becas Escolares',
-    causa: { nombre: 'Educación Digital' },
-    precioTicket: 15,
-    ticketsDisponibles: 42,
-    cantidadTickets: 100,
-    estado: 'ACTIVA',
-    fechaFin: null,
-    isDemo: true,
-    palette: 'from-slate-800 via-slate-900 to-emerald-950',
-  },
-  {
-    id: 'demo-3',
-    nombre: 'Campaña Equipamiento Infantil',
-    causa: { nombre: 'Niñez Protegida' },
-    precioTicket: 25,
-    ticketsDisponibles: 58,
-    cantidadTickets: 100,
-    estado: 'ACTIVA',
-    fechaFin: null,
-    isDemo: true,
-    palette: 'from-teal-700 via-emerald-800 to-slate-900',
-  },
-  {
-    id: 'demo-4',
-    nombre: 'Rifa Tecnológica Universitaria',
-    causa: { nombre: 'Talento Joven' },
-    precioTicket: 10,
-    ticketsDisponibles: 75,
-    cantidadTickets: 100,
-    estado: 'ACTIVA',
-    fechaFin: null,
-    isDemo: true,
-    palette: 'from-amber-700 via-orange-800 to-slate-900',
-  },
-  {
-    id: 'demo-5',
-    nombre: 'Apoyo Refugio Esperanza',
-    causa: { nombre: 'Bienestar Animal' },
-    precioTicket: 12,
-    ticketsDisponibles: 80,
-    cantidadTickets: 100,
-    estado: 'ACTIVA',
-    fechaFin: null,
-    isDemo: true,
-    palette: 'from-emerald-800 via-cyan-900 to-slate-950',
-  },
-];
 
 const CARD_PALETTES = [
   'from-emerald-800 via-teal-800 to-slate-900',
@@ -97,22 +35,17 @@ const CARD_PALETTES = [
 
 export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = true }) {
   const items = useMemo(() => {
-    if (causas.length > 0) {
-      return causas.map((c, idx) => ({
-        causaId: c.causaId,
-        code: String(idx + 1).padStart(2, '0'),
-        nombre: c.nombre,
-        rifasCount: c.rifasCount ?? 0,
-        meta: c.meta,
-      }));
-    }
-    return [
-      { causaId: null, code: '01', nombre: 'SALUD COMUNITARIA', rifasCount: 3, meta: 15000 },
-      { causaId: null, code: '02', nombre: 'EDUCACIÓN Y BECAS', rifasCount: 2, meta: 12000 },
-      { causaId: null, code: '03', nombre: 'HOGAR ESPERANZA', rifasCount: 4, meta: 20000 },
-      { causaId: null, code: '04', nombre: 'APOYO SOCIAL ACTIVO', rifasCount: 2, meta: 10000 },
-    ];
+    if (!causas || causas.length === 0) return [];
+    return causas.map((c, idx) => ({
+      causaId: c.causaId,
+      code: String(idx + 1).padStart(2, '0'),
+      nombre: c.nombre,
+      rifasCount: c.rifasCount ?? 0,
+      meta: c.meta,
+    }));
   }, [causas]);
+
+  if (items.length === 0) return null;
 
   const looped = [...items, ...items, ...items, ...items];
 
@@ -161,7 +94,13 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = tru
   );
 }
 
-export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
+export function HeroShowcase({
+  rifas = [],
+  causas = [],
+  resumenPublico = null,
+  loadingRifas = false,
+  onSelectCausa,
+}) {
   const navigate = useNavigate();
   const [centerIndex, setCenterIndex] = useState(2);
   const [isCompactScreen, setIsCompactScreen] = useState(() =>
@@ -177,7 +116,7 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
   }, []);
 
   const cards = useMemo(() => {
-    const reales = rifas.slice(0, 5).map((r, idx) => ({
+    return rifas.slice(0, 5).map((r, idx) => ({
       id: r.rifaId,
       rifaId: r.rifaId,
       nombre: r.nombre,
@@ -188,23 +127,12 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
       cantidadTickets: r.cantidadTickets || 100,
       estado: r.estado || 'ACTIVA',
       fechaFin: r.fechaFin,
-      isDemo: false,
       palette: CARD_PALETTES[idx % CARD_PALETTES.length],
     }));
-
-    if (reales.length === 0) return FALLBACK_CARDS;
-    if (reales.length >= 5) return reales;
-
-    const merged = [...reales];
-    let i = 0;
-    while (merged.length < 5) {
-      merged.push(FALLBACK_CARDS[i % FALLBACK_CARDS.length]);
-      i += 1;
-    }
-    return merged;
   }, [rifas]);
 
-  const activeIdx = Math.min(centerIndex, cards.length - 1);
+  const metricas = resumenPublico?.metricas;
+  const activeIdx = cards.length > 0 ? Math.min(centerIndex, cards.length - 1) : 0;
   const fanStepX = isCompactScreen ? 56 : 86;
 
   return (

@@ -53,49 +53,46 @@ export function ResultadoPublicoPage() {
   const { rifa, sorteo, premios } = data;
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6">
-      <section className="overflow-hidden rounded-3xl border border-emerald-200/80 bg-white/95 shadow-xs backdrop-blur-md">
-        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
-        <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:px-6">
-          <div className="flex items-center gap-3.5">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-200/80 shadow-2xs">
-              <Trophy className="h-6 w-6" />
-            </span>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-                  {rifa.nombre}
-                </h1>
-                <Badge estado={rifa.estado} />
-              </div>
-              <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
-                Causa solidaria: <strong className="text-slate-700">{rifa.causa?.nombre}</strong>
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" size="sm" onClick={copiarEnlace}>
-              {copiado ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
-              {copiado ? 'Enlace copiado' : 'Compartir resultado'}
+    <div className="mx-auto w-full max-w-5xl space-y-8">
+      {/* Cabecera centrada sin contenedor externo innecesario */}
+      <section className="mx-auto max-w-2xl space-y-3 pt-2 text-center">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200/80">
+            <Trophy className="h-3.5 w-3.5 text-amber-600" />
+            Resultado público oficial
+          </span>
+          <Badge estado={rifa.estado} />
+        </div>
+
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          {rifa.nombre}
+        </h1>
+        <p className="text-sm text-slate-600">
+          Causa solidaria: <strong className="text-slate-900">{rifa.causa?.nombre}</strong>
+        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+          <Button variant="secondary" size="sm" onClick={copiarEnlace}>
+            {copiado ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
+            {copiado ? 'Enlace copiado' : 'Compartir resultado'}
+          </Button>
+          <Link to={`/rifas/${id}`}>
+            <Button variant="secondary" size="sm">
+              Volver al detalle
             </Button>
-            <Link to={`/rifas/${id}`}>
-              <Button variant="secondary" size="sm">
-                Volver al detalle
-              </Button>
-            </Link>
-          </div>
+          </Link>
         </div>
       </section>
 
       {sorteo ? (
-        <section className="animate-modal-in rounded-3xl bg-gradient-to-br from-amber-500 via-amber-500 to-orange-500 p-6 text-white shadow-sm sm:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <section className="animate-modal-in rounded-3xl bg-gradient-to-br from-amber-500 via-amber-500 to-orange-500 p-6 text-white shadow-lg sm:p-8">
+          <div className="flex flex-col items-center justify-between gap-5 text-center sm:flex-row sm:text-left">
             <div className="space-y-1.5">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
                 <Trophy className="h-3.5 w-3.5" />
                 Sorteo oficial realizado el {formatearFecha(sorteo.fecha)}
               </span>
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-extrabold sm:text-3xl">
                 Ticket ganador principal: #{sorteo.numeroGanadorPrincipal}
               </h2>
               <p className="text-sm text-amber-50">
@@ -103,7 +100,7 @@ export function ResultadoPublicoPage() {
                 {sorteo.ganadorPrincipal?.iniciales})
               </p>
               {sorteo.observacion && (
-                <p className="mt-2 rounded-lg bg-black/15 px-3 py-2 text-xs text-white/95">
+                <p className="mt-2 rounded-xl bg-black/15 px-3 py-2 text-xs text-white/95">
                   Observación: {sorteo.observacion}
                 </p>
               )}
@@ -115,15 +112,22 @@ export function ResultadoPublicoPage() {
           </div>
         </section>
       ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+        <div className="rounded-2xl border border-slate-200 bg-white/90 p-6 text-center shadow-2xs">
           <p className="text-sm text-slate-600">
             Esta rifa finalizó sin sorteo registrado (sin tickets vendidos).
           </p>
         </div>
       )}
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-bold text-slate-900">Detalle de premios y ganadores</h2>
+      <section className="space-y-4">
+        <div className="space-y-1 text-center">
+          <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
+            Verificación de adjudicaciones
+          </span>
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+            Detalle de premios y ganadores
+          </h2>
+        </div>
         <div className="grid gap-4 md:grid-cols-2">
           {premios.map((p, idx) => (
             <div

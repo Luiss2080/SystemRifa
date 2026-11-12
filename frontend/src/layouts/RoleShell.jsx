@@ -527,17 +527,23 @@ export function RoleShell({ children }) {
                         to={item.to}
                         title={!showExpanded ? item.label : undefined}
                         className={({ isActive }) =>
-                          `group flex items-center gap-2.5 rounded-2xl px-3 py-2 text-[13px] font-semibold transition ${
+                          `group relative flex items-center gap-2.5 rounded-2xl px-3 py-2 text-[13px] font-semibold transition ${
                             !showExpanded ? 'justify-center px-2' : ''
                           } ${
                             isActive
-                              ? 'border border-emerald-200/80 bg-emerald-50/90 text-emerald-900 shadow-2xs'
+                              ? 'border border-emerald-200/90 bg-emerald-50/90 text-emerald-950 shadow-2xs'
                               : 'border border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                           }`
                         }
                       >
                         {({ isActive }) => (
                           <>
+                            {isActive && showExpanded && (
+                              <span
+                                aria-hidden="true"
+                                className="absolute top-2 bottom-2 left-0 w-1 rounded-r-full bg-emerald-600"
+                              />
+                            )}
                             <span
                               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl transition ${
                                 isActive
@@ -729,7 +735,7 @@ export function RoleShell({ children }) {
               {tienePermiso('solicitudes', 'crear') && (
                 <Link
                   to="/solicitudes/nueva"
-                  className="hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:-translate-y-0.5 hover:from-emerald-700 hover:to-teal-700 xl:inline-flex"
+                  className="hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:-translate-y-0.5 hover:from-emerald-700 hover:to-teal-700 lg:inline-flex"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   Nueva Rifa
@@ -739,23 +745,32 @@ export function RoleShell({ children }) {
               {tienePermiso('pagos', 'verificar') ? (
                 <Link
                   to="/admin/pagos"
-                  className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 2xl:inline-flex"
+                  className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 xl:inline-flex"
                 >
                   <CheckSquare className="h-3.5 w-3.5 text-emerald-600" />
                   Verificar Pagos
                 </Link>
               ) : (
-                <Link
-                  to="/explorar"
-                  className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 xl:inline-flex"
-                >
-                  <Ticket className="h-3.5 w-3.5 text-emerald-600" />
-                  Catálogo
-                </Link>
+                <>
+                  <Link
+                    to="/mis-tickets"
+                    className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 xl:inline-flex"
+                  >
+                    <Ticket className="h-3.5 w-3.5 text-emerald-600" />
+                    Mis Tickets
+                  </Link>
+                  <Link
+                    to="/explorar"
+                    className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 xl:inline-flex"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                    Catálogo
+                  </Link>
+                </>
               )}
 
               {/* Reloj en tiempo real */}
-              <div className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 2xl:inline-flex">
+              <div className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-3 py-1.5 text-[11px] font-semibold text-slate-600 xl:inline-flex">
                 <Clock className="h-3.5 w-3.5 text-emerald-600" />
                 <span className="tabular-nums">{clockLabel}</span>
               </div>

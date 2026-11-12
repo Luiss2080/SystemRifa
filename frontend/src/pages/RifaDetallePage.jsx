@@ -368,111 +368,120 @@ export function RifaDetallePage() {
   }
 
   return (
-    <div className={`space-y-6 ${rifaAbierta && seleccionados.length > 0 ? 'pb-20 lg:pb-0' : ''}`}>
+    <div className={`space-y-8 ${rifaAbierta && seleccionados.length > 0 ? 'pb-20 lg:pb-0' : ''}`}>
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
         <Link
           to={autenticado ? '/explorar' : '/'}
-          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-800"
+          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1.5 text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-800"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Volver al catálogo
         </Link>
         <Link
           to="/causas"
-          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3 py-1.5 text-emerald-800 transition hover:bg-emerald-100"
+          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50/80 px-3.5 py-1.5 text-emerald-800 transition hover:bg-emerald-100"
         >
           <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
           Ver causas solidarias
         </Link>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
-        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
-                <HeartHandshake className="h-3.5 w-3.5" />
-                {rifa.causa?.nombre}
-              </span>
-              <Badge estado={rifa.estado} />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900">{rifa.nombre}</h1>
-            {rifa.descripcion && <p className="max-w-3xl text-sm text-slate-600">{rifa.descripcion}</p>}
-            {rifa.causa?.descripcion && (
-              <p className="text-xs text-slate-500">
-                <strong>Causa solidaria:</strong> {rifa.causa.descripcion}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="rounded-xl bg-emerald-50 px-4 py-2.5 text-right">
-              <p className="text-xs font-medium text-emerald-700">Precio por número</p>
-              <p className="text-xl font-extrabold text-emerald-800">
-                {formatearBs(rifa.precioTicket)}
-              </p>
-            </div>
-            {rifa.estado === 'FINALIZADA' && (
-              <Link to={`/rifas/${rifa.rifaId}/resultado`}>
-                <Button variant="amber">
-                  <Trophy className="h-4 w-4" />
-                  Ver resultado del sorteo
-                </Button>
-              </Link>
-            )}
-          </div>
+      {/* Cabecera centrada sin contenedor externo innecesario */}
+      <section className="mx-auto max-w-3xl space-y-4 text-center">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200/80">
+            <HeartHandshake className="h-3.5 w-3.5" />
+            {rifa.causa?.nombre || 'Causa solidaria'}
+          </span>
+          <Badge estado={rifa.estado} />
         </div>
 
-        <div className="mt-5 grid gap-3 border-t border-slate-100 pt-4 text-xs text-slate-600 sm:grid-cols-4">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-slate-400" />
-            <span>Cierre: {formatearFecha(rifa.fechaFin)}</span>
-          </div>
-          <div>
-            Disponibles: <strong className="text-emerald-700">{rifa.conteos?.DISPONIBLE ?? 0}</strong>
-          </div>
-          <div>
-            Reservados: <strong className="text-amber-700">{rifa.conteos?.RESERVADO ?? 0}</strong>
-          </div>
-          <div>
-            Vendidos: <strong className="text-indigo-700">{rifa.conteos?.VENDIDO ?? 0}</strong>
-          </div>
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          {rifa.nombre}
+        </h1>
+
+        {rifa.descripcion && (
+          <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+            {rifa.descripcion}
+          </p>
+        )}
+
+        {rifa.causa?.descripcion && (
+          <p className="mx-auto max-w-xl text-xs text-slate-500">
+            <strong className="text-slate-700">Objetivo solidario:</strong> {rifa.causa.descripcion}
+          </p>
+        )}
+
+        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1 text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/90 px-4 py-1.5 font-bold text-emerald-800 shadow-2xs">
+            Ticket: <strong className="text-sm font-extrabold">{formatearBs(rifa.precioTicket)}</strong>
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1.5 font-medium text-slate-600 shadow-2xs">
+            <Calendar className="h-3.5 w-3.5 text-slate-400" />
+            Cierre: {formatearFecha(rifa.fechaFin)}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1.5 font-semibold text-emerald-700 shadow-2xs">
+            {rifa.conteos?.DISPONIBLE ?? 0} disponibles
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1.5 font-semibold text-amber-700 shadow-2xs">
+            {rifa.conteos?.RESERVADO ?? 0} reservados
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-3.5 py-1.5 font-semibold text-indigo-700 shadow-2xs">
+            {rifa.conteos?.VENDIDO ?? 0} vendidos
+          </span>
         </div>
-      </div>
+
+        {rifa.estado === 'FINALIZADA' && (
+          <div className="pt-1">
+            <Link to={`/rifas/${rifa.rifaId}/resultado`}>
+              <Button variant="amber">
+                <Trophy className="h-4 w-4" />
+                Ver resultado del sorteo
+              </Button>
+            </Link>
+          </div>
+        )}
+      </section>
 
       {rifaAbierta && (
-        <StepIndicator
-          currentStep={pasoActual}
-          steps={[
-            { label: 'Elige tus números', hint: `Hasta ${MAX_SELECCION} por reserva` },
-            { label: 'Confirma la reserva', hint: 'Bloqueo por 15 minutos' },
-            { label: 'Registra comprobante', hint: 'Validación del administrador' },
-          ]}
-        />
+        <div className="mx-auto max-w-4xl">
+          <StepIndicator
+            currentStep={pasoActual}
+            steps={[
+              { label: 'Elige tus números', hint: `Hasta ${MAX_SELECCION} por reserva` },
+              { label: 'Confirma la reserva', hint: 'Bloqueo por 15 minutos' },
+              { label: 'Registra comprobante', hint: 'Validación del administrador' },
+            ]}
+          />
+        </div>
       )}
 
-      {/* Premios */}
+      {/* Premios directos sin contenedor blanco externo */}
       {rifa.premios?.length > 0 && (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-          <h2 className="mb-3 flex items-center gap-2 text-base font-bold text-slate-900">
+        <section className="space-y-4">
+          <div className="flex items-center justify-center gap-2 text-center">
             <Award className="h-5 w-5 text-amber-500" />
-            Premios de la rifa
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+              Premios de la rifa
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rifa.premios.map((p, idx) => (
               <div
                 key={p.premioId}
-                className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-slate-50/80 p-3.5 transition hover:border-amber-300 hover:bg-amber-50/30"
+                className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:border-amber-300 hover:shadow-md"
               >
                 <div>
-                  <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
+                  <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-800">
                     {idx + 1}° Premio
                   </span>
-                  <p className="mt-1.5 font-semibold text-slate-900">{p.nombre}</p>
-                  {p.descripcion && <p className="mt-1 text-xs text-slate-600">{p.descripcion}</p>}
+                  <p className="mt-2 text-base font-bold text-slate-900">{p.nombre}</p>
+                  {p.descripcion && (
+                    <p className="mt-1 text-xs leading-relaxed text-slate-600">{p.descripcion}</p>
+                  )}
                 </div>
                 {p.valor && (
-                  <p className="mt-2.5 text-xs font-semibold text-emerald-700">
+                  <p className="mt-3 border-t border-slate-100 pt-2.5 text-xs font-bold text-emerald-700">
                     Valor estimado: {formatearBs(p.valor)}
                   </p>
                 )}
@@ -576,7 +585,7 @@ export function RifaDetallePage() {
                   onClick={() => setFiltroTablero(tab.key)}
                   className={`rounded-lg px-2.5 py-1 text-xs font-medium transition cursor-pointer ${
                     filtroTablero === tab.key
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-emerald-600 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -587,11 +596,10 @@ export function RifaDetallePage() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative w-full sm:w-56">
-              <Search className="pointer-events-none absolute top-2.5 left-3 h-4 w-4 text-slate-400" />
+            <div className="w-full sm:w-56">
               <Input
+                icon={Search}
                 placeholder="Buscar número..."
-                className="pl-9"
                 value={busquedaNumero}
                 onChange={(e) => setBusquedaNumero(e.target.value)}
               />

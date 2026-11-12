@@ -5,6 +5,11 @@ export async function getCausasPublicas() {
   return data;
 }
 
+export async function getResumenPublico() {
+  const { data } = await apiClient.get('/rifas/resumen-publico');
+  return data;
+}
+
 export async function getCatalogoRifas(params) {
   const { data } = await apiClient.get('/rifas', { params });
   return data;
