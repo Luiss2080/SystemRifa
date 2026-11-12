@@ -131,33 +131,19 @@ export function AppHeader({ variant = 'public' }) {
   const noLeidas = notifResumen?.noLeidasCount || 0;
   const recientes = notifRecientes?.items || [];
 
-  const tieneAdminPanel =
-    esAdmin ||
-    tieneAlgunPermiso([
-      ['solicitudes', 'revisar'],
-      ['pagos', 'verificar'],
-      ['causas', 'crud'],
-      ['usuarios', 'leer'],
-      ['roles', 'administrar'],
-      ['permisos', 'administrar'],
-      ['plantillas', 'administrar'],
-    ]);
-
-  const tieneOrganizadorPanel =
-    esOrganizador ||
-    tieneAlgunPermiso([
-      ['rifas', 'administrar'],
-      ['premios', 'crud'],
-      ['sorteos', 'realizar'],
-      ['ganadores', 'publicar'],
-    ]);
-
-  const primerAdminDestino =
-    esAdmin || tienePermiso('reportes', 'leer')
-      ? '/admin/reportes'
-      : tienePermiso('solicitudes', 'revisar')
-        ? '/admin/solicitudes'
-        : '/admin/pagos';
+  const {
+    rolPrincipal,
+    tieneAdminPanel,
+    tieneOrganizadorPanel,
+    primerAdminDestino,
+    homeDestino,
+  } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
 
   function scrollToSection(id) {
     setDropdownAbierto(null);
@@ -378,11 +364,11 @@ export function AppHeader({ variant = 'public' }) {
       {
         id: 'admin-pub',
         type: 'dropdown',
-        label: 'Explorar Web',
+        label: 'Catálogo',
         items: [
           {
-            to: '/',
-            label: 'Catálogo público',
+            to: '/explorar',
+            label: 'Catálogo activo',
             desc: 'Vista de participante en vivo',
             icon: Ticket,
             color: 'bg-emerald-100 text-emerald-700',
@@ -447,7 +433,7 @@ export function AppHeader({ variant = 'public' }) {
         label: 'Explorar',
         items: [
           {
-            to: '/',
+            to: '/explorar',
             label: 'Catálogo de rifas',
             desc: 'Campañas activas en la plataforma',
             icon: Ticket,
@@ -500,7 +486,7 @@ export function AppHeader({ variant = 'public' }) {
         label: 'Explorar',
         items: [
           {
-            to: '/',
+            to: '/explorar',
             label: 'Catálogo de rifas',
             desc: 'Elige tus números en tiempo real',
             icon: Ticket,
@@ -512,13 +498,6 @@ export function AppHeader({ variant = 'public' }) {
             desc: 'Conoce a quién apoya cada sorteo',
             icon: HeartHandshake,
             color: 'bg-rose-100 text-rose-700',
-          },
-          {
-            action: () => scrollToSection('como-funciona'),
-            label: 'Cómo funciona',
-            desc: 'Guía rápida de reserva y pago',
-            icon: Sparkles,
-            color: 'bg-amber-100 text-amber-700',
           },
         ],
       },
@@ -582,28 +561,94 @@ export function AppHeader({ variant = 'public' }) {
     ];
   }
 
+  const nombreCompleto =
+    [usuario?.nombres, usuario?.apellidos].filter(Boolean).join(' ').trim() ||
+    usuario?.alias ||
+    'Usuario';
+  const iniciales =
+    `${(usuario?.nombres || '')[0] || ''}${(usuario?.apellidos || '')[0] || ''}`.toUpperCase() ||
+    (usuario?.alias || 'RS').slice(0, 2).toUpperCase();
+
   const cuentaLinks = autenticado
     ? [
-        { to: '/perfil', label: 'Mi perfil y contraseña', icon: User },
-        { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
-        { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
-        ...(tienePermiso('solicitudes', 'crear')
-          ? [{ to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban }]
-          : []),
-        ...(tieneOrganizadorPanel || tienePermiso('rifas', 'leer')
-          ? [{ to: '/organizador/rifas', label: 'Gestionar rifas', icon: Sparkles }]
-          : []),
-        ...(tieneAdminPanel
-          ? [{ to: primerAdminDestino, label: 'Panel Administración', icon: LayoutDashboard }]
-          : []),
+        {
+          to: '/perfil',
+          label: 'Mi perfil completo',
+          icon: User,
+          iconBox: 'bg-emerald-50 text-emerald-700',
+        },
+        {
+          to: '/perfil#seguridad',
+          label: 'Seguridad y contraseña',
+          icon: ShieldCheck,
+          iconBox: 'bg-amber-50 text-amber-700',
+        },
+        ...(rolPrincipal === 'ADMINISTRADOR'
+          ? [
+              {
+                to: primerAdminDestino,
+                label: 'Consola de administración',
+                icon: LayoutDashboard,
+                iconBox: 'bg-slate-100 text-slate-700',
+              },
+              {
+                to: '/admin/auditoria',
+                label: 'Auditoría del sistema',
+                icon: History,
+                iconBox: 'bg-indigo-50 text-indigo-700',
+              },
+            ]
+          : rolPrincipal === 'ORGANIZADOR'
+            ? [
+                {
+                  to: '/organizador/rifas',
+                  label: 'Gestionar mis rifas',
+                  icon: Sparkles,
+                  iconBox: 'bg-teal-50 text-teal-700',
+                },
+                ...(tienePermiso('tickets', 'comprar')
+                  ? [
+                      {
+                        to: '/mis-tickets',
+                        label: 'Mis tickets',
+                        icon: Ticket,
+                        iconBox: 'bg-sky-50 text-sky-700',
+                      },
+                    ]
+                  : []),
+              ]
+            : [
+                {
+                  to: '/mis-tickets',
+                  label: 'Mis tickets',
+                  icon: Ticket,
+                  iconBox: 'bg-teal-50 text-teal-700',
+                },
+                {
+                  to: '/mis-pagos',
+                  label: 'Mis pagos',
+                  icon: CreditCard,
+                  iconBox: 'bg-sky-50 text-sky-700',
+                },
+                ...(tienePermiso('solicitudes', 'crear')
+                  ? [
+                      {
+                        to: '/solicitudes/mias',
+                        label: 'Mis solicitudes',
+                        icon: FolderKanban,
+                        iconBox: 'bg-indigo-50 text-indigo-700',
+                      },
+                    ]
+                  : []),
+              ]),
       ]
     : [];
 
   const rolEtiqueta = !autenticado
     ? null
-    : esAdmin
+    : tieneAdminPanel
       ? { label: 'Administrador', cls: 'bg-emerald-100 text-emerald-800 ring-emerald-300/80' }
-      : esOrganizador
+      : tieneOrganizadorPanel
         ? { label: 'Organizador', cls: 'bg-teal-100 text-teal-800 ring-teal-300/80' }
         : { label: 'Participante', cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200' };
 
@@ -616,22 +661,14 @@ export function AppHeader({ variant = 'public' }) {
   }
 
   const pillItemClass = ({ isActive }) =>
-    `inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-wide transition ${
+    `inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition xl:gap-1.5 xl:px-3.5 xl:text-[12px] ${
       isActive
         ? 'bg-emerald-700 text-white shadow-xs'
         : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
     }`;
 
   const pillPlainClass =
-    'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-wide text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer';
-
-  const homeDestino = !autenticado
-    ? '/'
-    : tieneAdminPanel
-      ? primerAdminDestino
-      : tieneOrganizadorPanel
-        ? '/organizador/rifas'
-        : '/';
+    'inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer xl:gap-1.5 xl:px-3.5 xl:text-[12px]';
 
   return (
     <header
@@ -639,16 +676,16 @@ export function AppHeader({ variant = 'public' }) {
         esPanel ? 'border-t-[3px] border-t-emerald-600' : ''
       }`}
     >
-      <div className="flex h-18 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <div className="flex h-18 w-full items-center justify-between gap-2 px-4 sm:px-6 lg:gap-3 lg:px-8">
         {/* Marca / Logo */}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex min-w-0 shrink-0 items-center gap-2.5">
           <Link to={homeDestino} className="group flex items-center gap-2.5">
             <BrandMark size="lg" className="shadow-md shadow-emerald-600/20 group-hover:scale-105" />
             <span className="leading-none">
               <span className="block text-[15px] font-extrabold tracking-tight text-slate-900">
                 RIFAS <span className="text-emerald-600">SOLIDARIAS</span>
               </span>
-              <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+              <span className="mt-0.5 hidden text-[10px] font-semibold uppercase tracking-widest text-slate-500 xl:block">
                 {esPanel ? 'Consola de Gestión' : 'Sorteos Auditados'}
               </span>
             </span>
@@ -656,18 +693,18 @@ export function AppHeader({ variant = 'public' }) {
 
           {rolEtiqueta && (
             <span
-              className={`hidden shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 xl:inline-flex ${rolEtiqueta.cls}`}
+              className={`hidden shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 2xl:inline-flex ${rolEtiqueta.cls}`}
             >
               {rolEtiqueta.label}
             </span>
           )}
         </div>
 
-        {/* Barra Central Ordenada con Desplegables */}
+        {/* Barra Central Ordenada con Desplegables Centrados */}
         <nav
           ref={navRef}
           aria-label="Navegación principal"
-          className="hidden items-center gap-1 rounded-full border border-slate-200/90 bg-slate-50/75 px-2 py-1.5 shadow-2xs lg:flex"
+          className="hidden items-center gap-0.5 rounded-full border border-slate-200/90 bg-slate-50/75 px-1.5 py-1 shadow-2xs lg:flex xl:gap-1 xl:px-2 xl:py-1.5"
         >
           {navItems
             .filter((item) => item.type !== 'dropdown' || (item.items && item.items.length > 0))
@@ -691,53 +728,55 @@ export function AppHeader({ variant = 'public' }) {
                   </button>
 
                   {isOpen && (
-                    <div className="animate-modal-in absolute left-0 mt-3 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl ring-1 ring-slate-900/5">
-                      {item.items.map((sub) => {
-                        const SubIcon = sub.icon;
-                        const inner = (
-                          <>
-                            <span
-                              className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${sub.color}`}
-                            >
-                              <SubIcon className="h-4 w-4" />
-                            </span>
-                            <span className="min-w-0">
-                              <span className="block text-xs font-bold text-slate-900">
-                                {sub.label}
+                    <div className="absolute top-full left-1/2 z-40 mt-3 w-72 max-w-[calc(100vw-2rem)] -translate-x-1/2">
+                      <div className="animate-modal-in overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl ring-1 ring-slate-900/5">
+                        {item.items.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const inner = (
+                            <>
+                              <span
+                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${sub.color}`}
+                              >
+                                <SubIcon className="h-4 w-4" />
                               </span>
-                              {sub.desc && (
-                                <span className="block text-[11px] leading-snug text-slate-500">
-                                  {sub.desc}
+                              <span className="min-w-0">
+                                <span className="block text-xs font-bold text-slate-900">
+                                  {sub.label}
                                 </span>
-                              )}
-                            </span>
-                          </>
-                        );
+                                {sub.desc && (
+                                  <span className="block text-[11px] leading-snug text-slate-500">
+                                    {sub.desc}
+                                  </span>
+                                )}
+                              </span>
+                            </>
+                          );
 
-                        if (sub.action) {
+                          if (sub.action) {
+                            return (
+                              <button
+                                key={sub.label}
+                                type="button"
+                                onClick={sub.action}
+                                className="flex w-full items-start gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-emerald-50/70 cursor-pointer"
+                              >
+                                {inner}
+                              </button>
+                            );
+                          }
+
                           return (
-                            <button
-                              key={sub.label}
-                              type="button"
-                              onClick={sub.action}
-                              className="flex w-full items-start gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-emerald-50/70 cursor-pointer"
+                            <Link
+                              key={sub.to}
+                              to={sub.to}
+                              onClick={() => setDropdownAbierto(null)}
+                              className="flex items-start gap-2.5 rounded-xl px-3 py-2 transition hover:bg-emerald-50/70"
                             >
                               {inner}
-                            </button>
+                            </Link>
                           );
-                        }
-
-                        return (
-                          <Link
-                            key={sub.to}
-                            to={sub.to}
-                            onClick={() => setDropdownAbierto(null)}
-                            className="flex items-start gap-2.5 rounded-xl px-3 py-2 transition hover:bg-emerald-50/70"
-                          >
-                            {inner}
-                          </Link>
-                        );
-                      })}
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
