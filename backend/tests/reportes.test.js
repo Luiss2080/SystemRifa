@@ -1,3 +1,4 @@
+import { performance } from 'node:perf_hooks';
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/app.js';

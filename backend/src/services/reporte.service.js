@@ -185,3 +185,4 @@ export async function listarAuditoria(usuario, query) {
     }
   };
 }
+

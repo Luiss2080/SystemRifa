@@ -35,3 +35,4 @@ export async function getAuditoria(req, res, next) {
     next(err);
   }
 }
+

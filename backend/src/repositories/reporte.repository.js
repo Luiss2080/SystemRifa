@@ -108,3 +108,4 @@ export async function getResumenGlobalData(db = prisma) {
     pagosPorEstado
   };
 }
+
