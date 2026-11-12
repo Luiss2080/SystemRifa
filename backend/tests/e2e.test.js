@@ -114,7 +114,7 @@ describe('Flujo End-to-End Completo (Paso 14)', () => {
       .post(`/api/solicitudes/${solId}/aprobar`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ observacion: 'Aprobada en E2E' })
-      .expect(200);
+      .expect(201);
     const rifaId = aprobRes.body.rifa.rifaId;
 
     // 6. Organizador agrega 2 premios
