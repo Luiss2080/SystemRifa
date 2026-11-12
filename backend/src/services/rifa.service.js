@@ -41,6 +41,44 @@ function formatRifaPublica(r, extras = {}) {
   };
 }
 
+export async function obtenerResumenPublico() {
+  const { metricas, ultimosSorteos } = await rifaRepo.findResumenPublico(new Date());
+
+  return {
+    metricas,
+    ultimosSorteos: ultimosSorteos.map((s) => {
+      const u = s.ticketGanador?.usuario;
+      const iniciales = u
+        ? `${u.nombres || ''} ${u.apellidos || ''}`
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((p) => `${p[0].toUpperCase()}.`)
+            .join(' ')
+        : '';
+
+      const premioPrincipal = s.rifa.premios?.[0];
+      return {
+        sorteoId: s.sorteoId,
+        rifaId: s.rifa.rifaId,
+        nombreRifa: s.rifa.nombre,
+        causa: s.rifa.causa,
+        fechaSorteo: s.fecha,
+        numeroGanadorPrincipal: s.ticketGanador?.numeroTicket ?? null,
+        ganador: u ? { alias: u.alias, iniciales } : null,
+        premioPrincipal: premioPrincipal
+          ? {
+              nombre: premioPrincipal.nombre,
+              valor: formatDecimal(premioPrincipal.valor),
+              reclamado: premioPrincipal.reclamado
+            }
+          : null,
+        premiosCount: s.rifa.premios?.length ?? 0
+      };
+    })
+  };
+}
+
 export async function listarCatalogoPublico({ page, limit, causaId }) {
   const ahora = new Date();
   const { items, total, disponiblesMap } = await rifaRepo.findCatalogoPublico({

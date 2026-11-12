@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getCatalogoPublico,
   getMisRifas,
+  getResumenPublico,
   getRifaById,
   patchExtenderRifa
 } from '../controllers/rifa.controller.js';

@@ -179,3 +179,76 @@ export async function extendRifa(rifaId, fechaFin, tx = prisma) {
     }
   });
 }
+
+export async function findResumenPublico(ahora = new Date(), db = prisma) {
+  const [
+    rifasActivas,
+    rifasFinalizadas,
+    causasActivas,
+    participantesActivos,
+    ticketsVendidosTotal,
+    premiosEntregados,
+    ultimosSorteos
+  ] = await Promise.all([
+    db.rifa.count({
+      where: {
+        estado: { in: ['ACTIVA', 'EXTENDIDA'] },
+        fechaInicio: { lte: ahora },
+        fechaFin: { gt: ahora },
+        premios: { some: { activo: true } }
+      }
+    }),
+    db.rifa.count({
+      where: { estado: 'FINALIZADA' }
+    }),
+    db.causaSolidaria.count(),
+    db.usuario.count({ where: { activo: true } }),
+    db.ticket.count({ where: { estado: 'VENDIDO' } }),
+    db.premio.count({ where: { activo: true, reclamado: true } }),
+    db.sorteo.findMany({
+      take: 4,
+      orderBy: { fecha: 'desc' },
+      select: {
+        sorteoId: true,
+        fecha: true,
+        observacion: true,
+        rifa: {
+          select: {
+            rifaId: true,
+            nombre: true,
+            causa: { select: { causaId: true, nombre: true } },
+            premios: {
+              where: { activo: true },
+              orderBy: { premioId: 'asc' },
+              select: { premioId: true, nombre: true, valor: true, reclamado: true }
+            }
+          }
+        },
+        ticketGanador: {
+          select: {
+            numeroTicket: true,
+            usuario: {
+              select: {
+                alias: true,
+                nombres: true,
+                apellidos: true
+              }
+            }
+          }
+        }
+      }
+    })
+  ]);
+
+  return {
+    metricas: {
+      rifasActivas,
+      rifasFinalizadas,
+      causasActivas,
+      participantesActivos,
+      ticketsVendidosTotal,
+      premiosEntregados
+    },
+    ultimosSorteos
+  };
+}
