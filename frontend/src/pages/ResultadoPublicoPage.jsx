@@ -53,7 +53,7 @@ export function ResultadoPublicoPage() {
   const { rifa, sorteo, premios } = data;
 
   return (
-    <div className="w-full space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">

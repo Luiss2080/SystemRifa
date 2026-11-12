@@ -277,7 +277,9 @@ export function PanelLayout() {
         {/* Área principal + Footer alineados a la derecha del sidebar */}
         <div className="flex min-w-0 flex-1 flex-col">
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-            <Outlet />
+            <div className="mx-auto w-full max-w-[1380px]">
+              <Outlet />
+            </div>
           </main>
           <AppFooter />
         </div>

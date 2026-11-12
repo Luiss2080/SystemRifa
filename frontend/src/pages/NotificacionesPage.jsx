@@ -70,7 +70,7 @@ export function NotificacionesPage() {
   const pagination = data?.pagination || { page: 1, totalPages: 1 };
 
   return (
-    <div className="w-full space-y-5">
+    <div className="mx-auto w-full max-w-5xl space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Notificaciones</h1>
