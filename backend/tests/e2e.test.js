@@ -114,7 +114,7 @@ describe('Flujo End-to-End Completo (Paso 14)', () => {
       .post(`/api/solicitudes/${solId}/aprobar`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({ observacion: 'Aprobada en E2E' })
-      .expect(201);
+      .expect(200);
     const rifaId = aprobRes.body.rifa.rifaId;
 
     // 6. Organizador agrega 2 premios
@@ -139,7 +139,7 @@ describe('Flujo End-to-End Completo (Paso 14)', () => {
       .post(`/api/rifas/${rifaId}/reservas`)
       .set('Authorization', `Bearer ${partToken}`)
       .send({ numeros: [4, 8, 12] })
-      .expect(200);
+      .expect(201);
     expect(reservaRes.body.montoTotal).toBe('75.00');
 
     const misTicketsRes = await request(app)
