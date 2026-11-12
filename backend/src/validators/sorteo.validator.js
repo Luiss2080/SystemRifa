@@ -16,3 +16,4 @@ export const entregarPremioSchema = z.object({
   reclamado: z.boolean({ required_error: 'El campo reclamado es obligatorio.' }),
   datosEntrega: z.string().trim().max(2000).nullable().optional()
 });
+

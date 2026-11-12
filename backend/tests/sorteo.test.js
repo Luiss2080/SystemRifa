@@ -390,3 +390,4 @@ describe('Sorteo, Resultado Público y Entrega de Premios (Paso 9)', () => {
     expect(res.body.ganadores[0].numeroTicket).toBe(5);
   });
 });
+
