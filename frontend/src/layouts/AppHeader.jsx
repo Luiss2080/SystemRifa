@@ -32,6 +32,7 @@ import {
   marcarTodasNotificacionesLeidas,
 } from '../features/rifas/publicApi.js';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
 import { formatearFechaCorta } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
 import { BrandMark } from '../components/ui/BrandLogo.jsx';
@@ -117,33 +118,21 @@ export function AppHeader({ variant = 'public' }) {
   const noLeidas = notifResumen?.noLeidasCount || 0;
   const recientes = notifRecientes?.items || [];
 
-  const tieneAdminPanel =
-    esAdmin ||
-    tieneAlgunPermiso([
-      ['solicitudes', 'revisar'],
-      ['pagos', 'verificar'],
-      ['causas', 'crud'],
-      ['usuarios', 'leer'],
-      ['roles', 'administrar'],
-      ['permisos', 'administrar'],
-      ['plantillas', 'administrar'],
-    ]);
+  const {
+    rolPrincipal,
+    tieneAdminPanel,
+    tieneOrganizadorPanel,
+    primerAdminDestino,
+    homeDestino,
+  } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
 
-  const tieneOrganizadorPanel =
-    esOrganizador ||
-    tieneAlgunPermiso([
-      ['rifas', 'administrar'],
-      ['premios', 'crud'],
-      ['sorteos', 'realizar'],
-      ['ganadores', 'publicar'],
-    ]);
-
-  const primerAdminDestino = tienePermiso('reportes', 'leer')
-    ? '/admin/reportes'
-    : tienePermiso('solicitudes', 'revisar')
-      ? '/admin/solicitudes'
-      : '/admin/pagos';
-
+  // Navegación principal ordenada estrictamente según el rol y sin mezclar con la landing
   let navItems = [];
   if (!autenticado) {
     navItems = [
@@ -153,59 +142,112 @@ export function AppHeader({ variant = 'public' }) {
       { type: 'dropdown', label: 'Soluciones', icon: ShieldCheck },
       { to: '#contacto-footer', label: 'Contáctanos', icon: HelpCircle, scrollOnly: true },
     ];
-  } else if (tieneAdminPanel) {
+  } else if (rolPrincipal === 'ADMINISTRADOR') {
     navItems = [
-      { to: primerAdminDestino, label: 'Panel Admin', icon: LayoutDashboard },
-      { to: '/admin/solicitudes', label: 'Solicitudes', icon: FolderKanban },
-      { to: '/admin/pagos', label: 'Pagos', icon: CheckSquare },
-      { to: '/', label: 'Catálogo', icon: Ticket, end: true },
-      { to: '/causas', label: 'Causas', icon: HeartHandshake },
-    ];
-  } else if (tieneOrganizadorPanel) {
+      (esAdmin || tienePermiso('reportes', 'leer')) && {
+        to: '/admin/reportes',
+        label: 'Resumen',
+        icon: LayoutDashboard,
+      },
+      tienePermiso('solicitudes', 'revisar') && {
+        to: '/admin/solicitudes',
+        label: 'Solicitudes',
+        icon: FolderKanban,
+      },
+      tienePermiso('pagos', 'verificar') && {
+        to: '/admin/pagos',
+        label: 'Pagos',
+        icon: CheckSquare,
+      },
+      tienePermiso('causas', 'crud') && {
+        to: '/admin/causas',
+        label: 'Causas',
+        icon: HeartHandshake,
+      },
+      tienePermiso('usuarios', 'leer') && {
+        to: '/admin/usuarios',
+        label: 'Usuarios',
+        icon: Users,
+      },
+    ].filter(Boolean);
+    if (navItems.length === 0) {
+      navItems = [{ to: primerAdminDestino, label: 'Panel Admin', icon: LayoutDashboard }];
+    }
+  } else if (rolPrincipal === 'ORGANIZADOR') {
     navItems = [
       { to: '/organizador/rifas', label: 'Mis rifas', icon: Sparkles },
-      { to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban },
-      { to: '/solicitudes/nueva', label: 'Solicitar rifa', icon: FilePlus2 },
-      { to: '/', label: 'Catálogo', icon: Ticket, end: true },
-      { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
-    ];
+      tienePermiso('solicitudes', 'crear') && {
+        to: '/solicitudes/mias',
+        label: 'Mis solicitudes',
+        icon: FolderKanban,
+      },
+      tienePermiso('solicitudes', 'crear') && {
+        to: '/solicitudes/nueva',
+        label: 'Nueva solicitud',
+        icon: FilePlus2,
+      },
+      { to: '/explorar', label: 'Explorar rifas', icon: Ticket },
+    ].filter(Boolean);
   } else {
     navItems = [
-      { to: '/', label: 'Rifas', icon: Ticket, end: true },
+      { to: '/explorar', label: 'Explorar rifas', icon: Ticket },
       { to: '/causas', label: 'Causas', icon: HeartHandshake },
       { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
       { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
-      { to: '/solicitudes/nueva', label: 'Organizar rifa', icon: FilePlus2 },
-    ];
+      tienePermiso('solicitudes', 'crear') && {
+        to: '/solicitudes/nueva',
+        label: 'Solicitar rifa',
+        icon: FilePlus2,
+      },
+    ].filter(Boolean);
   }
 
-  const cuentaLinks = autenticado
-    ? [
+  let cuentaLinks = [];
+  if (autenticado) {
+    if (rolPrincipal === 'ADMINISTRADOR') {
+      cuentaLinks = [
         { to: '/perfil', label: 'Mi perfil y contraseña', icon: User },
-        { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
-        { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
+        { to: '/notificaciones', label: 'Notificaciones', icon: Bell },
+        { to: primerAdminDestino, label: 'Consola de administración', icon: LayoutDashboard },
+        { to: '/organizador/rifas', label: 'Supervisar rifas', icon: Sparkles },
+        { to: '/explorar', label: 'Catálogo activo', icon: Ticket },
+      ];
+    } else if (rolPrincipal === 'ORGANIZADOR') {
+      cuentaLinks = [
+        { to: '/perfil', label: 'Mi perfil y contraseña', icon: User },
+        { to: '/notificaciones', label: 'Notificaciones', icon: Bell },
+        { to: '/organizador/rifas', label: 'Panel organizador', icon: Sparkles },
+        ...(tienePermiso('tickets', 'comprar')
+          ? [{ to: '/mis-tickets', label: 'Mis tickets', icon: Ticket }]
+          : []),
+        ...(tienePermiso('pagos', 'registrar')
+          ? [{ to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard }]
+          : []),
+      ];
+    } else {
+      cuentaLinks = [
+        { to: '/perfil', label: 'Mi perfil y contraseña', icon: User },
+        { to: '/notificaciones', label: 'Notificaciones', icon: Bell },
         ...(tienePermiso('solicitudes', 'crear')
-          ? [{ to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban }]
+          ? [
+              { to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban },
+              { to: '/solicitudes/nueva', label: 'Nueva solicitud de rifa', icon: FilePlus2 },
+            ]
           : []),
-        ...(tieneOrganizadorPanel || tienePermiso('rifas', 'leer')
-          ? [{ to: '/organizador/rifas', label: 'Gestionar rifas', icon: Sparkles }]
-          : []),
-        ...(tieneAdminPanel
-          ? [{ to: primerAdminDestino, label: 'Panel Administración', icon: LayoutDashboard }]
-          : []),
-      ]
-    : [];
+      ];
+    }
+  }
 
   const rolEtiqueta = !autenticado
     ? null
-    : esAdmin
+    : tieneAdminPanel
       ? {
           label: 'Administrador',
           cls: esPanelDark
             ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-400/30'
             : 'bg-slate-900 text-emerald-300 ring-slate-700',
         }
-      : esOrganizador
+      : tieneOrganizadorPanel
         ? {
             label: 'Organizador',
             cls: esPanelDark
@@ -256,14 +298,6 @@ export function AppHeader({ variant = 'public' }) {
       : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
   }`;
 
-  const homeDestino = !autenticado
-    ? '/'
-    : tieneAdminPanel
-      ? primerAdminDestino
-      : tieneOrganizadorPanel
-        ? '/organizador/rifas'
-        : '/';
-
   return (
     <header
       className={`sticky top-0 z-30 border-b backdrop-blur-md transition-colors ${
@@ -306,7 +340,7 @@ export function AppHeader({ variant = 'public' }) {
         {/* Barra Central Ordenada tipo Cápsula (como la imagen de referencia) */}
         <nav
           aria-label="Navegación principal"
-          className={`hidden items-center gap-1 rounded-full border px-2 py-1.5 shadow-xs lg:flex ${
+          className={`hidden min-w-0 max-w-full items-center gap-1 overflow-x-auto rounded-full border px-2 py-1.5 shadow-xs lg:flex ${
             esPanelDark
               ? 'border-slate-700/80 bg-slate-900/90'
               : 'border-slate-200/90 bg-white'
@@ -716,20 +750,22 @@ export function AppHeader({ variant = 'public' }) {
           <div className="mt-4 border-t border-slate-100 pt-4">
             {autenticado ? (
               <div className="flex flex-col gap-1.5">
-                {cuentaLinks.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={`mob-${item.to}`}
-                      to={item.to}
-                      onClick={() => setMenuAbierto(false)}
-                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-                    >
-                      <Icon className="h-4 w-4 text-emerald-600" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
+                {cuentaLinks
+                  .filter((item) => item.to !== '/notificaciones')
+                  .map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={`mob-${item.to}`}
+                        to={item.to}
+                        onClick={() => setMenuAbierto(false)}
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                      >
+                        <Icon className="h-4 w-4 text-emerald-600" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
                 <Link
                   to="/notificaciones"
                   onClick={() => setMenuAbierto(false)}
