@@ -1,0 +1,10 @@
+import { env } from './env.js';
+
+export const CONSTANTES = Object.freeze({
+  ZONA_HORARIA: 'America/La_Paz',
+  MONEDA: 'Bs',
+  TARIFA_PUBLICACION: env.TARIFA_PUBLICACION,
+  RESERVA_MINUTOS: env.RESERVA_MINUTOS,
+  MAX_TICKETS_POR_RESERVA: env.MAX_TICKETS_POR_RESERVA,
+  MAX_CANTIDAD_TICKETS_RIFA: 10000
+});
