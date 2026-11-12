@@ -154,7 +154,7 @@ export function AppFooter() {
   const year = new Date().getFullYear();
 
   function openHelpWidget() {
-    window.dispatchEvent(new CustomEvent('open-help-widget'));
+    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
   const servicios = [
@@ -254,12 +254,10 @@ export function AppFooter() {
               to="/"
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-emerald-500/40"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-950/60">
-                <Ticket className="h-6 w-6" />
-              </span>
+              <BrandMark size="xl" className="shadow-lg shadow-emerald-950/60 group-hover:scale-105" />
               <span>
                 <span className="block text-lg font-extrabold tracking-wider text-white">
-                  RIFAS<span className="text-emerald-400">SOLIDARIAS</span>
+                  RIFAS <span className="text-emerald-400">SOLIDARIAS</span>
                 </span>
                 <span className="block text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                   Plataforma Verificada

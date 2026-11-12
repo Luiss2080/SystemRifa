@@ -48,6 +48,7 @@ export function App() {
         <AuthProvider>
           <BrowserRouter>
             <InteractiveBackground />
+            <FloatingWidgets />
             <Routes>
               {/* Rutas públicas */}
               <Route element={<PublicLayout />}>
