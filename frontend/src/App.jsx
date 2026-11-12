@@ -5,7 +5,7 @@ import { resolverAccesoRol } from './features/auth/roleAccess.js';
 import { ToastProvider } from './components/ui/Toast.jsx';
 import { InteractiveBackground } from './components/ui/InteractiveBackground.jsx';
 import { FloatingWidgets } from './components/ui/FloatingWidgets.jsx';
-import { FullPageSpinner } from './components/ui/Feedback.jsx';
+import { FullPageSpinner, SplashOverlay } from './components/ui/Feedback.jsx';
 import { AdaptiveLayout, AuthLayout, PanelLayout, PublicLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
 import { RequirePermiso } from './routes/RequirePermiso.jsx';
@@ -65,6 +65,11 @@ function LandingORedireccion() {
   return <PublicLayout />;
 }
 
+function AppSplash() {
+  const { cargando } = useAuth();
+  return <SplashOverlay cargando={cargando} />;
+}
+
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -72,6 +77,7 @@ export function App() {
         <AuthProvider>
           <BrowserRouter>
             <InteractiveBackground />
+            <AppSplash />
             <FloatingWidgets />
             <Routes>
               {/* Landing pública exclusiva para visitantes sin sesión */}
