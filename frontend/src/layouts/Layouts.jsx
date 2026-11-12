@@ -40,7 +40,7 @@ export function UserLayout() {
 }
 
 export function PanelLayout() {
-  const { tienePermiso } = useAuth();
+  const { esAdmin, tienePermiso, tieneAlgunPermiso } = useAuth();
 
   const itemsOrganizador = [
     tienePermiso('solicitudes', 'crear') && {
@@ -53,7 +53,13 @@ export function PanelLayout() {
       label: 'Mis solicitudes',
       icon: ClipboardList,
     },
-    tienePermiso('rifas', 'gestionar') && {
+    (tienePermiso('rifas', 'leer') ||
+      tieneAlgunPermiso([
+        ['rifas', 'administrar'],
+        ['premios', 'crud'],
+        ['sorteos', 'realizar'],
+        ['ganadores', 'publicar'],
+      ])) && {
       to: '/organizador/rifas',
       label: 'Mis rifas',
       icon: Ticket,
@@ -61,12 +67,12 @@ export function PanelLayout() {
   ].filter(Boolean);
 
   const itemsAdmin = [
-    tienePermiso('reportes', 'ver') && {
+    (esAdmin || tienePermiso('reportes', 'leer')) && {
       to: '/admin/reportes',
       label: 'Reportes',
       icon: BarChart3,
     },
-    tienePermiso('solicitudes', 'aprobar') && {
+    tienePermiso('solicitudes', 'revisar') && {
       to: '/admin/solicitudes',
       label: 'Solicitudes',
       icon: ClipboardList,
@@ -81,22 +87,22 @@ export function PanelLayout() {
       label: 'Causas',
       icon: HeartHandshake,
     },
-    tienePermiso('usuarios', 'gestionar') && {
+    tienePermiso('usuarios', 'leer') && {
       to: '/admin/usuarios',
       label: 'Usuarios',
       icon: Users,
     },
-    tienePermiso('roles', 'asignar') && {
+    (tienePermiso('roles', 'administrar') || tienePermiso('permisos', 'administrar')) && {
       to: '/admin/roles',
       label: 'Roles y permisos',
       icon: KeyRound,
     },
-    tienePermiso('notificaciones', 'gestionar') && {
+    tienePermiso('plantillas', 'administrar') && {
       to: '/admin/plantillas',
       label: 'Plantillas notif.',
       icon: Mail,
     },
-    tienePermiso('auditoria', 'ver') && {
+    (esAdmin || tienePermiso('reportes', 'leer')) && {
       to: '/admin/auditoria',
       label: 'Auditoría',
       icon: History,

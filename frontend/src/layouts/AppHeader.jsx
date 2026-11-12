@@ -7,7 +7,7 @@ import { useAuth } from '../features/auth/AuthContext.jsx';
 import { Button } from '../components/ui/Button.jsx';
 
 export function AppHeader() {
-  const { usuario, autenticado, logout, tienePermiso, tieneAlgunPermiso } = useAuth();
+  const { usuario, autenticado, esAdmin, logout, tienePermiso, tieneAlgunPermiso } = useAuth();
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
@@ -40,23 +40,32 @@ export function AppHeader() {
     if (tienePermiso('solicitudes', 'crear')) {
       navPanel.push({ to: '/solicitudes/mias', label: 'Mis solicitudes' });
     }
-    if (tienePermiso('rifas', 'gestionar')) {
+    if (
+      tieneAlgunPermiso([
+        ['rifas', 'administrar'],
+        ['premios', 'crud'],
+        ['sorteos', 'realizar'],
+        ['ganadores', 'publicar'],
+      ]) ||
+      tienePermiso('rifas', 'leer')
+    ) {
       navPanel.push({ to: '/organizador/rifas', label: 'Mis rifas (Org)' });
     }
-    const tieneAdminPanel = tieneAlgunPermiso([
-      ['solicitudes', 'aprobar'],
-      ['pagos', 'verificar'],
-      ['causas', 'crud'],
-      ['usuarios', 'gestionar'],
-      ['roles', 'asignar'],
-      ['notificaciones', 'gestionar'],
-      ['reportes', 'ver'],
-      ['auditoria', 'ver'],
-    ]);
+    const tieneAdminPanel =
+      esAdmin ||
+      tieneAlgunPermiso([
+        ['solicitudes', 'revisar'],
+        ['pagos', 'verificar'],
+        ['causas', 'crud'],
+        ['usuarios', 'leer'],
+        ['roles', 'administrar'],
+        ['permisos', 'administrar'],
+        ['plantillas', 'administrar'],
+      ]);
     if (tieneAdminPanel) {
-      const primerAdminDestino = tienePermiso('reportes', 'ver')
+      const primerAdminDestino = tienePermiso('reportes', 'leer')
         ? '/admin/reportes'
-        : tienePermiso('solicitudes', 'aprobar')
+        : tienePermiso('solicitudes', 'revisar')
           ? '/admin/solicitudes'
           : '/admin/pagos';
       navPanel.push({ to: primerAdminDestino, label: 'Administración' });
