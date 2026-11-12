@@ -154,11 +154,11 @@ export function MisTicketsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Billetera digital de tickets: diseño Sky/Indigo diferenciado */}
-      <section className="rounded-3xl border border-sky-200/80 bg-gradient-to-r from-sky-50/90 via-white/90 to-indigo-50/90 p-6 shadow-xs backdrop-blur-md">
+      {/* Billetera digital de tickets con colores oficiales */}
+      <section className="rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 via-white/95 to-teal-50/90 p-6 shadow-xs backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-800">
               <Ticket className="h-3.5 w-3.5" />
               Billetera digital de participación
             </div>
@@ -169,18 +169,18 @@ export function MisTicketsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-2xl border border-emerald-200 bg-white/85 px-3.5 py-2 text-center shadow-2xs">
+            <div className="rounded-2xl border border-emerald-200 bg-white/90 px-3.5 py-2 text-center shadow-2xs">
               <p className="text-[11px] font-medium text-slate-500">Confirmados</p>
               <p className="text-lg font-extrabold text-emerald-700">{conteos.VENDIDO}</p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-white/85 px-3.5 py-2 text-center shadow-2xs">
+            <div className="rounded-2xl border border-amber-200 bg-white/90 px-3.5 py-2 text-center shadow-2xs">
               <p className="text-[11px] font-medium text-slate-500">Reservados</p>
               <p className="text-lg font-extrabold text-amber-600">{conteos.RESERVADO}</p>
             </div>
             <div className="flex flex-col gap-1.5 sm:flex-row">
               <Link to="/">
                 <Button variant="secondary" size="sm">
-                  <Search className="h-4 w-4 text-sky-600" />
+                  <Search className="h-4 w-4 text-emerald-600" />
                   Explorar rifas
                 </Button>
               </Link>
@@ -194,7 +194,7 @@ export function MisTicketsPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-sky-200/60 pt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-emerald-200/60 pt-4">
           {filtros.map((f) => (
             <button
               key={f.key || 'all'}
@@ -202,8 +202,8 @@ export function MisTicketsPage() {
               onClick={() => setFiltroEstado(f.key)}
               className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 filtroEstado === f.key
-                  ? 'bg-sky-600 text-white shadow-xs'
-                  : 'bg-white/80 text-slate-700 ring-1 ring-slate-200 hover:bg-sky-50 hover:text-sky-700'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-white/85 text-slate-700 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-800'
               }`}
             >
               {f.label}

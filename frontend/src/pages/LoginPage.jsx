@@ -124,7 +124,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+    <div className="my-auto mx-auto w-full max-w-6xl py-2">
       <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
         {/* Columna izquierda más compacta */}
         <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-6 lg:col-span-4">
@@ -161,7 +161,7 @@ export function LoginPage() {
 
         {/* Columna derecha más amplia: Formulario + Desplegable de autocompletado */}
         <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-8">
-          <div className="mx-auto w-full max-w-md">
+          <div className="mx-auto w-full max-w-lg">
             <div className="mb-5 text-center">
               <div className="mx-auto mb-2.5 inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-700">
                 <KeyRound className="h-5 w-5" />

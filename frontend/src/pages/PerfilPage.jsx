@@ -101,10 +101,10 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="my-auto mx-auto w-full max-w-5xl space-y-5 py-2">
-      {/* Cabecera superior centrada y equilibrada */}
+    <div className="my-auto w-full space-y-5 py-2">
+      {/* Cabecera superior centrada con los colores oficiales de la web */}
       <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-md backdrop-blur-md">
-        <div className="h-12 bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500" />
+        <div className="h-12 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900" />
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 pb-4">
           <div className="-mt-6 flex items-end gap-3.5">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-lg font-extrabold text-white shadow-md ring-4 ring-white">
@@ -115,7 +115,7 @@ export function PerfilPage() {
                 {usuario?.nombres} {usuario?.apellidos}
               </h1>
               <p className="text-xs text-slate-500">
-                <span className="font-semibold text-indigo-600">@{usuario?.alias}</span> ·{' '}
+                <span className="font-semibold text-emerald-700">@{usuario?.alias}</span> ·{' '}
                 {usuario?.email}
               </p>
             </div>
@@ -123,7 +123,7 @@ export function PerfilPage() {
 
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
             {roles.map((r) => (
-              <Badge key={r} color={r === 'ADMINISTRADOR' ? 'indigo' : r === 'ORGANIZADOR' ? 'sky' : 'emerald'}>
+              <Badge key={r} color={r === 'ADMINISTRADOR' ? 'slate' : r === 'ORGANIZADOR' ? 'teal' : 'emerald'}>
                 {r}
               </Badge>
             ))}

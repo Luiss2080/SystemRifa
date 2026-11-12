@@ -720,7 +720,7 @@ export function RifaDetallePage() {
       {/* Barra móvil fija cuando hay números seleccionados */}
       {rifaAbierta && seleccionados.length > 0 && !reservaActiva && (
         <div className="fixed right-0 bottom-0 left-0 z-20 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-lg backdrop-blur-xs lg:hidden">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
+          <div className="flex w-full items-center justify-between gap-3">
             <div>
               <p className="text-xs text-slate-500">{seleccionados.length} ticket(s) elegidos</p>
               <p className="text-base font-bold text-emerald-700">{formatearBs(totalBs)}</p>

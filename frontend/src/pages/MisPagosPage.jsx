@@ -59,10 +59,10 @@ export function MisPagosPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-indigo-200/70 bg-gradient-to-r from-indigo-950 via-slate-900 to-violet-950 p-6 text-white shadow-md">
+      <section className="rounded-3xl border border-slate-800/80 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 text-white shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-1.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-indigo-200">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-emerald-300">
               <CreditCard className="h-3.5 w-3.5" />
               Libro contable de comprobantes
             </span>
@@ -72,8 +72,8 @@ export function MisPagosPage() {
             </p>
           </div>
           <Link to="/mis-tickets">
-            <Button variant="secondary" size="sm" className="border-0 bg-white text-slate-900 hover:bg-indigo-50">
-              <Ticket className="h-4 w-4 text-indigo-600" />
+            <Button variant="secondary" size="sm" className="border-0 bg-white text-slate-900 hover:bg-emerald-50">
+              <Ticket className="h-4 w-4 text-emerald-600" />
               Ir a mis tickets
             </Button>
           </Link>
@@ -100,8 +100,8 @@ export function MisPagosPage() {
         </div>
       </section>
 
-      <div className="flex items-start gap-2.5 rounded-2xl border border-indigo-200/70 bg-white/85 px-4 py-3 text-xs text-slate-600 shadow-xs backdrop-blur-md">
-        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" />
+      <div className="flex items-start gap-2.5 rounded-2xl border border-emerald-200/70 bg-white/85 px-4 py-3 text-xs text-slate-600 shadow-xs backdrop-blur-md">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
         <span>
           Cuando envías un comprobante queda en estado <strong>PENDIENTE</strong>. Apenas un
           administrador lo valide, tus números pasarán a <strong>VENDIDO</strong> y recibirás una

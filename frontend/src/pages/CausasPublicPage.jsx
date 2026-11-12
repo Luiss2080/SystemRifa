@@ -22,26 +22,26 @@ import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
 
 const PALETAS_CAUSA = [
   {
-    stripe: 'from-rose-500 to-pink-600',
-    iconBg: 'bg-rose-50 text-rose-600 ring-rose-200',
-    badge: 'bg-rose-50 text-rose-700',
-    hoverBorder: 'hover:border-rose-300',
+    stripe: 'from-emerald-600 to-teal-600',
+    iconBg: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+    badge: 'bg-emerald-50 text-emerald-800',
+    hoverBorder: 'hover:border-emerald-300',
   },
   {
-    stripe: 'from-indigo-500 to-violet-600',
-    iconBg: 'bg-indigo-50 text-indigo-600 ring-indigo-200',
-    badge: 'bg-indigo-50 text-indigo-700',
-    hoverBorder: 'hover:border-indigo-300',
+    stripe: 'from-slate-800 to-emerald-900',
+    iconBg: 'bg-slate-100 text-slate-800 ring-slate-200',
+    badge: 'bg-slate-100 text-slate-800',
+    hoverBorder: 'hover:border-slate-400',
   },
   {
-    stripe: 'from-sky-500 to-cyan-600',
-    iconBg: 'bg-sky-50 text-sky-600 ring-sky-200',
-    badge: 'bg-sky-50 text-sky-700',
-    hoverBorder: 'hover:border-sky-300',
+    stripe: 'from-teal-500 to-emerald-600',
+    iconBg: 'bg-teal-50 text-teal-700 ring-teal-200',
+    badge: 'bg-teal-50 text-teal-800',
+    hoverBorder: 'hover:border-teal-300',
   },
   {
     stripe: 'from-amber-500 to-orange-500',
-    iconBg: 'bg-amber-50 text-amber-600 ring-amber-200',
+    iconBg: 'bg-amber-50 text-amber-700 ring-amber-200',
     badge: 'bg-amber-50 text-amber-800',
     hoverBorder: 'hover:border-amber-300',
   },
@@ -86,12 +86,12 @@ export function CausasPublicPage() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Editorial claro y luminoso (diferenciado visualmente del catálogo oscuro/esmeralda) */}
-      <section className="overflow-hidden rounded-3xl border border-rose-200/70 bg-white/85 p-6 shadow-sm backdrop-blur-md sm:p-8">
+      {/* Hero Editorial claro con la identidad verde-esmeralda y pizarra de la web */}
+      <section className="overflow-hidden rounded-3xl border border-emerald-200/80 bg-white/90 p-6 shadow-sm backdrop-blur-md sm:p-8">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
           <div className="space-y-3 lg:col-span-7">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
-              <HeartHandshake className="h-3.5 w-3.5 text-rose-600" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+              <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
               Directorio editorial de impacto social
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
@@ -149,32 +149,32 @@ export function CausasPublicPage() {
             </div>
           </div>
 
-          {/* Tarjetas horizontales apiladas con diseño asimétrico */}
+          {/* Tarjetas horizontales apiladas en colores de la web */}
           <div className="grid gap-2.5 lg:col-span-5">
-            <div className="flex items-center justify-between rounded-2xl border border-rose-100 bg-rose-50/70 px-4 py-3">
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-rose-600 shadow-xs">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-800 shadow-xs">
                   <HeartHandshake className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-xs font-medium text-rose-700">Causas respaldadas</p>
+                  <p className="text-xs font-medium text-slate-600">Causas respaldadas</p>
                   <p className="text-sm font-bold text-slate-900">Verificadas por administración</p>
                 </div>
               </div>
-              <span className="text-2xl font-extrabold text-rose-700">{metricas.totalCausas}</span>
+              <span className="text-2xl font-extrabold text-slate-900">{metricas.totalCausas}</span>
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-3">
+            <div className="flex items-center justify-between rounded-2xl border border-teal-100 bg-teal-50/70 px-4 py-3">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-xs">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-teal-700 shadow-xs">
                   <Ticket className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-xs font-medium text-indigo-700">Campañas vinculadas</p>
+                  <p className="text-xs font-medium text-teal-700">Campañas vinculadas</p>
                   <p className="text-sm font-bold text-slate-900">Rifas asociadas activas e históricas</p>
                 </div>
               </div>
-              <span className="text-2xl font-extrabold text-indigo-700">{metricas.totalRifas}</span>
+              <span className="text-2xl font-extrabold text-teal-700">{metricas.totalRifas}</span>
             </div>
 
             <div className="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3">

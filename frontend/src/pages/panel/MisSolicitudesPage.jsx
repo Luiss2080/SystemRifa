@@ -81,10 +81,10 @@ export function MisSolicitudesPage() {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-3xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 via-white/90 to-emerald-50/85 p-6 shadow-xs backdrop-blur-md">
+      <section className="rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-slate-50/95 via-white/95 to-emerald-50/90 p-6 shadow-xs backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-0.5 text-xs font-bold text-amber-800">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-800">
               Flujo de aprobación en 4 etapas
             </span>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
@@ -102,12 +102,12 @@ export function MisSolicitudesPage() {
           </Link>
         </div>
 
-        <div className="mt-5 grid gap-2 border-t border-amber-200/60 pt-4 text-xs text-slate-700 sm:grid-cols-4">
+        <div className="mt-5 grid gap-2 border-t border-emerald-200/60 pt-4 text-xs text-slate-700 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { n: '1', t: 'Envías tu propuesta', badge: 'bg-amber-100 text-amber-800' },
-            { n: '2', t: 'Revisión y tarifa', badge: 'bg-sky-100 text-sky-800' },
-            { n: '3', t: 'Confirmación de pago', badge: 'bg-indigo-100 text-indigo-800' },
-            { n: '4', t: 'Cargas premios y lanzas', badge: 'bg-emerald-100 text-emerald-800' },
+            { n: '1', t: 'Envías tu propuesta', badge: 'bg-slate-800 text-white' },
+            { n: '2', t: 'Revisión y tarifa', badge: 'bg-amber-100 text-amber-800' },
+            { n: '3', t: 'Confirmación de pago', badge: 'bg-teal-100 text-teal-800' },
+            { n: '4', t: 'Cargas premios y lanzas', badge: 'bg-emerald-600 text-white' },
           ].map((step) => (
             <div
               key={step.n}

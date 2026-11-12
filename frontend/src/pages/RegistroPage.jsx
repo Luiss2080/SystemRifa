@@ -81,7 +81,7 @@ export function RegistroPage() {
   ];
 
   return (
-    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+    <div className="my-auto mx-auto w-full max-w-6xl py-2">
       <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
         {/* Columna izquierda más compacta */}
         <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-4">
