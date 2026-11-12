@@ -13,28 +13,28 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { AppHeader } from './AppHeader.jsx';
+import { AppFooter } from './AppFooter.jsx';
 
 export function PublicLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
         <Outlet />
       </main>
-      <footer className="border-t border-slate-200 bg-white py-5 text-center text-xs text-slate-500">
-        Sistema de Rifas Solidarias · Transparencia y apoyo a causas sociales
-      </footer>
+      <AppFooter />
     </div>
   );
 }
 
 export function UserLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
         <Outlet />
       </main>
+      <AppFooter />
     </div>
   );
 }
@@ -117,11 +117,11 @@ export function PanelLayout() {
     }`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-64">
-          <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+          <div className="space-y-5 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm backdrop-blur-md lg:sticky lg:top-20">
             {itemsOrganizador.length > 0 && (
               <div>
                 <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -166,6 +166,7 @@ export function PanelLayout() {
           <Outlet />
         </main>
       </div>
+      <AppFooter />
     </div>
   );
 }

@@ -154,50 +154,63 @@ export function MisTicketsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-            <Ticket className="h-3.5 w-3.5" />
-            Mi participación solidaria
+      {/* Billetera digital de tickets: diseño Sky/Indigo diferenciado */}
+      <section className="rounded-3xl border border-sky-200/80 bg-gradient-to-r from-sky-50/90 via-white/90 to-indigo-50/90 p-6 shadow-xs backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
+              <Ticket className="h-3.5 w-3.5" />
+              Billetera digital de participación
+            </div>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis tickets</h1>
+            <p className="text-sm text-slate-600">
+              Administra tus talones reservados, confirma pagos pendientes y conserva tus números oficiales.
+            </p>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis tickets</h1>
-          <p className="text-sm text-slate-600">
-            Revisa tus números reservados o confirmados y registra el pago antes de que expire el contador.
-          </p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="rounded-2xl border border-emerald-200 bg-white/85 px-3.5 py-2 text-center shadow-2xs">
+              <p className="text-[11px] font-medium text-slate-500">Confirmados</p>
+              <p className="text-lg font-extrabold text-emerald-700">{conteos.VENDIDO}</p>
+            </div>
+            <div className="rounded-2xl border border-amber-200 bg-white/85 px-3.5 py-2 text-center shadow-2xs">
+              <p className="text-[11px] font-medium text-slate-500">Reservados</p>
+              <p className="text-lg font-extrabold text-amber-600">{conteos.RESERVADO}</p>
+            </div>
+            <div className="flex flex-col gap-1.5 sm:flex-row">
+              <Link to="/">
+                <Button variant="secondary" size="sm">
+                  <Search className="h-4 w-4 text-sky-600" />
+                  Explorar rifas
+                </Button>
+              </Link>
+              <Link to="/mis-pagos">
+                <Button size="sm">
+                  <CreditCard className="h-4 w-4" />
+                  Mis pagos
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Link to="/">
-            <Button variant="secondary" size="sm">
-              <Search className="h-4 w-4 text-emerald-600" />
-              Explorar rifas
-            </Button>
-          </Link>
-          <Link to="/mis-pagos">
-            <Button size="sm">
-              <CreditCard className="h-4 w-4" />
-              Ver mis pagos
-            </Button>
-          </Link>
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-sky-200/60 pt-4">
+          {filtros.map((f) => (
+            <button
+              key={f.key || 'all'}
+              type="button"
+              onClick={() => setFiltroEstado(f.key)}
+              className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+                filtroEstado === f.key
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'bg-white/80 text-slate-700 ring-1 ring-slate-200 hover:bg-sky-50 hover:text-sky-700'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-xs">
-        {filtros.map((f) => (
-          <button
-            key={f.key || 'all'}
-            type="button"
-            onClick={() => setFiltroEstado(f.key)}
-            className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
-              filtroEstado === f.key
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      </section>
 
       {reservasSinPagoPorRifa.length > 0 && (
         <section className="space-y-3">
@@ -281,36 +294,44 @@ export function MisTicketsPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {tickets.map((t) => {
-            const barra =
+            const stubBg =
               t.estado === 'VENDIDO'
-                ? 'from-emerald-500 to-teal-500'
+                ? 'bg-gradient-to-b from-emerald-600 to-teal-700 text-white border-emerald-200/70'
                 : t.estado === 'RESERVADO'
-                ? 'from-amber-400 to-orange-500'
-                : 'from-slate-400 to-slate-500';
+                ? 'bg-gradient-to-b from-amber-500 to-orange-600 text-white border-amber-200/70'
+                : 'bg-gradient-to-b from-slate-500 to-slate-600 text-white border-slate-300';
             return (
               <div
                 key={t.ticketId}
-                className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+                className="flex overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md"
               >
-                <div className={`h-1.5 w-full bg-gradient-to-r ${barra}`} />
-                <div className="flex flex-1 flex-col justify-between p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                        Número de ticket
-                      </span>
-                      <p className="text-2xl font-extrabold text-slate-900">#{t.numeroTicket}</p>
-                    </div>
-                    <Badge estado={t.estado} />
-                  </div>
+                {/* Talón perforado izquierdo con el número */}
+                <div
+                  className={`flex w-28 shrink-0 flex-col items-center justify-center border-r-2 border-dashed p-3 text-center ${stubBg}`}
+                >
+                  <span className="text-[10px] font-semibold uppercase tracking-widest opacity-85">
+                    Ticket
+                  </span>
+                  <span className="mt-0.5 font-mono text-2xl font-black tracking-tight">
+                    #{t.numeroTicket}
+                  </span>
+                  <span className="mt-1.5 rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-bold">
+                    {t.estado}
+                  </span>
+                </div>
 
-                  <div className="mt-3 space-y-1.5 text-sm">
-                    <p className="font-bold text-slate-900">{t.rifa?.nombre}</p>
+                {/* Cuerpo del comprobante */}
+                <div className="flex flex-1 flex-col justify-between p-4">
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-slate-900">{t.rifa?.nombre}</p>
+                      <Badge estado={t.estado} />
+                    </div>
                     <p className="text-xs text-slate-500">
                       Valor unitario:{' '}
-                      <span className="font-semibold text-emerald-700">
+                      <span className="font-bold text-emerald-700">
                         {formatearBs(t.rifa?.precioTicket || '0')}
                       </span>
                     </p>
@@ -326,10 +347,10 @@ export function MisTicketsPage() {
                     )}
                   </div>
 
-                  <div className="mt-4 border-t border-slate-100 pt-3">
+                  <div className="mt-3 flex justify-end border-t border-slate-100 pt-2.5">
                     <Link to={`/rifas/${t.rifaId}`}>
-                      <Button variant="emeraldSoft" size="sm" className="w-full">
-                        Ver rifa y premios
+                      <Button variant="secondary" size="sm">
+                        Ver rifa
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
                     </Link>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ShieldCheck } from 'lucide-react';
+import { CreditCard, ShieldCheck, Ticket } from 'lucide-react';
 import { getMisPagos } from '../features/rifas/publicApi.js';
 import { formatearBs, formatearFecha } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
+import { Button } from '../components/ui/Button.jsx';
 import { DataTable } from '../components/ui/DataTable.jsx';
 
 const ESTADOS_PAGO = [
@@ -58,15 +59,27 @@ export function MisPagosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Mis pagos</h1>
-          <p className="text-sm text-slate-500">
-            Historial de comprobantes enviados y estado de verificación
-          </p>
+      <section className="rounded-3xl border border-indigo-200/70 bg-gradient-to-r from-indigo-950 via-slate-900 to-violet-950 p-6 text-white shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-indigo-200">
+              <CreditCard className="h-3.5 w-3.5" />
+              Libro contable de comprobantes
+            </span>
+            <h1 className="text-2xl font-extrabold tracking-tight">Mis pagos</h1>
+            <p className="text-sm text-slate-300">
+              Historial completo de comprobantes enviados, referencias bancarias y validación administrativa.
+            </p>
+          </div>
+          <Link to="/mis-tickets">
+            <Button variant="secondary" size="sm" className="border-0 bg-white text-slate-900 hover:bg-indigo-50">
+              <Ticket className="h-4 w-4 text-indigo-600" />
+              Ir a mis tickets
+            </Button>
+          </Link>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="mt-5 flex flex-wrap gap-1.5 border-t border-white/15 pt-4">
           {ESTADOS_PAGO.map((opt) => (
             <button
               key={opt.key || 'all'}
@@ -75,20 +88,20 @@ export function MisPagosPage() {
                 setEstado(opt.key);
                 setPage(1);
               }}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 estado === opt.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+                  ? 'bg-emerald-500 text-white shadow-xs'
+                  : 'bg-white/10 text-slate-200 hover:bg-white/20'
               }`}
             >
               {opt.label}
             </button>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="flex items-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600 shadow-xs">
-        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+      <div className="flex items-start gap-2.5 rounded-2xl border border-indigo-200/70 bg-white/85 px-4 py-3 text-xs text-slate-600 shadow-xs backdrop-blur-md">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" />
         <span>
           Cuando envías un comprobante queda en estado <strong>PENDIENTE</strong>. Apenas un
           administrador lo valide, tus números pasarán a <strong>VENDIDO</strong> y recibirás una

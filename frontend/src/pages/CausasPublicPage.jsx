@@ -19,6 +19,33 @@ import { Button } from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
 
+const PALETAS_CAUSA = [
+  {
+    stripe: 'from-rose-500 to-pink-600',
+    iconBg: 'bg-rose-50 text-rose-600 ring-rose-200',
+    badge: 'bg-rose-50 text-rose-700',
+    hoverBorder: 'hover:border-rose-300',
+  },
+  {
+    stripe: 'from-indigo-500 to-violet-600',
+    iconBg: 'bg-indigo-50 text-indigo-600 ring-indigo-200',
+    badge: 'bg-indigo-50 text-indigo-700',
+    hoverBorder: 'hover:border-indigo-300',
+  },
+  {
+    stripe: 'from-sky-500 to-cyan-600',
+    iconBg: 'bg-sky-50 text-sky-600 ring-sky-200',
+    badge: 'bg-sky-50 text-sky-700',
+    hoverBorder: 'hover:border-sky-300',
+  },
+  {
+    stripe: 'from-amber-500 to-orange-500',
+    iconBg: 'bg-amber-50 text-amber-600 ring-amber-200',
+    badge: 'bg-amber-50 text-amber-800',
+    hoverBorder: 'hover:border-amber-300',
+  },
+];
+
 export function CausasPublicPage() {
   const [busqueda, setBusqueda] = useState('');
   const [soloConRifas, setSoloConRifas] = useState(false);
@@ -57,56 +84,85 @@ export function CausasPublicPage() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-700 p-6 text-white shadow-md sm:p-8">
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-          <div className="max-w-2xl space-y-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
-              <HeartHandshake className="h-3.5 w-3.5" />
-              Impacto social verificado y 100% trazable
+      {/* Hero Editorial claro y luminoso (diferenciado visualmente del catálogo oscuro/esmeralda) */}
+      <section className="overflow-hidden rounded-3xl border border-rose-200/70 bg-white/85 p-6 shadow-sm backdrop-blur-md sm:p-8">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
+          <div className="space-y-3 lg:col-span-7">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
+              <HeartHandshake className="h-3.5 w-3.5 text-rose-600" />
+              Directorio editorial de impacto social
             </span>
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Causas solidarias con propósito real
             </h1>
-            <p className="text-sm leading-relaxed text-emerald-50 sm:text-base">
-              Cada rifa publicada respalda una meta concreta. Elige una causa que te inspire, revisa
-              sus campañas activas y participa con números auditados en tiempo real.
+            <p className="max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Descubre las iniciativas comunitarias, de salud y educación que reciben respaldo directo
+              a través de campañas auditadas en tiempo real.
             </p>
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              <Link to="/solicitudes/nueva">
+                <Button size="md">
+                  <FilePlus2 className="h-4 w-4" />
+                  Proponer una rifa para una causa
+                </Button>
+              </Link>
+              <Link to="/">
+                <Button variant="secondary" size="md">
+                  <Ticket className="h-4 w-4 text-emerald-600" />
+                  Explorar catálogo activo
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2.5">
-            <Link to="/">
-              <Button variant="secondary" className="border-0 bg-white text-emerald-800 shadow-md hover:bg-emerald-50">
-                <Ticket className="h-4 w-4" />
-                Explorar catálogo
-              </Button>
-            </Link>
-            <Link to="/solicitudes/nueva">
-              <Button className="bg-emerald-950/45 text-white ring-1 ring-white/25 hover:bg-emerald-950/65">
-                <FilePlus2 className="h-4 w-4" />
-                Proponer una rifa
-              </Button>
-            </Link>
-          </div>
-        </div>
+          {/* Tarjetas horizontales apiladas con diseño asimétrico */}
+          <div className="grid gap-2.5 lg:col-span-5">
+            <div className="flex items-center justify-between rounded-2xl border border-rose-100 bg-rose-50/70 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-rose-600 shadow-xs">
+                  <HeartHandshake className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-xs font-medium text-rose-700">Causas respaldadas</p>
+                  <p className="text-sm font-bold text-slate-900">Verificadas por administración</p>
+                </div>
+              </div>
+              <span className="text-2xl font-extrabold text-rose-700">{metricas.totalCausas}</span>
+            </div>
 
-        <div className="mt-6 grid gap-3 border-t border-white/15 pt-5 sm:grid-cols-3">
-          <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-xs">
-            <p className="text-xs text-emerald-100">Causas respaldadas</p>
-            <p className="mt-0.5 text-xl font-extrabold">{metricas.totalCausas}</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-xs">
-            <p className="text-xs text-emerald-100">Rifas asociadas</p>
-            <p className="mt-0.5 text-xl font-extrabold">{metricas.totalRifas}</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-xs">
-            <p className="text-xs text-emerald-100">Meta solidaria acumulada</p>
-            <p className="mt-0.5 text-xl font-extrabold">{formatearBs(metricas.metaGlobal)}</p>
+            <div className="flex items-center justify-between rounded-2xl border border-indigo-100 bg-indigo-50/70 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-xs">
+                  <Ticket className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-xs font-medium text-indigo-700">Campañas vinculadas</p>
+                  <p className="text-sm font-bold text-slate-900">Rifas asociadas activas e históricas</p>
+                </div>
+              </div>
+              <span className="text-2xl font-extrabold text-indigo-700">{metricas.totalRifas}</span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-xs">
+                  <Target className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-xs font-medium text-emerald-700">Meta solidaria acumulada</p>
+                  <p className="text-sm font-bold text-slate-900">Objetivo conjunto en bolivianos</p>
+                </div>
+              </div>
+              <span className="text-lg font-extrabold text-emerald-700">
+                {formatearBs(metricas.metaGlobal)}
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Buscador + botones de acción en la misma fila */}
-      <section className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xs lg:flex-row lg:items-center lg:justify-between">
+      <section className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/85 p-3.5 shadow-xs backdrop-blur-md lg:flex-row lg:items-center lg:justify-between">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
@@ -198,28 +254,39 @@ export function CausasPublicPage() {
           }
         />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {causas.map((causa) => {
+        <div className="grid gap-5 lg:grid-cols-2">
+          {causas.map((causa, idx) => {
             const cantRifas = causa.rifasCount ?? 0;
+            const paleta = PALETAS_CAUSA[idx % PALETAS_CAUSA.length];
             return (
               <article
                 key={causa.causaId}
-                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
+                className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-sm backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-lg sm:flex-row ${paleta.hoverBorder}`}
               >
-                <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+                {/* Franja lateral editorial en vez de cabecera superior repetida */}
+                <div
+                  className={`flex shrink-0 items-center justify-between bg-gradient-to-b ${paleta.stripe} p-4 text-white sm:w-20 sm:flex-col sm:justify-center sm:gap-2 sm:py-6`}
+                >
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-xs">
+                    <HeartHandshake className="h-6 w-6" />
+                  </span>
+                  <span className="rounded-full bg-black/20 px-2.5 py-0.5 text-[11px] font-bold">
+                    #{causa.causaId}
+                  </span>
+                </div>
 
-                <div className="flex flex-1 flex-col justify-between p-6">
-                  <div className="space-y-3.5">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200/70">
-                        <HeartHandshake className="h-4 w-4 text-emerald-600" />
+                <div className="flex flex-1 flex-col justify-between p-5">
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 ${paleta.iconBg}`}
+                      >
+                        <ShieldCheck className="h-3.5 w-3.5" />
                         Causa verificada
                       </span>
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
-                          cantRifas > 0
-                            ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200'
-                            : 'bg-slate-100 text-slate-600'
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                          cantRifas > 0 ? paleta.badge : 'bg-slate-100 text-slate-600'
                         }`}
                       >
                         <Ticket className="h-3.5 w-3.5" />
@@ -228,40 +295,27 @@ export function CausasPublicPage() {
                     </div>
 
                     <div>
-                      <h2 className="text-xl font-bold text-slate-900 transition group-hover:text-emerald-700">
-                        {causa.nombre}
-                      </h2>
-                      <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+                      <h2 className="text-xl font-extrabold text-slate-900">{causa.nombre}</h2>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600">
                         {causa.descripcion || 'Iniciativa solidaria respaldada por sorteos públicos.'}
                       </p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/90 p-3.5">
-                      <div>
-                        <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
-                          <Target className="h-3.5 w-3.5 text-emerald-600" />
-                          Meta solidaria
-                        </p>
-                        <p className="mt-0.5 text-base font-extrabold text-emerald-700">
-                          {formatearBs(causa.meta)}
-                        </p>
-                      </div>
-                      <div className="border-l border-slate-200 pl-3">
-                        <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
-                          <ShieldCheck className="h-3.5 w-3.5 text-indigo-600" />
-                          Estado
-                        </p>
-                        <p className="mt-0.5 text-sm font-bold text-slate-800">
-                          {cantRifas > 0 ? 'Campañas activas' : 'Lista para apoyar'}
-                        </p>
-                      </div>
-                    </div>
                   </div>
 
-                  <div className="mt-5 border-t border-slate-100 pt-4">
-                    <Link to={`/?causaId=${causa.causaId}`} className="block">
-                      <Button className="w-full" size="md">
-                        Explorar rifas de esta causa
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                    <div>
+                      <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                        <Target className="h-3.5 w-3.5 text-emerald-600" />
+                        Meta solidaria
+                      </p>
+                      <p className="text-lg font-extrabold text-emerald-700">
+                        {formatearBs(causa.meta)}
+                      </p>
+                    </div>
+
+                    <Link to={`/?causaId=${causa.causaId}`}>
+                      <Button size="sm">
+                        Ver rifas ({cantRifas})
                         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                       </Button>
                     </Link>
