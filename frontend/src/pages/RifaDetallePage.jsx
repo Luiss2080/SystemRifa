@@ -778,6 +778,8 @@ export function RifaDetallePage() {
         onClose={() => setReservaActiva(null)}
         title="Completar pago de reserva"
         description="Tus números están reservados temporalmente. Registra tu comprobante antes de que venza el tiempo."
+        badge="Reserva activa · 15 min"
+        icon={ShoppingCart}
       >
         {reservaActiva && (
           <form onSubmit={handleRegistrarPago} className="space-y-4">

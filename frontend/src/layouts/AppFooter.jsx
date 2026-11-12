@@ -497,6 +497,8 @@ export function AppFooter() {
         onClose={() => setModalActivo(null)}
         title={modalContent?.title}
         description={modalContent?.description}
+        badge="Transparencia y legalidad"
+        icon={ShieldCheck}
         maxWidth="max-w-lg"
         footer={
           <Button variant="primary" size="sm" onClick={() => setModalActivo(null)}>

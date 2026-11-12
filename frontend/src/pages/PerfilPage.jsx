@@ -137,7 +137,7 @@ export function PerfilPage() {
   const enSeguridad = location.hash === '#seguridad';
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6 py-1">
+    <div className="mx-auto my-auto w-full max-w-5xl space-y-6 py-2">
       {/* Cabecera superior con franja de acento y resumen completo de cuenta */}
       <section className="overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/95 shadow-lg shadow-slate-900/5 ring-1 ring-slate-900/5 backdrop-blur-md">
         <div className="h-2 w-full bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500" />
