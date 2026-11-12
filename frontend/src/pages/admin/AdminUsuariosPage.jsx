@@ -54,6 +54,12 @@ export function AdminUsuariosPage() {
     enabled: tienePermiso('roles', 'administrar'),
   });
 
+  const { data: permisosData } = useQuery({
+    queryKey: ['admin-permisos'],
+    queryFn: () => getPermisosApi(),
+    enabled: tienePermiso('permisos', 'administrar'),
+  });
+
   async function handleToggleActivo() {
     if (!usuarioToggle) return;
     setProcesandoToggle(true);
@@ -82,6 +88,22 @@ export function AdminUsuariosPage() {
       toast.success('Roles actualizados');
     } catch (err) {
       toast.error('Error al modificar rol', extraerErrorApi(err).message);
+    }
+  }
+
+  async function handleTogglePermisoDirecto(permiso, asignado) {
+    if (!usuarioDetalleId) return;
+    try {
+      if (asignado) {
+        await quitarPermisoUsuarioApi(usuarioDetalleId, permiso.permisoId);
+      } else {
+        await asignarPermisoUsuarioApi(usuarioDetalleId, permiso.permisoId);
+      }
+      await refetchDetalle();
+      queryClient.invalidateQueries({ queryKey: ['admin-usuarios'] });
+      toast.success('Permiso directo actualizado');
+    } catch (err) {
+      toast.error('Error al modificar permiso', extraerErrorApi(err).message);
     }
   }
 
@@ -144,6 +166,7 @@ export function AdminUsuariosPage() {
   ];
 
   const rolesUsuarioSet = new Set((detalleData?.roles || []).map((r) => r.rolId));
+  const permisosDirectosSet = new Set((detalleData?.permisosDirectos || []).map((p) => p.clave));
 
   return (
     <div className="space-y-5">

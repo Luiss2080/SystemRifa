@@ -243,6 +243,25 @@ export function OrganizadorRifaGestionPage() {
     }
   }
 
+  async function handleAnularTicket() {
+    if (!ticketAAnular || !motivoAnular.trim()) {
+      toast.error('Motivo requerido', 'Debes escribir el motivo de anulación del ticket.');
+      return;
+    }
+    setAnulandoTicket(true);
+    try {
+      await anularTicketApi(ticketAAnular.ticketId, motivoAnular.trim());
+      setTicketAAnular(null);
+      setMotivoAnular('');
+      invalidar();
+      toast.info('Ticket anulado', `El número #${ticketAAnular.numeroTicket} fue anulado.`);
+    } catch (err) {
+      toast.error('No se pudo anular', extraerErrorApi(err).message);
+    } finally {
+      setAnulandoTicket(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
@@ -485,6 +504,64 @@ export function OrganizadorRifaGestionPage() {
         </div>
       )}
 
+      {/* Administración de tickets (anulación con motivo) */}
+      {!esFinalizada && tienePermiso('rifas', 'administrar') && (
+        <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="flex items-center gap-2 text-base font-bold text-slate-900">
+                <Ban className="h-5 w-5 text-rose-600" />
+                Control de tickets (Anulación)
+              </h2>
+              <p className="text-xs text-slate-500">
+                Busca un número específico si necesitas anularlo con motivo auditado. Los tickets anulados no participan en el sorteo.
+              </p>
+            </div>
+            <div className="relative w-full sm:w-60">
+              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="search"
+                placeholder="Buscar N° de ticket..."
+                aria-label="Buscar número de ticket"
+                value={busquedaTicket}
+                onChange={(e) => setBusquedaTicket(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-1.5 pr-3 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6">
+            {ticketsFiltrados.map((t) => (
+              <div
+                key={t.ticketId}
+                className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs"
+              >
+                <div>
+                  <p className="font-bold text-slate-900">#{t.numeroTicket}</p>
+                  <Badge estado={t.estado} />
+                </div>
+                {t.estado !== 'ANULADO' && (
+                  <button
+                    type="button"
+                    title={`Anular ticket #${t.numeroTicket}`}
+                    onClick={() => {
+                      setTicketAAnular(t);
+                      setMotivoAnular('');
+                    }}
+                    className="rounded-lg p-1.5 text-rose-600 transition hover:bg-rose-100 cursor-pointer"
+                  >
+                    <Ban className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          {ticketsFiltrados.length === 0 && (
+            <p className="text-xs text-slate-500">No se encontraron tickets para esa búsqueda.</p>
+          )}
+        </section>
+      )}
+
       {/* Modal Crear/Editar Premio */}
       <Modal
         open={Boolean(modalPremio)}
@@ -607,6 +684,28 @@ export function OrganizadorRifaGestionPage() {
           </div>
         </form>
       </Modal>
+
+      {/* Confirmación irreversible anular ticket */}
+      <ConfirmModal
+        open={Boolean(ticketAAnular)}
+        onClose={() => setTicketAAnular(null)}
+        onConfirm={handleAnularTicket}
+        loading={anulandoTicket}
+        variant="danger"
+        title={`Anular ticket #${ticketAAnular?.numeroTicket || ''}`}
+        message={`Esta acción es irreversible: el ticket #${ticketAAnular?.numeroTicket || ''} (actualmente ${ticketAAnular?.estado || ''}) pasará a estado ANULADO, quedará registrado en auditoría y no podrá participar en el sorteo.`}
+        confirmText="Sí, anular ticket"
+      >
+        <div className="mt-3">
+          <Input
+            label="Motivo de anulación"
+            required
+            placeholder="Ej. Solicitud del participante o error de emisión"
+            value={motivoAnular}
+            onChange={(e) => setMotivoAnular(e.target.value)}
+          />
+        </div>
+      </ConfirmModal>
     </div>
   );
 }
