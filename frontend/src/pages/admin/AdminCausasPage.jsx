@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit2, Plus, Search, Trash2, X } from 'lucide-react';
+import { ArrowUpDown, Edit2, ExternalLink, HeartHandshake, Plus, Search, Trash2, X } from 'lucide-react';
 import { getCausasPublicas } from '../../features/rifas/publicApi.js';
 import {
   actualizarCausaApi,
@@ -25,6 +26,7 @@ export function AdminCausasPage() {
   });
 
   const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [modal, setModal] = useState(null); // { modo: 'crear'|'editar', causa? }
   const [form, setForm] = useState({ nombre: '', descripcion: '', meta: '' });
   const [saving, setSaving] = useState(false);
@@ -35,11 +37,20 @@ export function AdminCausasPage() {
   const causasFiltradas = useMemo(() => {
     const items = data?.items || [];
     const q = busqueda.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
-      (c) => c.nombre?.toLowerCase().includes(q) || c.descripcion?.toLowerCase().includes(q)
-    );
-  }, [data, busqueda]);
+    const filtradas = q
+      ? items.filter(
+          (c) => c.nombre?.toLowerCase().includes(q) || c.descripcion?.toLowerCase().includes(q)
+        )
+      : [...items];
+
+    if (orden === 'meta') {
+      return [...filtradas].sort((a, b) => Number(b.meta || 0) - Number(a.meta || 0));
+    }
+    if (orden === 'rifas') {
+      return [...filtradas].sort((a, b) => (b.rifasCount ?? 0) - (a.rifasCount ?? 0));
+    }
+    return filtradas;
+  }, [data, busqueda, orden]);
 
   function abrirCrear() {
     setForm({ nombre: '', descripcion: '', meta: '5000.00' });
