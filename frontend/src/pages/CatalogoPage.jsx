@@ -109,123 +109,76 @@ export function CatalogoPage() {
   return (
     <div className="space-y-6">
       {!autenticado ? (
-        <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-600 p-6 text-white shadow-md sm:p-8">
-          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-            <div className="max-w-2xl space-y-2.5">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
-                <HeartHandshake className="h-3.5 w-3.5" />
-                Apoyo directo y sorteos 100% auditables
-              </span>
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Participa en rifas solidarias activas
-              </h1>
-              <p className="text-sm leading-relaxed text-emerald-50 sm:text-base">
-                Escoge tus números favoritos en el tablero en tiempo real, reserva al instante por 15
-                minutos y apoya causas sociales verificadas con total transparencia.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2.5">
-              <Link to="/causas">
-                <Button variant="secondary" className="border-0 bg-white text-emerald-800 shadow-md hover:bg-emerald-50">
-                  <HeartHandshake className="h-4 w-4" />
-                  Ver causas solidarias
-                </Button>
-              </Link>
-              <Link to="/solicitudes/nueva">
-                <Button className="bg-emerald-950/45 text-white ring-1 ring-white/25 hover:bg-emerald-950/65">
-                  <Sparkles className="h-4 w-4" />
-                  Organizar una rifa
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <div
-            id="como-funciona"
-            className="mt-6 grid gap-2.5 border-t border-white/15 pt-5 text-xs sm:grid-cols-3"
-          >
-            <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
-                1
-              </span>
-              <span>Explora una causa y elige tus números disponibles</span>
-            </div>
-            <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
-                2
-              </span>
-              <span>Resérvalos al instante por 15 minutos sin perderlos</span>
-            </div>
-            <div className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3.5 py-2.5 backdrop-blur-xs">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-800">
-                3
-              </span>
-              <span>Registra tu comprobante y participa en el sorteo</span>
-            </div>
-          </div>
-        </section>
+        <HeroShowcase rifas={rifasBase} causas={causas} onSelectCausa={seleccionarCausa} />
       ) : (
-        <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/85 px-5 py-4 shadow-xs backdrop-blur-md">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
-              Catálogo en vivo · Sesión @{usuario?.alias}
-            </p>
-            <h1 className="text-xl font-extrabold text-slate-900 sm:text-2xl">
-              Rifas solidarias disponibles
-            </h1>
-          </div>
+        <>
+          <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/85 px-5 py-4 shadow-xs backdrop-blur-md">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                Catálogo en vivo · Sesión @{usuario?.alias}
+              </p>
+              <h1 className="text-xl font-extrabold text-slate-900 sm:text-2xl">
+                Rifas solidarias disponibles
+              </h1>
+            </div>
 
-          <div className="flex flex-wrap gap-2">
-            {esAdmin ? (
-              <>
-                <Link to="/admin/reportes">
-                  <Button size="sm">
-                    <LayoutDashboard className="h-4 w-4" />
-                    Panel Admin
-                  </Button>
-                </Link>
-                <Link to="/admin/pagos">
-                  <Button variant="secondary" size="sm">
-                    <CheckSquare className="h-4 w-4 text-emerald-600" />
-                    Verificar pagos
-                  </Button>
-                </Link>
-              </>
-            ) : esOrganizador ? (
-              <>
-                <Link to="/organizador/rifas">
-                  <Button size="sm">
-                    <Sparkles className="h-4 w-4" />
-                    Gestionar mis rifas
-                  </Button>
-                </Link>
-                <Link to="/solicitudes/nueva">
-                  <Button variant="secondary" size="sm">
-                    Nueva solicitud
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/mis-tickets">
-                  <Button size="sm">
-                    <Ticket className="h-4 w-4" />
-                    Mis tickets
-                  </Button>
-                </Link>
-                <Link to="/mis-pagos">
-                  <Button variant="secondary" size="sm">
-                    <CreditCard className="h-4 w-4 text-emerald-600" />
-                    Mis pagos
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </section>
+            <div className="flex flex-wrap gap-2">
+              {esAdmin ? (
+                <>
+                  <Link to="/admin/reportes">
+                    <Button size="sm">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Panel Admin
+                    </Button>
+                  </Link>
+                  <Link to="/admin/pagos">
+                    <Button variant="secondary" size="sm">
+                      <CheckSquare className="h-4 w-4 text-emerald-600" />
+                      Verificar pagos
+                    </Button>
+                  </Link>
+                </>
+              ) : esOrganizador ? (
+                <>
+                  <Link to="/organizador/rifas">
+                    <Button size="sm">
+                      <Sparkles className="h-4 w-4" />
+                      Gestionar mis rifas
+                    </Button>
+                  </Link>
+                  <Link to="/solicitudes/nueva">
+                    <Button variant="secondary" size="sm">
+                      Nueva solicitud
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/mis-tickets">
+                    <Button size="sm">
+                      <Ticket className="h-4 w-4" />
+                      Mis tickets
+                    </Button>
+                  </Link>
+                  <Link to="/mis-pagos">
+                    <Button variant="secondary" size="sm">
+                      <CreditCard className="h-4 w-4 text-emerald-600" />
+                      Mis pagos
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </section>
+
+          <CauseMarqueeTicker causas={causas} onSelectCausa={seleccionarCausa} />
+        </>
       )}
 
-      <section className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-xs backdrop-blur-md sm:p-5">
+      <section
+        id="catalogo-activo"
+        className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-xs backdrop-blur-md sm:p-5"
+      >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />

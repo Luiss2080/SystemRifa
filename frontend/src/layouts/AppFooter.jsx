@@ -22,6 +22,7 @@ import {
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 
 const LEGAL_MODALS = {
   privacidad: {

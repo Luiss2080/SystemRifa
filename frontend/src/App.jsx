@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './features/auth/AuthContext.jsx';
 import { ToastProvider } from './components/ui/Toast.jsx';
 import { InteractiveBackground } from './components/ui/InteractiveBackground.jsx';
+import { FloatingWidgets } from './components/ui/FloatingWidgets.jsx';
 import { PanelLayout, PublicLayout, UserLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
 import { RequirePermiso } from './routes/RequirePermiso.jsx';

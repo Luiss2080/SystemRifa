@@ -34,6 +34,7 @@ import {
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { formatearFechaCorta } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
+import { BrandMark } from '../components/ui/BrandLogo.jsx';
 
 export function AppHeader({ variant = 'public' }) {
   const { usuario, autenticado, esAdmin, esOrganizador, logout, tienePermiso, tieneAlgunPermiso } =
@@ -235,7 +236,7 @@ export function AppHeader({ variant = 'public' }) {
   function openHelpWidget() {
     setMenuAbierto(false);
     setSolucionesAbiertas(false);
-    window.dispatchEvent(new CustomEvent('open-help-widget'));
+    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
   const pillItemClass = ({ isActive }) =>
@@ -277,13 +278,10 @@ export function AppHeader({ variant = 'public' }) {
         {/* Marca / Logo */}
         <div className="flex shrink-0 items-center gap-3">
           <Link to={homeDestino} className="group flex items-center gap-2.5">
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-md shadow-emerald-600/20 transition duration-200 group-hover:scale-105">
-              <Ticket className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-amber-400" />
-            </span>
+            <BrandMark size="lg" className="shadow-md shadow-emerald-600/20 group-hover:scale-105" />
             <span className="leading-none">
               <span className="block text-[15px] font-extrabold tracking-tight">
-                <span className={esPanelDark ? 'text-white' : 'text-slate-900'}>RIFAS</span>
+                <span className={esPanelDark ? 'text-white' : 'text-slate-900'}>RIFAS</span>{' '}
                 <span className="text-emerald-600">SOLIDARIAS</span>
               </span>
               <span
