@@ -12,6 +12,7 @@ import solicitudRoutes from './solicitud.routes.js';
 import rifaRoutes from './rifa.routes.js';
 import premioRoutes from './premio.routes.js';
 import ticketRoutes from './ticket.routes.js';
+import pagoRoutes from './pago.routes.js';
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use('/solicitudes', solicitudRoutes);
 router.use('/rifas', rifaRoutes);
 router.use('/premios', premioRoutes);
 router.use('/tickets', ticketRoutes);
+router.use('/pagos', pagoRoutes);
 
 export default router;
