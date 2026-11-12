@@ -81,11 +81,11 @@ export function RegistroPage() {
   ];
 
   return (
-    <div className="mx-auto flex min-h-[75vh] max-w-5xl items-center py-6">
-      <div className="grid w-full gap-6 lg:grid-cols-12">
+    <div className="mx-auto flex min-h-[calc(100vh-11rem)] max-w-5xl items-center py-2">
+      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-lg backdrop-blur-md lg:grid-cols-12">
         {/* Columna izquierda: Beneficios y privacidad */}
-        <section className="flex flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-6 text-white shadow-lg sm:p-8 lg:col-span-5">
-          <div className="space-y-4">
+        <section className="flex flex-col justify-between bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-6 text-white sm:p-7 lg:col-span-5">
+          <div className="space-y-3">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
               <HeartHandshake className="h-3.5 w-3.5" />
               Únete a Rifas Solidarias
@@ -94,45 +94,37 @@ export function RegistroPage() {
               Crea tu cuenta en segundos
             </h1>
             <p className="text-sm leading-relaxed text-emerald-50">
-              Participa eligiendo tus números favoritos en tiempo real o propón tus propias rifas
-              para apoyar causas verificadas.
+              Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
             </p>
           </div>
 
-          <div className="my-6 space-y-3 text-sm">
-            <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3.5 backdrop-blur-xs">
-              <Ticket className="mt-0.5 h-5 w-5 shrink-0 text-emerald-200" />
+          <div className="my-4 space-y-2.5 text-xs">
+            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+              <Ticket className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
               <div>
                 <p className="font-bold">Reservas instantáneas de 15 minutos</p>
-                <p className="text-xs text-emerald-50/90">
-                  Bloquea tus números mientras registras tu comprobante de pago sin colisiones.
-                </p>
+                <p className="text-emerald-50/90">Bloquea tus números sin colisiones mientras pagas.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3.5 backdrop-blur-xs">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-200" />
+            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
               <div>
                 <p className="font-bold">Privacidad protegida por alias</p>
-                <p className="text-xs text-emerald-50/90">
-                  En los resultados públicos solo mostramos tu alias público, nunca tu correo o
-                  teléfono.
-                </p>
+                <p className="text-emerald-50/90">Solo tu alias público aparece en los resultados.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3.5 backdrop-blur-xs">
-              <Bell className="mt-0.5 h-5 w-5 shrink-0 text-emerald-200" />
+            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+              <Bell className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
               <div>
                 <p className="font-bold">Avisos automáticos</p>
-                <p className="text-xs text-emerald-50/90">
-                  Entérate al instante cuando se confirme tu pago o resultes ganador.
-                </p>
+                <p className="text-emerald-50/90">Confirmación de pagos y sorteos al instante.</p>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-white/15 pt-4 text-sm text-emerald-50">
+          <div className="border-t border-white/15 pt-3 text-xs text-emerald-50">
             ¿Ya tienes una cuenta?{' '}
             <Link
               to="/login"
@@ -146,9 +138,9 @@ export function RegistroPage() {
         </section>
 
         {/* Columna derecha: Formulario de registro */}
-        <section className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm backdrop-blur-md sm:p-8 lg:col-span-7">
-          <div className="mb-5 flex items-center gap-3">
-            <div className="inline-flex rounded-xl bg-emerald-100 p-2.5 text-emerald-700">
+        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-7">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700">
               <UserPlus className="h-5 w-5" />
             </div>
             <div>
@@ -160,13 +152,13 @@ export function RegistroPage() {
           {errorMsg && (
             <div
               role="alert"
-              className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700"
+              className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm text-rose-700"
             >
               {errorMsg}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 label="Nombres"

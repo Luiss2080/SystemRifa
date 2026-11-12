@@ -101,27 +101,27 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      {/* Cabecera superior de identidad */}
+    <div className="mx-auto max-w-6xl space-y-4">
+      {/* Cabecera superior compacta para que todo quepa en una pantalla */}
       <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
-        <div className="h-20 bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500" />
-        <div className="flex flex-wrap items-center justify-between gap-4 px-6 pb-5">
-          <div className="-mt-8 flex items-end gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-xl font-extrabold text-white shadow-md ring-4 ring-white">
+        <div className="h-12 bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500" />
+        <div className="flex flex-wrap items-center justify-between gap-4 px-5 pb-4">
+          <div className="-mt-6 flex items-end gap-3.5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-lg font-extrabold text-white shadow-md ring-4 ring-white">
               {iniciales}
             </div>
-            <div className="pt-2">
-              <h1 className="text-xl font-extrabold text-slate-900">
+            <div className="pt-1.5">
+              <h1 className="text-lg font-extrabold text-slate-900">
                 {usuario?.nombres} {usuario?.apellidos}
               </h1>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs text-slate-500">
                 <span className="font-semibold text-indigo-600">@{usuario?.alias}</span> ·{' '}
                 {usuario?.email}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
             {roles.map((r) => (
               <Badge key={r} color={r === 'ADMINISTRADOR' ? 'indigo' : r === 'ORGANIZADOR' ? 'sky' : 'emerald'}>
                 {r}
@@ -132,10 +132,10 @@ export function PerfilPage() {
       </section>
 
       {/* Doble columna lado a lado: Datos personales + Cambiar contraseña */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-sm backdrop-blur-md">
+      <div className="grid gap-5 lg:grid-cols-2">
+        <section className="flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md">
           <div>
-            <div className="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <div className="mb-3.5 flex items-center gap-2 border-b border-slate-100 pb-2.5">
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
                 <User className="h-4 w-4" />
               </span>
@@ -145,7 +145,7 @@ export function PerfilPage() {
               </div>
             </div>
 
-            <form onSubmit={handleGuardarPerfil} className="space-y-4">
+            <form onSubmit={handleGuardarPerfil} className="space-y-3">
               <div className="grid gap-4 sm:grid-cols-2">
                 <Input
                   label="Nombres"
@@ -181,9 +181,9 @@ export function PerfilPage() {
           </div>
         </section>
 
-        <section className="flex flex-col justify-between rounded-3xl border border-amber-200/80 bg-white/90 p-6 shadow-sm backdrop-blur-md">
+        <section className="flex flex-col justify-between rounded-3xl border border-amber-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md">
           <div>
-            <div className="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <div className="mb-3.5 flex items-center gap-2 border-b border-slate-100 pb-2.5">
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                 <KeyRound className="h-4 w-4" />
               </span>
@@ -193,7 +193,7 @@ export function PerfilPage() {
               </div>
             </div>
 
-            <form onSubmit={handleCambiarPassword} className="space-y-4">
+            <form onSubmit={handleCambiarPassword} className="space-y-3">
               <Input
                 label="Contraseña actual"
                 type="password"
