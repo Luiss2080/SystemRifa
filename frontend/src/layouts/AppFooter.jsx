@@ -268,7 +268,7 @@ export function AppFooter() {
       {/* Franja superior luminosa acorde a la identidad de la web */}
       <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
 
-      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-11 pb-24 sm:px-6 lg:px-8 xl:pb-10">
+      <div className="relative mx-auto w-full max-w-7xl px-4 pt-11 pb-24 sm:px-6 lg:px-8 xl:pb-10">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4 xl:gap-0">
           {/* Columna 1: Identidad comercial y redes sociales */}
           <div className="space-y-5 xl:pr-6">
