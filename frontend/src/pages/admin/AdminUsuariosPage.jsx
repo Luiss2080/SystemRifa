@@ -262,6 +262,34 @@ export function AdminUsuariosPage() {
               </div>
             )}
 
+            {tienePermiso('permisos', 'administrar') && permisosData?.items && (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold text-slate-900">
+                  Permisos directos del usuario (clic para asignar/quitar)
+                </h3>
+                <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/70 p-2.5">
+                  {permisosData.items.map((perm) => {
+                    const clave = `${perm.recurso}:${perm.accion}`;
+                    const asignado = permisosDirectosSet.has(clave);
+                    return (
+                      <button
+                        key={perm.permisoId}
+                        type="button"
+                        onClick={() => handleTogglePermisoDirecto(perm, asignado)}
+                        className={`rounded-lg border px-2 py-1 text-xs font-medium transition cursor-pointer ${
+                          asignado
+                            ? 'border-emerald-500 bg-emerald-600 text-white'
+                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {clave} {asignado ? '✓' : '+'}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div>
               <h3 className="mb-2 text-sm font-semibold text-slate-900">
                 Permisos efectivos ({detalleData.permisosEfectivos?.length || 0})
