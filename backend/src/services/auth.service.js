@@ -10,6 +10,7 @@ import {
 import { withTransaction } from '../repositories/transaction.js';
 import * as usuarioRepo from '../repositories/usuario.repository.js';
 import * as refreshTokenRepo from '../repositories/refreshToken.repository.js';
+import * as notificacionService from './notificacion.service.js';
 
 const BCRYPT_COST = 12;
 
@@ -55,6 +56,11 @@ export async function registrar(input) {
         tx
       )
     );
+
+    // Regla 9: notificar post-commit sin propagar errores si falla
+    await notificacionService.notificar('BIENVENIDA', [creado.usuarioId], {
+      alias: creado.alias
+    });
 
     return {
       usuario: {
