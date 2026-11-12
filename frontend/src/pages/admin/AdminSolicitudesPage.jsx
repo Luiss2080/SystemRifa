@@ -374,6 +374,10 @@ export function AdminSolicitudesPage() {
         open={Boolean(modalEstado)}
         onClose={() => setModalEstado(null)}
         title={`Cambiar estado · #${modalEstado?.rifaSolicitadaId || ''}`}
+        description="Actualiza la etapa de revisión o registra el pago de la solicitud antes de aprobarla."
+        badge="Flujo de solicitud"
+        icon={Edit3}
+        tone="slate"
       >
         <form onSubmit={handleCambiarEstado} className="space-y-4">
           <Select
@@ -413,6 +417,8 @@ export function AdminSolicitudesPage() {
         onClose={() => setModalAprobar(null)}
         title={`Aprobar solicitud · ${modalAprobar?.nombre || ''}`}
         description="Puedes ajustar los valores finales antes de crear la rifa y generar sus tickets."
+        badge="Aprobación y publicación"
+        icon={Sparkles}
         maxWidth="max-w-2xl"
       >
         {modalAprobar && (

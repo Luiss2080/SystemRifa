@@ -361,6 +361,8 @@ export function AdminUsuariosPage() {
         onClose={() => setUsuarioDetalleId(null)}
         title={`Permisos y roles · ${detalleData?.usuario?.alias || ''}`}
         description={detalleData?.usuario?.email}
+        badge="Control de accesos"
+        icon={ShieldCheck}
         maxWidth="max-w-2xl"
       >
         {detalleData && (

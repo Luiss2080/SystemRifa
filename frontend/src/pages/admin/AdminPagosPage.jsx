@@ -356,6 +356,10 @@ export function AdminPagosPage() {
         open={Boolean(pagoRechazar)}
         onClose={() => setPagoRechazar(null)}
         title={`Rechazar pago #${pagoRechazar?.pagoId || ''}`}
+        description="El rechazo devolverá inmediatamente los tickets reservados al inventario disponible."
+        badge="Tesorería · Rechazo"
+        icon={X}
+        tone="danger"
       >
         <form onSubmit={handleRechazar} className="space-y-4">
           <Textarea

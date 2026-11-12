@@ -289,6 +289,8 @@ export function AdminCausasPage() {
         onClose={() => setModal(null)}
         title={modal?.modo === 'editar' ? 'Editar causa solidaria' : 'Nueva causa solidaria'}
         description="Define el propósito, el mensaje público para los donantes y la meta de recaudación."
+        badge="Catálogo solidario"
+        icon={HeartHandshake}
         maxWidth="max-w-xl"
       >
         <form onSubmit={handleGuardar} className="space-y-4">

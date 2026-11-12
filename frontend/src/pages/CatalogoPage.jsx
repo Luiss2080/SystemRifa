@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { getCatalogoRifas, getCausasPublicas } from '../features/rifas/publicApi.js';
-import { formatearBs, formatearFechaCorta } from '../utils/format.js';
+import { formatearBs, formatearFechaCorta, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
