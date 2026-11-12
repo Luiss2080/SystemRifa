@@ -677,7 +677,11 @@ export function AppHeader({ variant = 'public' }) {
         esPanel ? 'border-t-[3px] border-t-emerald-600' : ''
       }`}
     >
-      <div className="flex h-18 w-full items-center justify-between gap-2 px-4 sm:px-6 lg:gap-3 lg:px-8">
+      <div
+        className={`mx-auto flex h-18 w-full items-center justify-between gap-2 px-4 sm:px-6 lg:gap-3 lg:px-8 ${
+          esPanel ? 'max-w-[1440px]' : 'max-w-7xl'
+        }`}
+      >
         {/* Marca / Logo */}
         <div className="flex min-w-0 shrink-0 items-center gap-2.5">
           <Link to={homeDestino} className="group flex items-center gap-2.5">

@@ -110,27 +110,27 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="my-auto w-full space-y-5 py-2">
-      {/* Cabecera superior centrada con los colores oficiales de la web */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-md backdrop-blur-md">
-        <div className="h-12 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-900" />
-        <div className="flex flex-wrap items-center justify-between gap-4 px-6 pb-4">
-          <div className="-mt-6 flex items-end gap-3.5">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-lg font-extrabold text-white shadow-md ring-4 ring-white">
+    <div className="mx-auto my-auto w-full max-w-5xl space-y-5 py-2">
+      {/* Cabecera superior con franja superior limpia (sin traslape de texto oscuro) */}
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/95 shadow-md backdrop-blur-md">
+        <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-slate-800" />
+        <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-lg font-extrabold text-white shadow-md ring-4 ring-emerald-50">
               {iniciales}
             </div>
-            <div className="pt-1.5">
-              <h1 className="text-lg font-extrabold text-slate-900">
+            <div>
+              <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
                 {usuario?.nombres} {usuario?.apellidos}
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-slate-500">
                 <span className="font-semibold text-emerald-700">@{usuario?.alias}</span> ·{' '}
                 {usuario?.email}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <div className="flex flex-wrap items-center gap-1.5">
             {roles.map((r) => (
               <Badge key={r} color={r === 'ADMINISTRADOR' ? 'slate' : r === 'ORGANIZADOR' ? 'teal' : 'emerald'}>
                 {r}
