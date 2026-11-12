@@ -362,3 +362,4 @@ export async function listarHistorialPermisos({ page, limit, usuarioAfectadoId, 
     }
   };
 }
+

@@ -10,3 +10,4 @@ export async function findRifaOwnershipById(rifaId, db = prisma) {
     }
   });
 }
+

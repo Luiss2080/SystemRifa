@@ -8,3 +8,4 @@ import { createAuditoria } from '../repositories/auditoria.repository.js';
 export async function registrar(tx, payload) {
   return createAuditoria(tx, payload);
 }
+

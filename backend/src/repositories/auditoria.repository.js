@@ -12,3 +12,4 @@ export async function createAuditoria(tx, { usuarioId = null, entidad, entidadId
     }
   });
 }
+

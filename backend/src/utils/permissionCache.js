@@ -38,3 +38,4 @@ export function invalidateUserPermissions(usuarioId) {
 export function invalidateAllPermissions() {
   cache.clear();
 }
+

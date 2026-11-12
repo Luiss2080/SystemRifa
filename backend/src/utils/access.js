@@ -32,3 +32,4 @@ export function extractEffectivePermissions(userWithAccess) {
 export function esAdmin(user) {
   return Boolean(user?.roles?.includes('ADMINISTRADOR'));
 }
+

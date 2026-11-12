@@ -188,3 +188,4 @@ export async function findHistorialPermisos({ page, limit, usuarioAfectadoId, ro
 
   return { items, total };
 }
+

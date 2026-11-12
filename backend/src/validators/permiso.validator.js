@@ -93,3 +93,4 @@ export const historialPermisosQuerySchema = z.object({
   rolAfectadoId: z.coerce.number().int().positive().optional(),
   operacion: z.string().trim().max(40).optional()
 });
+

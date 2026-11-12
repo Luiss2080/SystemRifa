@@ -264,3 +264,4 @@ describe('Roles, Permisos, Usuarios y Auditoría (Paso 4)', () => {
     ).toThrow(/propietario/i);
   });
 });
+

@@ -167,3 +167,4 @@ export async function getHistorialPermisos(req, res, next) {
     next(err);
   }
 }
+
