@@ -44,6 +44,7 @@ router.get(
 );
 
 // Catálogo y detalle públicos
+router.get('/resumen-publico', getResumenPublico);
 router.get('/', validate(listarRifasPublicasQuerySchema, 'query'), getCatalogoPublico);
 router.get('/:id', validate(idParamSchema, 'params'), getRifaById);
 router.get('/:id/tickets', validate(idParamSchema, 'params'), getTicketsRifa);
