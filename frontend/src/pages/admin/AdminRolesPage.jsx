@@ -35,7 +35,11 @@ export function AdminRolesPage() {
   const [creandoRol, setCreandoRol] = useState(false);
 
   const [rolEditando, setRolEditando] = useState(null);
+  const [rolAEliminar, setRolAEliminar] = useState(null);
+  const [eliminandoRol, setEliminandoRol] = useState(false);
   const [filtroPermiso, setFiltroPermiso] = useState('');
+
+  const ROLES_SISTEMA = new Set(['ADMINISTRADOR', 'ORGANIZADOR', 'PARTICIPANTE']);
 
   const { data: rolesData, isLoading: loadingRoles } = useQuery({
     queryKey: ['admin-roles'],
@@ -85,6 +89,32 @@ export function AdminRolesPage() {
       toast.success('Permiso actualizado');
     } catch (err) {
       toast.error('Error al modificar permiso', extraerErrorApi(err).message);
+    }
+  }
+
+  async function handleEliminarRol() {
+    if (!rolAEliminar) return;
+    setEliminandoRol(true);
+    try {
+      await eliminarRolApi(rolAEliminar.rolId);
+      setRolAEliminar(null);
+      await queryClient.invalidateQueries({ queryKey: ['admin-roles'] });
+      toast.success('Rol eliminado');
+    } catch (err) {
+      toast.error('No se pudo eliminar', extraerErrorApi(err).message);
+    } finally {
+      setEliminandoRol(false);
+    }
+  }
+
+  async function handleToggleEstadoPermiso(permiso) {
+    try {
+      await actualizarPermisoApi(permiso.permisoId, { estaActivo: !permiso.estaActivo });
+      await queryClient.invalidateQueries({ queryKey: ['admin-permisos'] });
+      await queryClient.invalidateQueries({ queryKey: ['admin-roles'] });
+      toast.success('Estado de permiso actualizado');
+    } catch (err) {
+      toast.error('Error al actualizar permiso', extraerErrorApi(err).message);
     }
   }
 
@@ -148,13 +178,22 @@ export function AdminRolesPage() {
             Roles y matriz
           </Button>
           {tienePermiso('permisos', 'administrar') && (
-            <Button
-              variant={tab === 'historial' ? 'primary' : 'secondary'}
-              size="sm"
-              onClick={() => setTab('historial')}
-            >
-              Historial de permisos
-            </Button>
+            <>
+              <Button
+                variant={tab === 'permisos' ? 'primary' : 'secondary'}
+                size="sm"
+                onClick={() => setTab('permisos')}
+              >
+                Catálogo de permisos
+              </Button>
+              <Button
+                variant={tab === 'historial' ? 'primary' : 'secondary'}
+                size="sm"
+                onClick={() => setTab('historial')}
+              >
+                Historial de permisos
+              </Button>
+            </>
           )}
           {tienePermiso('roles', 'administrar') && (
             <Button size="sm" onClick={() => setModalRol(true)}>
@@ -176,7 +215,7 @@ export function AdminRolesPage() {
                 className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-emerald-300"
               >
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <h2 className="text-base font-bold text-slate-900">{rol.nombre}</h2>
                     <Badge color="slate">{rol.usuariosCount} usuario(s)</Badge>
                   </div>
@@ -193,25 +232,61 @@ export function AdminRolesPage() {
                   </div>
                 </div>
 
-                {tienePermiso('permisos', 'administrar') && (
-                  <div className="mt-4 border-t border-slate-100 pt-3">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => {
-                        setFiltroPermiso('');
-                        setRolEditando(rol);
-                      }}
-                    >
-                      Configurar permisos ({rol.permisos.length})
-                    </Button>
+                {(tienePermiso('permisos', 'administrar') ||
+                  (tienePermiso('roles', 'administrar') && !ROLES_SISTEMA.has(rol.nombre))) && (
+                  <div className="mt-4 flex gap-2 border-t border-slate-100 pt-3">
+                    {tienePermiso('permisos', 'administrar') && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setFiltroPermiso('');
+                          setRolEditando(rol);
+                        }}
+                      >
+                        Configurar permisos ({rol.permisos.length})
+                      </Button>
+                    )}
+                    {tienePermiso('roles', 'administrar') && !ROLES_SISTEMA.has(rol.nombre) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        title={`Eliminar rol ${rol.nombre}`}
+                        onClick={() => setRolAEliminar(rol)}
+                      >
+                        <Trash2 className="h-4 w-4 text-rose-600" />
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
             ))}
           </div>
         )
+      ) : tab === 'permisos' ? (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {permisos.map((p) => (
+            <div
+              key={p.permisoId}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs"
+            >
+              <div className="min-w-0">
+                <p className="truncate font-mono text-xs font-bold text-slate-900">
+                  {p.recurso}:{p.accion}
+                </p>
+                <p className="truncate text-xs text-slate-500">{p.nombre}</p>
+              </div>
+              <Button
+                size="sm"
+                variant={p.estaActivo ? 'secondary' : 'primary'}
+                onClick={() => handleToggleEstadoPermiso(p)}
+              >
+                {p.estaActivo ? 'Desactivar' : 'Activar'}
+              </Button>
+            </div>
+          ))}
+        </div>
       ) : (
         <DataTable
           columns={histColumns}
@@ -308,6 +383,16 @@ export function AdminRolesPage() {
           </div>
         )}
       </Modal>
+
+      <ConfirmModal
+        open={Boolean(rolAEliminar)}
+        onClose={() => setRolAEliminar(null)}
+        onConfirm={handleEliminarRol}
+        loading={eliminandoRol}
+        title={`Eliminar rol "${rolAEliminar?.nombre || ''}"`}
+        message={`¿Seguro que deseas eliminar el rol "${rolAEliminar?.nombre || ''}"? Esta acción no se puede deshacer.`}
+        confirmText="Eliminar rol"
+      />
     </div>
   );
 }
