@@ -1,3 +1,4 @@
+import { useEffect, useId } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button.jsx';
 
@@ -9,26 +10,58 @@ export function Modal({
   children,
   footer,
   maxWidth = 'max-w-lg',
+  closeOnBackdrop = true,
 }) {
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && closeOnBackdrop && onClose) {
+        onClose();
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, onClose, closeOnBackdrop]);
+
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/55 p-4 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
+      aria-labelledby={titleId}
+      onClick={(e) => {
+        if (closeOnBackdrop && e.target === e.currentTarget && onClose) {
+          onClose();
+        }
+      }}
     >
-      <div className={`w-full ${maxWidth} rounded-2xl bg-white shadow-xl border border-slate-200 overflow-hidden`}>
+      <div
+        className={`animate-modal-in w-full ${maxWidth} overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl`}
+      >
         <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4">
-          <div>
-            <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+          <div className="pr-4">
+            <h3 id={titleId} className="text-base font-bold text-slate-900">
+              {title}
+            </h3>
             {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 cursor-pointer"
-            aria-label="Cerrar"
+            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+            aria-label="Cerrar ventana"
           >
             <X className="h-5 w-5" />
           </button>
@@ -61,7 +94,8 @@ export function ConfirmModal({
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={loading ? undefined : onClose}
+      closeOnBackdrop={!loading}
       title={title}
       footer={
         <>
@@ -74,9 +108,8 @@ export function ConfirmModal({
         </>
       }
     >
-      {message && <p className="text-sm text-slate-600">{message}</p>}
+      {message && <p className="text-sm leading-relaxed text-slate-600">{message}</p>}
       {children}
     </Modal>
   );
 }
-
