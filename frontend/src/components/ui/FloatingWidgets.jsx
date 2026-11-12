@@ -319,7 +319,9 @@ export function FloatingWidgets() {
                             type="button"
                             onClick={() => {
                               setBotOpen(false);
-                              navigate(msg.ctaTo);
+                              const destino =
+                                msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
+                              navigate(destino);
                             }}
                             className="mt-2 inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200/80 transition hover:bg-emerald-100 cursor-pointer"
                           >
@@ -370,30 +372,10 @@ export function FloatingWidgets() {
               </form>
             </div>
           </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              setBotOpen(true);
-              setWaOpen(false);
-            }}
-            aria-label="Abrir asistente virtual de ayuda"
-            title="Asistente RifaBot"
-            className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl cursor-pointer"
-          >
-            <Bot className="h-6 w-6" />
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-amber-400" />
-            </span>
-          </button>
-        )}
-      </div>
+  );
 
-      {/* Widget Inferior Derecho: WhatsApp Directo + Volver arriba */}
-      <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-2.5">
-        {waOpen ? (
-          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[320px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
+  const waCard = (
+    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[320px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
             <div className="flex items-center justify-between bg-[#075E54] px-3.5 py-2.5 text-white">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs">
@@ -471,36 +453,59 @@ export function FloatingWidgets() {
               </p>
             </div>
           </div>
+  );
+
+  const showTopButton = showTop ? (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Volver arriba"
+      title="Subir al inicio"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-md backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+    >
+      <ArrowUp className="h-4 w-4" />
+    </button>
+  ) : null;
+
+  const waTrigger = (
+    <button
+      type="button"
+      onClick={() => {
+        setWaOpen(true);
+        setBotOpen(false);
+      }}
+      aria-label="Abrir soporte por WhatsApp"
+      title="WhatsApp directo"
+      className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:bg-[#1ebe5d] cursor-pointer"
+    >
+      <WhatsAppIcon className="h-6 w-6" />
+      <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
+      </span>
+    </button>
+  );
+
+  return (
+    <>
+      {!dockBotRight && (
+        /* Widget Inferior Izquierdo: Asistente Virtual RifaBot */
+        <div className="fixed bottom-4 left-4 z-40 flex flex-col items-start">
+          {botOpen ? botCard : botTrigger}
+        </div>
+      )}
+
+      {/* Widget Inferior Derecho: RifaBot (cuando hay sidebar) + WhatsApp + Volver arriba */}
+      <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-2.5">
+        {dockBotRight && botOpen ? (
+          botCard
+        ) : waOpen ? (
+          waCard
         ) : (
           <>
-            {showTop && (
-              <button
-                type="button"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                aria-label="Volver arriba"
-                title="Subir al inicio"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-md backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
-              >
-                <ArrowUp className="h-4 w-4" />
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={() => {
-                setWaOpen(true);
-                setBotOpen(false);
-              }}
-              aria-label="Abrir soporte por WhatsApp"
-              title="WhatsApp directo"
-              className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:bg-[#1ebe5d] cursor-pointer"
-            >
-              <WhatsAppIcon className="h-6 w-6" />
-              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
-                <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
-              </span>
-            </button>
+            {showTopButton}
+            {dockBotRight && botTrigger}
+            {waTrigger}
           </>
         )}
       </div>
