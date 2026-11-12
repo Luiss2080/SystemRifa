@@ -1,9 +1,10 @@
 import { prisma } from '../../src/config/prisma.js';
 import { env } from '../../src/config/env.js';
+import { runSeed } from '../../prisma/seed.js';
 
 /**
- * Limpia todas las tablas de la base de datos de pruebas (excluyendo _prisma_migrations).
- * En pasos posteriores invocará también al seed base.
+ * Limpia todas las tablas de la base de datos de pruebas (excluyendo _prisma_migrations)
+ * y vuelve a ejecutar el seed base idempotente.
  */
 export async function resetDb() {
   if (env.NODE_ENV !== 'test') {
@@ -28,5 +29,6 @@ export async function resetDb() {
       await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1');
     }
   }
-}
 
+  await runSeed(prisma);
+}

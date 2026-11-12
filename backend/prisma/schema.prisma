@@ -7,3 +7,329 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum SolicitudEstado {
+  REVISION
+  ESPERANDO_PAGO
+  PAGO_CONFIRMADO
+  APROBADA
+  RECHAZADA
+}
+
+enum RifaEstado {
+  ACTIVA
+  EXTENDIDA
+  FINALIZADA
+}
+
+enum TicketEstado {
+  DISPONIBLE
+  RESERVADO
+  VENDIDO
+  ANULADO
+}
+
+enum PagoEstado {
+  PENDIENTE
+  CONFIRMADO
+  RECHAZADO
+}
+
+model Usuario {
+  usuarioId    Int      @id @default(autoincrement())
+  alias        String   @unique @db.VarChar(40)
+  email        String   @unique @db.VarChar(120)
+  telefono     String?  @unique @db.VarChar(20)
+  nombres      String   @db.VarChar(80)
+  apellidos    String   @db.VarChar(80)
+  passwordHash String   @db.VarChar(100)
+  activo       Boolean  @default(true)
+  creadoEn     DateTime @default(now())
+
+  solicitudes          RifaSolicitada[]      @relation("SolicitudDueno")
+  solicitudesRevisadas RifaSolicitada[]      @relation("SolicitudRevisor")
+  auditorias           Auditoria[]
+  rifasCreadas         Rifa[]
+  tickets              Ticket[]
+  pagos                Pago[]                @relation("PagoComprador")
+  pagosVerificados     Pago[]                @relation("PagoVerificador")
+  sorteosRealizados    Sorteo[]
+  roles                RolUsuario[]
+  permisosDirectos     PermisoUsuario[]
+  notificaciones       NotificacionUsuario[]
+  refreshTokens        RefreshToken[]
+  histAdmin            HistorialPermiso[]    @relation("HistAdmin")
+  histAfectado         HistorialPermiso[]    @relation("HistAfectado")
+
+  @@map("usuario")
+}
+
+model RefreshToken {
+  refreshTokenId Int      @id @default(autoincrement())
+  usuarioId      Int
+  tokenHash      String   @unique @db.VarChar(64)
+  expiraEn       DateTime
+  revocado       Boolean  @default(false)
+  usuario        Usuario  @relation(fields: [usuarioId], references: [usuarioId], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@map("refresh_token")
+}
+
+model Rol {
+  rolId       Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(50)
+  descripcion String? @db.VarChar(200)
+
+  usuarios  RolUsuario[]
+  permisos  PermisoRol[]
+  historial HistorialPermiso[]
+
+  @@map("rol")
+}
+
+model Permiso {
+  permisoId  Int     @id @default(autoincrement())
+  nombre     String  @db.VarChar(80)
+  recurso    String  @db.VarChar(50)
+  accion     String  @db.VarChar(50)
+  estaActivo Boolean @default(true)
+
+  roles     PermisoRol[]
+  usuarios  PermisoUsuario[]
+  historial HistorialPermiso[]
+
+  @@unique([recurso, accion])
+  @@map("permiso")
+}
+
+model RolUsuario {
+  usuarioId Int
+  rolId     Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [usuarioId], onDelete: Cascade)
+  rol       Rol     @relation(fields: [rolId], references: [rolId], onDelete: Cascade)
+
+  @@id([usuarioId, rolId])
+  @@map("rol_usuario")
+}
+
+model PermisoRol {
+  rolId     Int
+  permisoId Int
+  rol       Rol     @relation(fields: [rolId], references: [rolId], onDelete: Cascade)
+  permiso   Permiso @relation(fields: [permisoId], references: [permisoId], onDelete: Cascade)
+
+  @@id([rolId, permisoId])
+  @@map("permiso_rol")
+}
+
+model PermisoUsuario {
+  usuarioId Int
+  permisoId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [usuarioId], onDelete: Cascade)
+  permiso   Permiso @relation(fields: [permisoId], references: [permisoId], onDelete: Cascade)
+
+  @@id([usuarioId, permisoId])
+  @@map("permiso_usuario")
+}
+
+model HistorialPermiso {
+  historialPermisoId Int      @id @default(autoincrement())
+  usuarioAdminId     Int?
+  usuarioAfectadoId  Int?
+  rolAfectadoId      Int?
+  permisoId          Int?
+  operacion          String   @db.VarChar(40)
+  fecha              DateTime @default(now())
+
+  admin    Usuario? @relation("HistAdmin", fields: [usuarioAdminId], references: [usuarioId], onDelete: SetNull)
+  afectado Usuario? @relation("HistAfectado", fields: [usuarioAfectadoId], references: [usuarioId], onDelete: SetNull)
+  rol      Rol?     @relation(fields: [rolAfectadoId], references: [rolId], onDelete: SetNull)
+  permiso  Permiso? @relation(fields: [permisoId], references: [permisoId], onDelete: SetNull)
+
+  @@map("historial_permiso")
+}
+
+model CausaSolidaria {
+  causaId     Int              @id @default(autoincrement())
+  nombre      String           @db.VarChar(120)
+  descripcion String?          @db.Text
+  meta        Decimal?         @db.Decimal(12, 2)
+  rifas       Rifa[]
+  solicitudes RifaSolicitada[]
+
+  @@map("causa_solidaria")
+}
+
+model RifaSolicitada {
+  rifaSolicitadaId Int             @id @default(autoincrement())
+  usuarioId        Int
+  causaId          Int?
+  revisadoPorId    Int?
+  nombre           String          @db.VarChar(120)
+  descripcion      String?         @db.Text
+  precioTicket     Decimal         @db.Decimal(10, 2)
+  cantidadTickets  Int
+  fechaInicio      DateTime
+  fechaFin         DateTime
+  fechaSolicitud   DateTime        @default(now())
+  estado           SolicitudEstado @default(REVISION)
+  referenciaPago   String?         @db.VarChar(80)
+  observacion      String?         @db.Text
+  fechaResolucion  DateTime?
+
+  usuario Usuario         @relation("SolicitudDueno", fields: [usuarioId], references: [usuarioId])
+  revisor Usuario?        @relation("SolicitudRevisor", fields: [revisadoPorId], references: [usuarioId])
+  causa   CausaSolidaria? @relation(fields: [causaId], references: [causaId])
+  rifa    Rifa?
+
+  @@index([usuarioId])
+  @@index([estado])
+  @@map("rifa_solicitada")
+}
+
+model Rifa {
+  rifaId           Int        @id @default(autoincrement())
+  usuarioCreadorId Int
+  rifaSolicitadaId Int?       @unique
+  causaId          Int?
+  nombre           String     @db.VarChar(120)
+  descripcion      String?    @db.Text
+  precioTicket     Decimal    @db.Decimal(10, 2)
+  cantidadTickets  Int
+  fechaInicio      DateTime
+  fechaFin         DateTime
+  estado           RifaEstado @default(ACTIVA)
+
+  creador   Usuario         @relation(fields: [usuarioCreadorId], references: [usuarioId])
+  solicitud RifaSolicitada? @relation(fields: [rifaSolicitadaId], references: [rifaSolicitadaId])
+  causa     CausaSolidaria? @relation(fields: [causaId], references: [causaId])
+  tickets   Ticket[]
+  premios   Premio[]
+  pagos     Pago[]
+  sorteo    Sorteo?
+
+  @@map("rifa")
+}
+
+model Ticket {
+  ticketId       Int          @id @default(autoincrement())
+  rifaId         Int
+  usuarioId      Int?
+  pagoId         Int?
+  numeroTicket   Int
+  estado         TicketEstado @default(DISPONIBLE)
+  reservadoHasta DateTime?
+
+  rifa    Rifa     @relation(fields: [rifaId], references: [rifaId], onDelete: Cascade)
+  usuario Usuario? @relation(fields: [usuarioId], references: [usuarioId])
+  pago    Pago?    @relation(fields: [pagoId], references: [pagoId])
+  premio  Premio?
+  sorteo  Sorteo?
+
+  @@unique([rifaId, numeroTicket])
+  @@index([rifaId, estado])
+  @@map("ticket")
+}
+
+model Premio {
+  premioId        Int      @id @default(autoincrement())
+  rifaId          Int
+  ticketGanadorId Int?     @unique
+  nombre          String   @db.VarChar(120)
+  descripcion     String?  @db.Text
+  valor           Decimal? @db.Decimal(12, 2)
+  activo          Boolean  @default(true)
+  reclamado       Boolean  @default(false)
+  datosEntrega    String?  @db.Text
+
+  rifa          Rifa    @relation(fields: [rifaId], references: [rifaId], onDelete: Cascade)
+  ticketGanador Ticket? @relation(fields: [ticketGanadorId], references: [ticketId])
+
+  @@map("premio")
+}
+
+model Pago {
+  pagoId          Int        @id @default(autoincrement())
+  rifaId          Int
+  usuarioId       Int
+  verificadoPorId Int?
+  monto           Decimal    @db.Decimal(10, 2)
+  metodo          String     @db.VarChar(40)
+  referencia      String?    @db.VarChar(80)
+  estado          PagoEstado @default(PENDIENTE)
+  fecha           DateTime   @default(now())
+
+  rifa        Rifa     @relation(fields: [rifaId], references: [rifaId])
+  usuario     Usuario  @relation("PagoComprador", fields: [usuarioId], references: [usuarioId])
+  verificador Usuario? @relation("PagoVerificador", fields: [verificadoPorId], references: [usuarioId])
+  tickets     Ticket[]
+
+  @@map("pago")
+}
+
+model Sorteo {
+  sorteoId        Int      @id @default(autoincrement())
+  rifaId          Int      @unique
+  ticketGanadorId Int      @unique
+  realizadoPorId  Int
+  fecha           DateTime @default(now())
+  observacion     String?  @db.Text
+
+  rifa          Rifa    @relation(fields: [rifaId], references: [rifaId])
+  ticketGanador Ticket  @relation(fields: [ticketGanadorId], references: [ticketId])
+  realizadoPor  Usuario @relation(fields: [realizadoPorId], references: [usuarioId])
+
+  @@map("sorteo")
+}
+
+model TipoNotificacion {
+  tipoNotificacionId Int            @id @default(autoincrement())
+  codigo             String         @unique @db.VarChar(60)
+  plantillaTitulo    String         @db.VarChar(150)
+  plantillaMensaje   String         @db.Text
+  variables          Json?
+  estaActivo         Boolean        @default(true)
+  notificaciones     Notificacion[]
+
+  @@map("tipo_notificacion")
+}
+
+model Notificacion {
+  notificacionId     Int                   @id @default(autoincrement())
+  tipoNotificacionId Int
+  fechaCreacion      DateTime              @default(now())
+  tipo               TipoNotificacion      @relation(fields: [tipoNotificacionId], references: [tipoNotificacionId])
+  destinatarios      NotificacionUsuario[]
+
+  @@map("notificacion")
+}
+
+model NotificacionUsuario {
+  notificacionId Int
+  usuarioId      Int
+  titulo         String  @db.VarChar(150)
+  mensaje        String  @db.Text
+  leida          Boolean @default(false)
+  eliminada      Boolean @default(false)
+
+  notificacion Notificacion @relation(fields: [notificacionId], references: [notificacionId], onDelete: Cascade)
+  usuario      Usuario      @relation(fields: [usuarioId], references: [usuarioId], onDelete: Cascade)
+
+  @@id([notificacionId, usuarioId])
+  @@map("notificacion_usuario")
+}
+
+model Auditoria {
+  auditoriaId Int      @id @default(autoincrement())
+  usuarioId   Int?
+  entidad     String   @db.VarChar(40)
+  entidadId   Int
+  accion      String   @db.VarChar(60)
+  detalle     Json?
+  fecha       DateTime @default(now())
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [usuarioId], onDelete: SetNull)
+
+  @@index([entidad, entidadId])
+  @@map("auditoria")
+}
