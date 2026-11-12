@@ -12,6 +12,7 @@ import {
   Ticket,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { BrandLogo } from '../components/ui/BrandLogo.jsx';
 
 export function AppFooter() {
   const { isAuthenticated, tieneAlgunPermiso, esAdmin } = useAuth();
@@ -34,16 +35,13 @@ export function AppFooter() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-12">
           {/* Identidad y propósito */}
           <div className="space-y-4 lg:col-span-5">
-            <Link to="/" className="inline-flex items-center gap-2.5 font-bold text-white">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-950/50">
-                <Ticket className="h-5 w-5" />
-              </span>
-              <span>
-                <span className="block text-base tracking-tight">Rifas Solidarias</span>
-                <span className="block text-[11px] font-medium text-emerald-400">
-                  Transparencia y apoyo social en tiempo real
-                </span>
-              </span>
+            <Link to="/" className="inline-flex">
+              <BrandLogo
+                dark
+                size="lg"
+                showSubtitle
+                subtitle="Transparencia y apoyo social en tiempo real"
+              />
             </Link>
 
             <p className="max-w-md text-sm leading-relaxed text-slate-400">

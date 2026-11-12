@@ -59,7 +59,7 @@ export function BrandMark({ size = 'md', className = '' }) {
       />
 
       <circle cx="38.5" cy="23.5" r="1.4" fill="#0d9488" fillOpacity="0.45" />
-      <circle cx="38.5" cy="32" r="1.4" fill="#0d9488" fill-opacity="0.45" />
+      <circle cx="38.5" cy="32" r="1.4" fill="#0d9488" fillOpacity="0.45" />
       <circle cx="38.5" cy="40.5" r="1.4" fill="#0d9488" fillOpacity="0.45" />
 
       <path
