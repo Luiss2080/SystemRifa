@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  ArrowRight,
   ArrowUp,
   Bot,
   Check,
   Copy,
   ExternalLink,
-  HelpCircle,
+  RotateCcw,
   Send,
   ShieldCheck,
-  Sparkles,
   X,
 } from 'lucide-react';
 
@@ -19,33 +19,37 @@ const WHATSAPP_DISPLAY = '+591 700 20004';
 const FAQ_TOPICS = [
   {
     id: 'reservar',
+    chip: 'Reservar',
     pregunta: '¿Cómo reservo mis números?',
     respuesta:
-      'Entra a cualquier rifa activa del catálogo, selecciona tus números disponibles en el tablero en tiempo real y presiona "Reservar". Quedarán bloqueados solo para ti durante 15 minutos.',
+      'Entra a cualquier rifa activa del catálogo, elige tus números disponibles en tiempo real y presiona "Reservar". Quedarán bloqueados para ti por 15 minutos.',
     ctaLabel: 'Explorar rifas',
     ctaTo: '/',
   },
   {
     id: 'pagos',
+    chip: 'Pagos',
     pregunta: '¿Cómo envío mi comprobante de pago?',
     respuesta:
-      'Una vez reservados tus tickets, ve a "Mis pagos" o usa el botón de pago directo en la rifa para adjuntar tu comprobante y referencia. Nuestro equipo lo verificará en minutos.',
+      'Con tus tickets reservados, abre "Mis pagos" o usa el botón de pago directo en la rifa para registrar tu referencia y comprobante. Se verifica en minutos.',
     ctaLabel: 'Ir a Mis pagos',
     ctaTo: '/mis-pagos',
   },
   {
     id: 'organizar',
+    chip: 'Organizar',
     pregunta: '¿Cómo puedo organizar una rifa?',
     respuesta:
-      'Inicia sesión o crea una cuenta gratuita, ingresa a "Organizar rifa" y envía tu solicitud indicando la causa solidaria, premios y cantidad de tickets.',
+      'Inicia sesión, entra a "Solicitar rifa" y envía tu propuesta indicando la causa social, premios y cantidad de boletos para revisión.',
     ctaLabel: 'Solicitar rifa',
     ctaTo: '/solicitudes/nueva',
   },
   {
     id: 'sorteo',
+    chip: 'Sorteos',
     pregunta: '¿Cómo se garantizan los sorteos?',
     respuesta:
-      'Solo participan tickets con pago verificado y aprobado. Cada sorteo queda registrado en auditoría inmutable y el resultado público muestra únicamente el alias del ganador.',
+      'Solo participan tickets con pago verificado. Cada sorteo queda registrado en auditoría inmutable y el resultado público muestra únicamente el alias ganador.',
     ctaLabel: 'Ver causas verificadas',
     ctaTo: '/causas',
   },
@@ -56,6 +60,56 @@ const WHATSAPP_PRESETS = [
   'Hola, me gustaría organizar una rifa solidaria.',
   'Hola, necesito ayuda con mis tickets reservados.',
 ];
+
+function horaActual() {
+  return new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit' });
+}
+
+function crearMensajeInicial() {
+  return [
+    {
+      id: 'welcome',
+      role: 'bot',
+      hora: horaActual(),
+      texto:
+        '¡Hola! Soy RifaBot, asistente de Rifas Solidarias. Pregúntame sobre reservas, pagos o sorteos. ¿En qué te ayudo?',
+    },
+  ];
+}
+
+function buscarRespuestaBot(texto) {
+  const q = texto.trim().toLowerCase();
+  if (!q) return null;
+
+  const exact = FAQ_TOPICS.find(
+    (t) =>
+      (q.includes('pago') && t.id === 'pagos') ||
+      (q.includes('comprob') && t.id === 'pagos') ||
+      (q.includes('qr') && t.id === 'pagos') ||
+      (q.includes('reserv') && t.id === 'reservar') ||
+      (q.includes('numero') && t.id === 'reservar') ||
+      (q.includes('ticket') && t.id === 'reservar') ||
+      (q.includes('bolet') && t.id === 'reservar') ||
+      (q.includes('organiz') && t.id === 'organizar') ||
+      (q.includes('solicit') && t.id === 'organizar') ||
+      (q.includes('crear') && t.id === 'organizar') ||
+      (q.includes('sorteo') && t.id === 'sorteo') ||
+      (q.includes('ganador') && t.id === 'sorteo') ||
+      (q.includes('auditor') && t.id === 'sorteo') ||
+      (q.includes('segur') && t.id === 'sorteo') ||
+      t.pregunta.toLowerCase().includes(q)
+  );
+
+  if (exact) return exact;
+
+  return {
+    id: 'general',
+    respuesta:
+      'Puedo orientarte con reservas de números (15 min), registro de comprobantes de pago, solicitudes para organizar rifas o verificación de sorteos. Selecciona una opción rápida abajo o escríbenos por WhatsApp.',
+    ctaLabel: 'Ver catálogo activo',
+    ctaTo: '/',
+  };
+}
 
 function WhatsAppIcon({ className = 'h-6 w-6' }) {
   return (
@@ -69,11 +123,12 @@ export function FloatingWidgets() {
   const navigate = useNavigate();
   const [botOpen, setBotOpen] = useState(false);
   const [waOpen, setWaOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState(FAQ_TOPICS[0]);
+  const [messages, setMessages] = useState(() => crearMensajeInicial());
   const [consulta, setConsulta] = useState('');
   const [waMensaje, setWaMensaje] = useState(WHATSAPP_PRESETS[0]);
   const [copied, setCopied] = useState(false);
   const [showTop, setShowTop] = useState(false);
+  const chatEndRef = useRef(null);
 
   useEffect(() => {
     function onScroll() {
@@ -83,31 +138,56 @@ export function FloatingWidgets() {
       setWaOpen(false);
       setBotOpen(true);
     }
+    function onKeyDown(e) {
+      if (e.key === 'Escape') {
+        setBotOpen(false);
+        setWaOpen(false);
+      }
+    }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('open-help-widget', onOpenHelp);
+    window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('open-help-widget', onOpenHelp);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, []);
 
+  useEffect(() => {
+    if (botOpen) {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, botOpen]);
+
+  function enviarConsulta(texto, topicOpcional = null) {
+    const limpio = texto.trim();
+    if (!limpio) return;
+    const hora = horaActual();
+    const respuesta = topicOpcional || buscarRespuestaBot(limpio);
+
+    setMessages((prev) => [
+      ...prev,
+      { id: `u-${Date.now()}`, role: 'user', hora, texto: limpio },
+      {
+        id: `b-${Date.now() + 1}`,
+        role: 'bot',
+        hora,
+        texto: respuesta.respuesta,
+        ctaLabel: respuesta.ctaLabel,
+        ctaTo: respuesta.ctaTo,
+      },
+    ]);
+    setConsulta('');
+  }
+
   function handleAskSubmit(e) {
     e.preventDefault();
-    const q = consulta.trim().toLowerCase();
-    if (!q) return;
-    const match =
-      FAQ_TOPICS.find(
-        (t) =>
-          t.pregunta.toLowerCase().includes(q) ||
-          t.respuesta.toLowerCase().includes(q) ||
-          (q.includes('pago') && t.id === 'pagos') ||
-          (q.includes('reserv') && t.id === 'reservar') ||
-          (q.includes('numero') && t.id === 'reservar') ||
-          (q.includes('organiz') && t.id === 'organizar') ||
-          (q.includes('sorteo') && t.id === 'sorteo') ||
-          (q.includes('ganador') && t.id === 'sorteo')
-      ) || FAQ_TOPICS[0];
-    setSelectedTopic(match);
+    enviarConsulta(consulta);
+  }
+
+  function handleResetChat() {
+    setMessages(crearMensajeInicial());
     setConsulta('');
   }
 
@@ -125,84 +205,123 @@ export function FloatingWidgets() {
 
   return (
     <>
-      {/* Widget Inferior Izquierdo: Asistente Virtual / Centro de Ayuda */}
-      <div className="fixed bottom-4 left-4 z-40 flex flex-col items-start gap-3">
-        {botOpen && (
-          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl ring-1 ring-slate-900/5">
-            <div className="flex items-center justify-between bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 px-4 py-3.5 text-white">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 backdrop-blur-xs">
-                  <Bot className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-bold leading-tight">RifaBot · Ayuda Rápida</p>
-                  <p className="flex items-center gap-1.5 text-[11px] text-emerald-100">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                    Respuestas instantáneas 24/7
-                  </p>
+      {/* Widget Inferior Izquierdo: Asistente Virtual RifaBot */}
+      <div className="fixed bottom-4 left-4 z-40 flex flex-col items-start">
+        {botOpen ? (
+          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[336px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
+            {/* Cabecera verde de la web */}
+            <div className="relative bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 px-3.5 py-2.5 text-white">
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-emerald-300 via-amber-300 to-teal-300" />
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25 backdrop-blur-xs">
+                    <Bot className="h-5 w-5" />
+                    <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-700 bg-emerald-300" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-extrabold leading-tight tracking-tight">RifaBot</p>
+                    <p className="text-[11px] font-medium text-emerald-100">
+                      Asistente Solidario
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={handleResetChat}
+                    title="Reiniciar conversación"
+                    aria-label="Reiniciar conversación"
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white/85 transition hover:bg-white/20 hover:text-white cursor-pointer"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBotOpen(false)}
+                    title="Cerrar asistente"
+                    aria-label="Cerrar asistente"
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setBotOpen(false)}
-                className="rounded-lg p-1.5 text-white/80 transition hover:bg-white/15 hover:text-white cursor-pointer"
-                aria-label="Cerrar asistente"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
 
-            <div className="space-y-3 p-4">
-              <div className="flex flex-wrap gap-1.5">
-                {FAQ_TOPICS.map((topic) => {
-                  const active = selectedTopic.id === topic.id;
-                  return (
-                    <button
-                      key={topic.id}
-                      type="button"
-                      onClick={() => setSelectedTopic(topic)}
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition cursor-pointer ${
-                        active
-                          ? 'bg-emerald-600 text-white shadow-xs'
-                          : 'bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
-                      }`}
-                    >
-                      {topic.pregunta}
-                    </button>
-                  );
-                })}
+            {/* Historial compacto con patrón sutil */}
+            <div className="bg-dot-matrix max-h-[225px] space-y-2.5 overflow-y-auto bg-slate-50/85 px-3 py-3">
+              <div className="flex justify-center">
+                <span className="rounded-full border border-emerald-100 bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 shadow-2xs">
+                  Hoy
+                </span>
               </div>
 
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3.5 text-xs text-slate-700">
-                <p className="flex items-center gap-1.5 font-bold text-emerald-900">
-                  <HelpCircle className="h-3.5 w-3.5 text-emerald-600" />
-                  {selectedTopic.pregunta}
-                </p>
-                <p className="mt-1.5 leading-relaxed text-slate-600">{selectedTopic.respuesta}</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBotOpen(false);
-                    navigate(selectedTopic.ctaTo);
-                  }}
-                  className="mt-2.5 inline-flex items-center gap-1 rounded-lg bg-emerald-700 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-emerald-800 cursor-pointer"
-                >
-                  <Sparkles className="h-3 w-3" />
-                  {selectedTopic.ctaLabel}
-                </button>
+              {messages.map((msg) =>
+                msg.role === 'user' ? (
+                  <div key={msg.id} className="flex flex-col items-end gap-0.5">
+                    <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-emerald-600 px-3 py-2 text-xs leading-relaxed text-white shadow-xs">
+                      {msg.texto}
+                    </div>
+                    <span className="px-1 text-[10px] text-slate-400">{msg.hora}</span>
+                  </div>
+                ) : (
+                  <div key={msg.id} className="flex items-start gap-2">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                      <Bot className="h-3.5 w-3.5" />
+                    </span>
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <div className="rounded-2xl rounded-tl-xs border border-slate-200/80 bg-white px-3 py-2 text-xs leading-relaxed text-slate-700 shadow-2xs">
+                        <p>{msg.texto}</p>
+                        {msg.ctaLabel && msg.ctaTo && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBotOpen(false);
+                              navigate(msg.ctaTo);
+                            }}
+                            className="mt-2 inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200/80 transition hover:bg-emerald-100 cursor-pointer"
+                          >
+                            {msg.ctaLabel}
+                            <ArrowRight className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                      <span className="block px-1 text-[10px] text-slate-400">{msg.hora}</span>
+                    </div>
+                  </div>
+                )
+              )}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Accesos rápidos compactos + Input */}
+            <div className="space-y-2 border-t border-slate-100 bg-white px-3 py-2.5">
+              <div className="flex flex-wrap gap-1">
+                {FAQ_TOPICS.map((topic) => (
+                  <button
+                    key={topic.id}
+                    type="button"
+                    onClick={() => enviarConsulta(topic.pregunta, topic)}
+                    className="rounded-full border border-emerald-200/80 bg-emerald-50/70 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800 transition hover:bg-emerald-100 cursor-pointer"
+                  >
+                    {topic.chip}
+                  </button>
+                ))}
               </div>
 
-              <form onSubmit={handleAskSubmit} className="flex items-center gap-2">
+              <form onSubmit={handleAskSubmit} className="flex items-center gap-1.5">
                 <input
                   type="text"
                   value={consulta}
                   onChange={(e) => setConsulta(e.target.value)}
-                  placeholder="Escribe una duda (ej. pagos, reserva)..."
-                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none"
+                  placeholder="Escribe tu consulta..."
+                  className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white transition hover:bg-emerald-700 cursor-pointer"
+                  disabled={!consulta.trim()}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xs transition hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 cursor-pointer disabled:cursor-default"
                   aria-label="Consultar asistente"
                 >
                   <Send className="h-3.5 w-3.5" />
@@ -210,61 +329,51 @@ export function FloatingWidgets() {
               </form>
             </div>
           </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => {
-            setBotOpen((v) => !v);
-            setWaOpen(false);
-          }}
-          aria-label="Abrir asistente virtual de ayuda"
-          aria-expanded={botOpen}
-          title="Asistente RifaBot"
-          className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-600 to-rose-700 text-white shadow-lg shadow-rose-900/25 ring-2 ring-white/90 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl cursor-pointer"
-        >
-          {botOpen ? <X className="h-5 w-5" /> : <Bot className="h-6 w-6" />}
-          {!botOpen && (
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setBotOpen(true);
+              setWaOpen(false);
+            }}
+            aria-label="Abrir asistente virtual de ayuda"
+            title="Asistente RifaBot"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl cursor-pointer"
+          >
+            <Bot className="h-6 w-6" />
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-rose-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-amber-400" />
             </span>
-          )}
-        </button>
+          </button>
+        )}
       </div>
 
       {/* Widget Inferior Derecho: WhatsApp Directo + Volver arriba */}
       <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-2.5">
-        {waOpen && (
-          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-xs overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl ring-1 ring-slate-900/5">
-            <div className="flex items-center justify-between bg-[#075E54] px-4 py-3.5 text-white">
+        {waOpen ? (
+          <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[320px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
+            <div className="flex items-center justify-between bg-[#075E54] px-3.5 py-2.5 text-white">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs">
-                  <WhatsAppIcon className="h-5 w-5" />
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs">
+                  <WhatsAppIcon className="h-4.5 w-4.5" />
                 </span>
                 <div>
                   <p className="text-sm font-bold leading-tight">Soporte WhatsApp</p>
-                  <p className="text-[11px] text-emerald-100">Atención comercial y pagos</p>
+                  <p className="text-[11px] text-emerald-100">Atención directa y pagos</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setWaOpen(false)}
-                className="rounded-lg p-1 text-white/80 transition hover:bg-white/15 hover:text-white cursor-pointer"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white/85 transition hover:bg-white/20 hover:text-white cursor-pointer"
                 aria-label="Cerrar WhatsApp"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="space-y-3 p-4">
-              <div className="rounded-2xl bg-slate-50 p-3 text-xs text-slate-600 ring-1 ring-slate-100">
-                <p className="font-semibold text-slate-800">¡Hola! ¿En qué podemos ayudarte?</p>
-                <p className="mt-1 text-[11px] text-slate-500">
-                  Elige un mensaje rápido o escribe tu consulta antes de abrir el chat.
-                </p>
-              </div>
-
+            <div className="space-y-2.5 p-3.5">
               <div className="space-y-1.5">
                 {WHATSAPP_PRESETS.map((preset) => (
                   <button
@@ -287,7 +396,7 @@ export function FloatingWidgets() {
                 value={waMensaje}
                 onChange={(e) => setWaMensaje(e.target.value)}
                 aria-label="Mensaje de WhatsApp"
-                className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none"
+                className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-emerald-500 focus:bg-white focus:outline-none"
               />
 
               <div className="flex items-center gap-2">
@@ -321,39 +430,38 @@ export function FloatingWidgets() {
               </p>
             </div>
           </div>
-        )}
+        ) : (
+          <>
+            {showTop && (
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                aria-label="Volver arriba"
+                title="Subir al inicio"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-md backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+              >
+                <ArrowUp className="h-4 w-4" />
+              </button>
+            )}
 
-        {showTop && !waOpen && (
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            aria-label="Volver arriba"
-            title="Subir al inicio"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-md backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setWaOpen(true);
+                setBotOpen(false);
+              }}
+              aria-label="Abrir soporte por WhatsApp"
+              title="WhatsApp directo"
+              className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:bg-[#1ebe5d] cursor-pointer"
+            >
+              <WhatsAppIcon className="h-6 w-6" />
+              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+                <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
+              </span>
+            </button>
+          </>
         )}
-
-        <button
-          type="button"
-          onClick={() => {
-            setWaOpen((v) => !v);
-            setBotOpen(false);
-          }}
-          aria-label="Abrir soporte por WhatsApp"
-          aria-expanded={waOpen}
-          title="WhatsApp directo"
-          className="relative flex h-13 w-13 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-emerald-900/25 ring-2 ring-white/90 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:bg-[#1ebe5d] cursor-pointer"
-        >
-          {waOpen ? <X className="h-5 w-5" /> : <WhatsAppIcon className="h-7 w-7" />}
-          {!waOpen && (
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75" />
-              <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-rose-500" />
-            </span>
-          )}
-        </button>
       </div>
     </>
   );

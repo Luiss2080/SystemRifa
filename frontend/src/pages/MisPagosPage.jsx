@@ -59,27 +59,28 @@ export function MisPagosPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-slate-800/80 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 text-white shadow-md">
+      <section className="rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-white via-emerald-50/60 to-teal-50/70 p-6 text-slate-900 shadow-xs backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-1.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-emerald-300">
-              <CreditCard className="h-3.5 w-3.5" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-800">
+              <CreditCard className="h-3.5 w-3.5 text-emerald-700" />
               Libro contable de comprobantes
             </span>
-            <h1 className="text-2xl font-extrabold tracking-tight">Mis pagos</h1>
-            <p className="text-sm text-slate-300">
-              Historial completo de comprobantes enviados, referencias bancarias y validación administrativa.
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis pagos</h1>
+            <p className="text-sm text-slate-600">
+              Historial completo de comprobantes enviados, referencias bancarias y validación
+              administrativa.
             </p>
           </div>
           <Link to="/mis-tickets">
-            <Button variant="secondary" size="sm" className="border-0 bg-white text-slate-900 hover:bg-emerald-50">
+            <Button variant="secondary" size="sm">
               <Ticket className="h-4 w-4 text-emerald-600" />
               Ir a mis tickets
             </Button>
           </Link>
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-1.5 border-t border-white/15 pt-4">
+        <div className="mt-5 flex flex-wrap gap-1.5 border-t border-emerald-200/60 pt-4">
           {ESTADOS_PAGO.map((opt) => (
             <button
               key={opt.key || 'all'}
@@ -90,8 +91,8 @@ export function MisPagosPage() {
               }}
               className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 estado === opt.key
-                  ? 'bg-emerald-500 text-white shadow-xs'
-                  : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'border border-slate-200 bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
               }`}
             >
               {opt.label}

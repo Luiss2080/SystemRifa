@@ -20,10 +20,8 @@ import {
   Ticket,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
-import { resolverAccesoRol } from '../features/auth/roleAccess.js';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { BrandMark } from '../components/ui/BrandLogo.jsx';
 
 const LEGAL_MODALS = {
   privacidad: {
@@ -122,7 +120,7 @@ function SocialLinks() {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2.5 pt-2">
+    <div className="flex flex-wrap items-center gap-2.5 pt-1">
       {socials.map((s) => (
         <a
           key={s.name}
@@ -131,7 +129,7 @@ function SocialLinks() {
           rel="noopener noreferrer"
           aria-label={s.name}
           title={s.name}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-emerald-400/50 hover:bg-emerald-500/20 hover:text-white"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-2xs transition duration-200 hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-600 hover:text-white"
         >
           {s.svg}
         </a>
@@ -141,160 +139,127 @@ function SocialLinks() {
 }
 
 export function AppFooter() {
-  const { autenticado, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } = useAuth();
+  const { autenticado, tieneAlgunPermiso, esAdmin } = useAuth();
   const [modalActivo, setModalActivo] = useState(null);
 
-  const { rolPrincipal, homeDestino } = resolverAccesoRol({
-    autenticado,
-    esAdmin,
-    esOrganizador,
-    tienePermiso,
-    tieneAlgunPermiso,
-  });
+  const puedeVerOrganizador =
+    tieneAlgunPermiso([
+      ['rifas', 'leer'],
+      ['rifas', 'administrar'],
+      ['premios', 'crud'],
+      ['sorteos', 'realizar'],
+    ]) || esAdmin;
 
   const year = new Date().getFullYear();
 
   function openHelpWidget() {
-    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
+    window.dispatchEvent(new CustomEvent('open-help-widget'));
   }
 
-  let servicios = [];
-  let guias = [];
+  const servicios = [
+    {
+      label: 'Catálogo de Rifas',
+      to: '/',
+      icon: Ticket,
+      highlight: true,
+    },
+    {
+      label: 'Causas Solidarias',
+      to: '/causas',
+      icon: HeartHandshake,
+      highlight: true,
+    },
+    {
+      label: 'Organizar una Rifa',
+      to: '/solicitudes/nueva',
+      icon: FilePlus2,
+      highlight: false,
+    },
+    {
+      label: puedeVerOrganizador ? 'Panel de Gestión' : 'Acceso Organizadores',
+      to: puedeVerOrganizador ? '/organizador/rifas' : '/login',
+      icon: LayoutDashboard,
+      highlight: true,
+    },
+    {
+      label: 'Soporte Técnico 24/7',
+      action: openHelpWidget,
+      icon: Headphones,
+      highlight: false,
+    },
+  ];
 
-  if (!autenticado) {
-    servicios = [
-      { label: 'Catálogo de Rifas', to: '/', icon: Ticket, highlight: true },
-      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
-      { label: 'Organizar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
-      { label: 'Acceso Organizadores', to: '/login', icon: LayoutDashboard, highlight: true },
-      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
-    ];
-    guias = [
-      { label: 'Cómo Participar', to: '/#como-funciona', icon: Lightbulb, highlight: false },
-      {
-        label: 'Garantías y Auditoría',
-        action: () => setModalActivo('auditoria'),
-        icon: ShieldCheck,
-        highlight: true,
-      },
-      { label: 'Consultar Mis Tickets', to: '/login', icon: BookOpen, highlight: false },
-      { label: 'Registrar Comprobante', to: '/login', icon: CreditCard, highlight: false },
-      { label: 'Transparencia de Sorteos', to: '/#garantias', icon: CheckCircle2, highlight: false },
-      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
-    ];
-  } else if (rolPrincipal === 'ADMINISTRADOR') {
-    servicios = [
-      { label: 'Reportes y Métricas', to: '/admin/reportes', icon: LayoutDashboard, highlight: true },
-      { label: 'Revisar Solicitudes', to: '/admin/solicitudes', icon: FilePlus2, highlight: true },
-      { label: 'Verificar Pagos', to: '/admin/pagos', icon: CreditCard, highlight: true },
-      { label: 'Gestionar Causas', to: '/admin/causas', icon: HeartHandshake, highlight: false },
-      { label: 'Catálogo Activo', to: '/explorar', icon: Ticket, highlight: false },
-    ];
-    guias = [
-      { label: 'Usuarios del Sistema', to: '/admin/usuarios', icon: BookOpen, highlight: false },
-      { label: 'Roles y Permisos', to: '/admin/roles', icon: ShieldCheck, highlight: true },
-      { label: 'Plantillas Notif.', to: '/admin/plantillas', icon: Mail, highlight: false },
-      { label: 'Auditoría Inmutable', to: '/admin/auditoria', icon: CheckCircle2, highlight: false },
-      {
-        label: 'Garantías del Sistema',
-        action: () => setModalActivo('auditoria'),
-        icon: Lightbulb,
-        highlight: false,
-      },
-    ];
-  } else if (rolPrincipal === 'ORGANIZADOR') {
-    servicios = [
-      { label: 'Mis Rifas Aprobadas', to: '/organizador/rifas', icon: Sparkles, highlight: true },
-      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: true },
-      { label: 'Nueva Solicitud', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
-      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: false },
-      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
-    ];
-    guias = [
-      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: false },
-      { label: 'Mis Pagos', to: '/mis-pagos', icon: CreditCard, highlight: false },
-      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
-      {
-        label: 'Garantías y Auditoría',
-        action: () => setModalActivo('auditoria'),
-        icon: ShieldCheck,
-        highlight: true,
-      },
-      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
-    ];
-  } else {
-    servicios = [
-      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: true },
-      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
-      { label: 'Solicitar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
-      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: false },
-      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
-    ];
-    guias = [
-      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: true },
-      { label: 'Mis Pagos y Comprobantes', to: '/mis-pagos', icon: CreditCard, highlight: false },
-      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
-      {
-        label: 'Garantías y Auditoría',
-        action: () => setModalActivo('auditoria'),
-        icon: ShieldCheck,
-        highlight: true,
-      },
-      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
-    ];
-  }
-
-  const col1Title = !autenticado
-    ? 'Servicios'
-    : rolPrincipal === 'ADMINISTRADOR'
-      ? 'Consola Admin'
-      : rolPrincipal === 'ORGANIZADOR'
-        ? 'Gestión Organizador'
-        : 'Explorar y Participar';
-
-  const col2Title = !autenticado
-    ? 'Aprende y Participa'
-    : rolPrincipal === 'ADMINISTRADOR'
-      ? 'Sistema y Control'
-      : 'Mi Espacio';
+  const guias = [
+    {
+      label: 'Cómo Participar',
+      to: '/#como-funciona',
+      icon: Lightbulb,
+      highlight: false,
+    },
+    {
+      label: 'Garantías y Auditoría',
+      action: () => setModalActivo('auditoria'),
+      icon: ShieldCheck,
+      highlight: true,
+    },
+    {
+      label: autenticado ? 'Mis Tickets y Reservas' : 'Consultar Mis Tickets',
+      to: autenticado ? '/mis-tickets' : '/login',
+      icon: BookOpen,
+      highlight: false,
+    },
+    {
+      label: autenticado ? 'Mis Pagos y Comprobantes' : 'Registrar Comprobante',
+      to: autenticado ? '/mis-pagos' : '/login',
+      icon: CreditCard,
+      highlight: false,
+    },
+    {
+      label: 'Transparencia de Sorteos',
+      to: '/#garantias',
+      icon: CheckCircle2,
+      highlight: false,
+    },
+    {
+      label: 'Preguntas Frecuentes',
+      action: openHelpWidget,
+      icon: HelpCircle,
+      highlight: false,
+    },
+  ];
 
   const modalContent = modalActivo ? LEGAL_MODALS[modalActivo] : null;
 
   return (
     <footer
       id="contacto-footer"
-      className="relative z-10 mt-14 overflow-hidden border-t border-white/10 bg-[#07090e] text-slate-300"
+      className="relative z-10 mt-10 overflow-hidden border-t border-slate-200/90 bg-gradient-to-b from-white/95 via-emerald-50/35 to-slate-100/95 text-slate-700 backdrop-blur-md"
     >
-      {/* Brillos ambientales sutiles estilo comercial oscuro */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -right-24 h-80 w-80 rounded-full bg-emerald-600/15 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 left-1/4 h-72 w-72 rounded-full bg-rose-600/10 blur-3xl"
-      />
+      {/* Franja superior luminosa acorde a la identidad de la web */}
+      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
 
-      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-12 pb-7 sm:px-6 lg:px-8">
+      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-11 pb-7 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-0">
           {/* Columna 1: Identidad comercial y redes sociales */}
           <div className="space-y-5 lg:col-span-4 lg:pr-8">
             <Link
-              to={homeDestino}
-              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-emerald-500/40"
+              to="/"
+              className="group inline-flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white px-4 py-3 shadow-2xs transition hover:border-emerald-300 hover:shadow-sm"
             >
-              <BrandMark size="xl" className="shadow-lg shadow-emerald-950/60 group-hover:scale-105" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-600/20">
+                <Ticket className="h-6 w-6" />
+              </span>
               <span>
-                <span className="block text-lg font-extrabold tracking-wider text-white">
-                  RIFAS <span className="text-emerald-400">SOLIDARIAS</span>
+                <span className="block text-lg font-extrabold tracking-tight text-slate-900">
+                  RIFAS<span className="text-emerald-600">SOLIDARIAS</span>
                 </span>
-                <span className="block text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                <span className="block text-[11px] font-semibold uppercase tracking-widest text-slate-500">
                   Plataforma Verificada
                 </span>
               </span>
             </Link>
 
-            <p className="max-w-sm text-sm leading-relaxed text-slate-400">
+            <p className="max-w-sm text-sm leading-relaxed text-slate-600">
               Campañas solidarias y sorteos digitales de vanguardia, impulsando la recaudación
               transparente con reservas atómicas, pagos validados y resultados trazables en tiempo
               real.
@@ -303,31 +268,31 @@ export function AppFooter() {
             <SocialLinks />
 
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">
-                <ShieldCheck className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-800">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
                 Pagos auditados
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-slate-300">
-                <Lock className="h-3.5 w-3.5 text-amber-400" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-slate-700">
+                <Lock className="h-3.5 w-3.5 text-amber-500" />
                 ACID · Zona La Paz
               </span>
             </div>
           </div>
 
           {/* Columna 2: SERVICIOS */}
-          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-white/10 lg:px-8">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              {col1Title}
+          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-slate-200/80 lg:px-8">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
+              Servicios
             </h3>
             <ul className="space-y-3 text-sm">
               {servicios.map((item) => {
                 const Icon = item.icon;
                 const badgeCls = item.highlight
-                  ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-950/60 group-hover:bg-emerald-500'
-                  : 'border border-white/10 bg-white/[0.04] text-slate-300 group-hover:border-emerald-500/40 group-hover:text-emerald-300';
+                  ? 'bg-emerald-600 text-white shadow-xs group-hover:bg-emerald-700'
+                  : 'border border-slate-200 bg-white text-slate-600 shadow-2xs group-hover:border-emerald-300 group-hover:text-emerald-700';
                 const textCls = item.highlight
-                  ? 'font-semibold text-emerald-300 group-hover:text-emerald-200'
-                  : 'text-slate-300 group-hover:text-white';
+                  ? 'font-bold text-emerald-800 group-hover:text-emerald-600'
+                  : 'font-medium text-slate-700 group-hover:text-slate-950';
 
                 const inner = (
                   <>
@@ -361,20 +326,20 @@ export function AppFooter() {
             </ul>
           </div>
 
-          {/* Columna 3: GUÍAS Y TRANSPARENCIA */}
-          <div className="space-y-4 lg:col-span-2 lg:border-l lg:border-white/10 lg:px-7">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              {col2Title}
+          {/* Columna 3: APRENDE Y PARTICIPA */}
+          <div className="space-y-4 lg:col-span-2 lg:border-l lg:border-slate-200/80 lg:px-7">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
+              Aprende y Participa
             </h3>
             <ul className="space-y-3 text-sm">
               {guias.map((item) => {
                 const Icon = item.icon;
                 const badgeCls = item.highlight
-                  ? 'bg-amber-500 text-slate-950 shadow-sm group-hover:bg-amber-400'
-                  : 'border border-white/10 bg-white/[0.04] text-slate-300 group-hover:border-emerald-500/40 group-hover:text-emerald-300';
+                  ? 'bg-amber-400 text-slate-950 shadow-xs group-hover:bg-amber-500'
+                  : 'border border-slate-200 bg-white text-slate-600 shadow-2xs group-hover:border-emerald-300 group-hover:text-emerald-700';
                 const textCls = item.highlight
-                  ? 'font-semibold text-amber-300 group-hover:text-amber-200'
-                  : 'text-slate-300 group-hover:text-white';
+                  ? 'font-bold text-amber-700 group-hover:text-amber-800'
+                  : 'font-medium text-slate-700 group-hover:text-slate-950';
 
                 const inner = (
                   <>
@@ -409,16 +374,18 @@ export function AppFooter() {
           </div>
 
           {/* Columna 4: CONTACTO */}
-          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-white/10 lg:pl-8">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">Contacto</h3>
+          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-slate-200/80 lg:pl-8">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
+              Contacto
+            </h3>
             <div className="space-y-3.5 text-sm">
               <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700">
                   <MapPin className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-xs font-bold text-white">Ubicación</p>
-                  <p className="text-xs text-slate-400">Santa Cruz de la Sierra · Bolivia</p>
+                  <p className="text-xs font-bold text-slate-900">Ubicación</p>
+                  <p className="text-xs text-slate-600">Santa Cruz de la Sierra · Bolivia</p>
                 </div>
               </div>
 
@@ -426,37 +393,37 @@ export function AppFooter() {
                 href="mailto:soporte@rifassolidarias.bo"
                 className="group flex items-start gap-3 transition"
               >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition group-hover:border-emerald-500/40 group-hover:text-emerald-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-2xs transition group-hover:border-emerald-300 group-hover:text-emerald-700">
                   <Mail className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-xs font-bold text-white">Email</p>
-                  <p className="text-xs text-slate-400 transition group-hover:text-emerald-300">
+                  <p className="text-xs font-bold text-slate-900">Email</p>
+                  <p className="text-xs text-slate-600 transition group-hover:text-emerald-700">
                     soporte@rifassolidarias.bo
                   </p>
                 </div>
               </a>
 
               <a href="tel:+59170020004" className="group flex items-start gap-3 transition">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400 transition group-hover:bg-amber-500/20">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-amber-700 transition group-hover:bg-amber-100">
                   <Phone className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-xs font-bold text-amber-300">Teléfono / WhatsApp</p>
-                  <p className="text-xs text-slate-300 transition group-hover:text-white">
+                  <p className="text-xs font-bold text-amber-800">Teléfono / WhatsApp</p>
+                  <p className="text-xs font-medium text-slate-700 transition group-hover:text-slate-950">
                     +591 700 20004
                   </p>
                 </div>
               </a>
 
               <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-2xs">
                   <Clock className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-xs font-bold text-white">Horarios de verificación</p>
-                  <p className="text-xs text-slate-400">Lun - Vie: 08:00 - 19:00</p>
-                  <p className="text-xs text-slate-400">Sáb: 08:00 - 14:00</p>
+                  <p className="text-xs font-bold text-slate-900">Horarios de verificación</p>
+                  <p className="text-xs text-slate-600">Lun - Vie: 08:00 - 19:00</p>
+                  <p className="text-xs text-slate-600">Sáb: 08:00 - 14:00</p>
                 </div>
               </div>
             </div>
@@ -464,31 +431,31 @@ export function AppFooter() {
         </div>
 
         {/* Barra inferior legal */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200/80 pt-6 text-xs text-slate-500 sm:flex-row">
           <p className="flex items-center gap-2 text-center sm:text-left">
-            <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+            <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
             <span>© {year} Rifas Solidarias. Todos los derechos reservados.</span>
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-5 font-medium">
             <button
               type="button"
               onClick={() => setModalActivo('privacidad')}
-              className="transition hover:text-slate-200 cursor-pointer"
+              className="transition hover:text-emerald-700 cursor-pointer"
             >
               Política de Privacidad
             </button>
             <button
               type="button"
               onClick={() => setModalActivo('terminos')}
-              className="transition hover:text-slate-200 cursor-pointer"
+              className="transition hover:text-emerald-700 cursor-pointer"
             >
               Términos de Servicio
             </button>
             <button
               type="button"
               onClick={() => setModalActivo('cookies')}
-              className="transition hover:text-slate-200 cursor-pointer"
+              className="transition hover:text-emerald-700 cursor-pointer"
             >
               Cookies
             </button>

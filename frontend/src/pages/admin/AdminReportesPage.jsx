@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Clock, DollarSign, Ticket, Users } from 'lucide-react';
+import { CheckSquare, ClipboardList, Clock, DollarSign, History, Ticket, Users } from 'lucide-react';
 import {
   Bar,
   BarChart,
@@ -80,14 +81,43 @@ export function AdminReportesPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-6 text-white shadow-md">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold text-emerald-300">
-          Analítica ejecutiva en tiempo real
-        </span>
-        <h1 className="mt-2 text-2xl font-extrabold tracking-tight">Reportes y estadísticas</h1>
-        <p className="mt-1 text-sm text-slate-300">
-          Consolidado financiero (exclusivamente pagos CONFIRMADOS) y cumplimiento de metas solidarias.
-        </p>
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-white via-emerald-50/70 to-teal-50/70 p-6 shadow-xs backdrop-blur-md">
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-800">
+            Analítica ejecutiva en tiempo real
+          </span>
+          <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">
+            Reportes y estadísticas
+          </h1>
+          <p className="mt-1 text-sm text-slate-600">
+            Consolidado financiero (exclusivamente pagos CONFIRMADOS) y cumplimiento de metas
+            solidarias.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/admin/solicitudes"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+          >
+            <ClipboardList className="h-3.5 w-3.5 text-emerald-600" />
+            Solicitudes
+          </Link>
+          <Link
+            to="/admin/pagos"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+          >
+            <CheckSquare className="h-3.5 w-3.5 text-amber-600" />
+            Verificar pagos
+          </Link>
+          <Link
+            to="/admin/auditoria"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-emerald-700"
+          >
+            <History className="h-3.5 w-3.5" />
+            Auditoría
+          </Link>
+        </div>
       </section>
 
       {resumen && (
