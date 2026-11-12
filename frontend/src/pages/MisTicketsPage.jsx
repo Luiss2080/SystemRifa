@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowRight, Clock, CreditCard, Search, Ticket, Trash2 } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Search,
+  Ticket,
+  Trash2,
+} from 'lucide-react';
 import {
   getMisTickets,
   liberarReservasRifa,
@@ -11,11 +19,13 @@ import { extraerErrorApi } from '../utils/apiError.js';
 import { formatearBs, formatearFecha, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { PaginationCard } from '../components/ui/DataTable.jsx';
 import { EmptyState, FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Select } from '../components/ui/Select.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
+import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../components/panel/PanelKit.jsx';
 
 const RESERVA_SEGUNDOS = 15 * 60;
 
