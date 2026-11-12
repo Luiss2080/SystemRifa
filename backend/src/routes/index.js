@@ -13,6 +13,8 @@ import rifaRoutes from './rifa.routes.js';
 import premioRoutes from './premio.routes.js';
 import ticketRoutes from './ticket.routes.js';
 import pagoRoutes from './pago.routes.js';
+import reporteRoutes from './reporte.routes.js';
+import auditoriaRoutes from './auditoria.routes.js';
 
 const router = Router();
 
@@ -30,5 +32,7 @@ router.use('/rifas', rifaRoutes);
 router.use('/premios', premioRoutes);
 router.use('/tickets', ticketRoutes);
 router.use('/pagos', pagoRoutes);
+router.use('/reportes', reporteRoutes);
+router.use('/auditoria', auditoriaRoutes);
 
 export default router;
