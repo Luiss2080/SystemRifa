@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 import { AppError } from '../utils/AppError.js';
 import { env } from '../config/env.js';
+import { logError } from '../utils/logger.js';
 
 export function errorHandler(err, _req, res, _next) {
   if (err instanceof AppError) {
@@ -36,7 +37,7 @@ export function errorHandler(err, _req, res, _next) {
   }
 
   if (env.NODE_ENV !== 'test') {
-    console.error('[Error no controlado]', err);
+    logError('unhandled_error', err, { method: _req.method, path: _req.originalUrl });
   }
 
   return res.status(500).json({

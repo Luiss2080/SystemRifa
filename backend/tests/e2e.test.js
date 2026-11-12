@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/app.js';
+import { prisma } from '../src/config/prisma.js';
 import { resetDb } from './helpers/resetDb.js';
-import { seed } from '../prisma/seed.js';
+import { runSeed } from '../prisma/seed.js';
 
 describe('Flujo End-to-End Completo (Paso 14)', () => {
   beforeEach(async () => {
     await resetDb();
-    await seed();
+    await runSeed(prisma);
   });
 
   it('cubre registro -> solicitud -> aprobación -> premios -> reserva -> pago -> verificación -> sorteo -> resultado sin PII -> entrega -> reportes y auditoría', async () => {

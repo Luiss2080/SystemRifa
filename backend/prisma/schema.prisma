@@ -208,6 +208,7 @@ model Rifa {
   pagos     Pago[]
   sorteo    Sorteo?
 
+  @@index([estado, fechaFin])
   @@map("rifa")
 }
 
@@ -228,6 +229,7 @@ model Ticket {
 
   @@unique([rifaId, numeroTicket])
   @@index([rifaId, estado])
+  @@index([estado, reservadoHasta])
   @@map("ticket")
 }
 
@@ -264,6 +266,8 @@ model Pago {
   verificador Usuario? @relation("PagoVerificador", fields: [verificadoPorId], references: [usuarioId])
   tickets     Ticket[]
 
+  @@index([rifaId, estado])
+  @@index([estado, rifaId])
   @@map("pago")
 }
 
