@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { History, RotateCcw } from 'lucide-react';
+import { Activity, Calendar, FileText, History, ShieldCheck, Users } from 'lucide-react';
 import { getAuditoriaApi } from '../../features/panel/panelApi.js';
 import { formatearFecha } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
-import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
-import { Input } from '../../components/ui/Input.jsx';
-
-const ENTIDADES_RAPIDAS = ['', 'pago', 'rifa', 'solicitud', 'usuario', 'premio'];
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+} from '../../components/panel/PanelKit.jsx';
 
 export function AdminAuditoriaPage() {
   const [entidad, setEntidad] = useState('');
@@ -26,119 +27,140 @@ export function AdminAuditoriaPage() {
       }),
   });
 
+  const items = useMemo(() => data?.items || [], [data]);
+  const totalGlobal = data?.pagination?.total ?? items.length;
+  const entidadesUnicas = new Set(items.map((i) => i.entidad)).size;
+  const actoresUnicos = new Set(items.map((i) => i.usuarioId)).size;
+
   const columns = [
-    { key: 'fecha', label: 'Fecha', render: (r) => formatearFecha(r.fecha) },
+    {
+      key: 'fecha',
+      label: 'Fecha / Hora',
+      icon: Calendar,
+      render: (r) => <span className="text-xs font-medium text-slate-600">{formatearFecha(r.fecha)}</span>,
+    },
     {
       key: 'usuario',
-      label: 'Usuario',
-      render: (r) => r.usuario?.alias || `ID ${r.usuarioId}`,
+      label: 'Actor',
+      icon: Users,
+      render: (r) => (
+        <span className="font-bold text-slate-900">{r.usuario?.alias || `ID ${r.usuarioId}`}</span>
+      ),
     },
     {
       key: 'entidad',
-      label: 'Entidad',
+      label: 'Entidad Afectada',
+      icon: ShieldCheck,
       render: (r) => (
-        <span className="font-mono text-xs">
+        <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs font-semibold text-slate-800">
           {r.entidad} #{r.entidadId}
         </span>
       ),
     },
-    { key: 'accion', label: 'Acción', render: (r) => <Badge color="indigo">{r.accion}</Badge> },
+    {
+      key: 'accion',
+      label: 'Acción',
+      icon: Activity,
+      render: (r) => <Badge color="indigo">{r.accion}</Badge>,
+    },
     {
       key: 'detalle',
-      label: 'Detalle',
+      label: 'Payload / Detalle',
+      icon: FileText,
       render: (r) => (
-        <pre className="max-w-md overflow-x-auto rounded bg-slate-50 p-1.5 font-mono text-[11px] text-slate-700">
+        <pre className="max-w-md overflow-x-auto rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 font-mono text-[11px] text-slate-700">
           {r.detalle ? JSON.stringify(r.detalle) : '—'}
         </pre>
       ),
     },
   ];
 
+  const hasFilters = Boolean(entidad.trim() || accion.trim());
+
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
-            <History className="h-3.5 w-3.5" />
-            Trazabilidad e historial inmutable
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Auditoría del sistema</h1>
-          <p className="text-sm text-slate-600">
-            Bitácora verificable de aprobaciones, pagos, sorteos, anulaciones y cambios de permisos.
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap gap-1.5">
-            {ENTIDADES_RAPIDAS.map((ent) => (
-              <button
-                key={ent || 'all'}
-                type="button"
-                onClick={() => {
-                  setEntidad(ent);
-                  setPage(1);
-                }}
-                className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition cursor-pointer ${
-                  entidad.toLowerCase() === ent
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
-                }`}
-              >
-                {ent || 'Todas las entidades'}
-              </button>
-            ))}
-          </div>
-
-          {(entidad || accion) && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setEntidad('');
-                setAccion('');
-                setPage(1);
-              }}
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              Limpiar filtros
-            </Button>
-          )}
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
-          <Input
-            label="Filtrar por entidad"
-            placeholder="Ej. pago, rifa, solicitud, usuario"
-            value={entidad}
-            onChange={(e) => {
-              setEntidad(e.target.value);
+      <PanelFilterBar
+        title="Bitácora Inmutable de Auditoría"
+        subtitle="Trazabilidad de aprobaciones, pagos, sorteos, anulaciones y cambios de permisos"
+        searchValue={accion}
+        onSearchChange={(val) => {
+          setAccion(val);
+          setPage(1);
+        }}
+        searchPlaceholder="Filtrar por acción (ej. CONFIRMAR_PAGO, REALIZAR_SORTEO)..."
+        hasActiveFilters={hasFilters}
+        onResetFilters={() => {
+          setEntidad('');
+          setAccion('');
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Entidad del sistema',
+            value: entidad,
+            onChange: (val) => {
+              setEntidad(val);
               setPage(1);
-            }}
-          />
-          <Input
-            label="Filtrar por acción"
-            placeholder="Ej. CONFIRMAR_PAGO, REALIZAR_SORTEO"
-            value={accion}
-            onChange={(e) => {
-              setAccion(e.target.value);
-              setPage(1);
-            }}
-          />
-        </div>
-      </div>
+            },
+            options: [
+              { value: '', label: 'Todas las entidades' },
+              { value: 'pago', label: 'Pagos' },
+              { value: 'rifa', label: 'Rifas' },
+              { value: 'solicitud', label: 'Solicitudes' },
+              { value: 'usuario', label: 'Usuarios' },
+              { value: 'premio', label: 'Premios' },
+            ],
+          },
+        ]}
+      />
+
+      <PanelSectionHeader
+        icon={History}
+        title="Eventos Registrados en Bitácora"
+        subtitle="Historial inmutable de operaciones"
+        badgeText={`${totalGlobal} eventos`}
+        accent="indigo"
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Eventos Totales',
+            value: totalGlobal,
+            trendText: 'Registro inmutable',
+            icon: History,
+            accent: 'indigo',
+          },
+          {
+            label: 'Entidades en Página',
+            value: entidadesUnicas,
+            trendText: 'Módulos auditados',
+            icon: ShieldCheck,
+            accent: 'emerald',
+          },
+          {
+            label: 'Actores Distintos (pág.)',
+            value: actoresUnicos,
+            trendText: 'Trazabilidad por usuario',
+            icon: Users,
+            accent: 'sky',
+          },
+        ]}
+      />
 
       <DataTable
         columns={columns}
-        data={data?.items || []}
+        data={items}
         loading={isLoading}
         rowKey="auditoriaId"
         page={data?.pagination?.page || 1}
         totalPages={data?.pagination?.totalPages || 1}
-        total={data?.pagination?.total || 0}
+        total={totalGlobal}
+        pageSize={20}
+        itemLabel="eventos"
         onPageChange={setPage}
         emptyTitle="Sin eventos de auditoría"
+        emptyDescription="Prueba limpiando los filtros para ver todos los registros."
       />
     </div>
   );

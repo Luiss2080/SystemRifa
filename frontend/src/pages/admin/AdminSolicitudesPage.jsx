@@ -1,6 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Calendar,
+  Check,
+  CheckCircle2,
+  ClipboardList,
+  Clock,
+  Edit3,
+  Eye,
+  SlidersHorizontal,
+  Sparkles,
+  XCircle,
+} from 'lucide-react';
 import {
   aprobarSolicitudApi,
   cambiarEstadoSolicitudApi,
@@ -21,6 +33,12 @@ import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { Modal } from '../../components/ui/Modal.jsx';
 import { Select } from '../../components/ui/Select.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 export function AdminSolicitudesPage() {
   const navigate = useNavigate();
@@ -28,6 +46,8 @@ export function AdminSolicitudesPage() {
   const toast = useToast();
 
   const [estado, setEstado] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const [modalEstado, setModalEstado] = useState(null);
@@ -127,47 +147,97 @@ export function AdminSolicitudesPage() {
     label: c.nombre,
   }));
 
+  const baseItems = useMemo(() => data?.items || [], [data]);
+  const solicitudesVisibles = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    const filtradas = q
+      ? baseItems.filter(
+          (s) =>
+            s.nombre?.toLowerCase().includes(q) ||
+            s.usuario?.alias?.toLowerCase().includes(q) ||
+            s.referenciaPago?.toLowerCase().includes(q) ||
+            String(s.rifaSolicitadaId).includes(q)
+        )
+      : baseItems;
+
+    return [...filtradas].sort((a, b) => {
+      if (orden === 'tickets_desc') return (b.cantidadTickets || 0) - (a.cantidadTickets || 0);
+      if (orden === 'precio_desc') return Number(b.precioTicket || 0) - Number(a.precioTicket || 0);
+      return b.rifaSolicitadaId - a.rifaSolicitadaId;
+    });
+  }, [baseItems, busqueda, orden]);
+
+  const totalGlobal = data?.pagination?.total ?? baseItems.length;
+  const enProcesoCount = baseItems.filter(
+    (s) => s.estado === 'REVISION' || s.estado === 'ESPERANDO_PAGO' || s.estado === 'PAGO_CONFIRMADO'
+  ).length;
+  const aprobadasCount = baseItems.filter((s) => s.estado === 'APROBADA').length;
+  const rechazadasCount = baseItems.filter((s) => s.estado === 'RECHAZADA').length;
+
   const columns = [
-    { key: 'rifaSolicitadaId', label: 'ID', render: (r) => `#${r.rifaSolicitadaId}` },
     {
       key: 'nombre',
-      label: 'Solicitud',
+      label: 'Solicitud de Campaña',
+      icon: Sparkles,
       render: (r) => (
         <div>
-          <p className="font-semibold text-slate-900">{r.nombre}</p>
+          <p className="font-bold text-slate-900">{r.nombre}</p>
           <p className="text-xs text-slate-500">
-            Solicitante: {r.usuario?.alias || `ID ${r.usuarioId}`} · {r.cantidadTickets} tickets ·{' '}
-            {formatearBs(r.precioTicket)}
+            ID #{r.rifaSolicitadaId} · Solicitante: @{r.usuario?.alias || `ID ${r.usuarioId}`}
           </p>
         </div>
       ),
     },
-    { key: 'estado', label: 'Estado', render: (r) => <Badge estado={r.estado} /> },
+    {
+      key: 'config',
+      label: 'Configuración',
+      icon: ClipboardList,
+      render: (r) => (
+        <div className="text-xs">
+          <p className="font-bold text-emerald-700">{formatearBs(r.precioTicket)} / ticket</p>
+          <p className="text-slate-500">{r.cantidadTickets} boletos totales</p>
+        </div>
+      ),
+    },
+    {
+      key: 'estado',
+      label: 'Estado',
+      icon: CheckCircle2,
+      render: (r) => <Badge estado={r.estado} />,
+    },
     {
       key: 'fechaSolicitud',
       label: 'Fecha',
-      render: (r) => formatearFecha(r.fechaSolicitud),
+      icon: Calendar,
+      render: (r) => (
+        <span className="text-xs text-slate-600">{formatearFecha(r.fechaSolicitud)}</span>
+      ),
     },
     {
       key: 'acciones',
       label: 'Acciones',
+      icon: SlidersHorizontal,
       render: (r) => (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {r.estado !== 'APROBADA' && r.estado !== 'RECHAZADA' && (
             <>
-              <Button size="sm" variant="secondary" onClick={() => abrirCambiarEstado(r)}>
-                Cambiar estado
-              </Button>
-              <Button size="sm" onClick={() => abrirAprobar(r)}>
-                Ajustar y aprobar
-              </Button>
+              <RowActionButton
+                icon={Edit3}
+                title="Cambiar estado de solicitud"
+                tone="neutral"
+                onClick={() => abrirCambiarEstado(r)}
+              />
+              <RowActionButton
+                icon={Check}
+                label="Aprobar"
+                tone="primary"
+                onClick={() => abrirAprobar(r)}
+              />
             </>
           )}
           {r.rifa && (
             <Link to={`/organizador/rifas/${r.rifa.rifaId}`}>
-              <Button size="sm" variant="secondary">
-                Ver rifa
-              </Button>
+              <RowActionButton icon={Eye} label="Ver rifa" tone="view" />
             </Link>
           )}
         </div>
@@ -175,73 +245,128 @@ export function AdminSolicitudesPage() {
     },
   ];
 
+  const hasFilters = Boolean(busqueda.trim() || estado || orden !== 'recientes');
+
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Gestión de solicitudes</h1>
-        <p className="text-sm text-slate-500">
-          Revisa propuestas, confirma tarifa de publicación y aprueba nuevas rifas
-        </p>
-      </div>
-
-      <div className="grid gap-2 rounded-2xl border border-slate-200 bg-white p-3.5 text-xs text-slate-600 shadow-xs sm:grid-cols-3">
-        <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
-            1
-          </span>
-          <span>Revisa la propuesta y habilita pago de tarifa</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
-            2
-          </span>
-          <span>Confirma referencia de tarifa recibida</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
-            3
-          </span>
-          <span>Aprueba para generar rifa y cargar premios</span>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-1.5">
-        {[
-          { key: '', label: 'Todas' },
-          { key: 'REVISION', label: 'En revisión' },
-          { key: 'ESPERANDO_PAGO', label: 'Esperando pago' },
-          { key: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
-          { key: 'APROBADA', label: 'Aprobadas' },
-          { key: 'RECHAZADA', label: 'Rechazadas' },
-        ].map((chip) => (
-          <button
-            key={chip.key || 'all'}
-            type="button"
-            onClick={() => {
-              setEstado(chip.key);
+      <PanelFilterBar
+        title="Gestión de Solicitudes de Rifas"
+        subtitle="Evaluación de propuestas, tarifa de publicación y aprobación oficial"
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder="Buscar por título, solicitante o referencia..."
+        hasActiveFilters={hasFilters}
+        onResetFilters={() => {
+          setBusqueda('');
+          setEstado('');
+          setOrden('recientes');
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Estado',
+            value: estado,
+            onChange: (val) => {
+              setEstado(val);
               setPage(1);
-            }}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
-              estado === chip.key
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            {chip.label}
-          </button>
-        ))}
-      </div>
+            },
+            options: [
+              { value: '', label: 'Todos los estados' },
+              { value: 'REVISION', label: 'En revisión' },
+              { value: 'ESPERANDO_PAGO', label: 'Esperando pago' },
+              { value: 'PAGO_CONFIRMADO', label: 'Pago confirmado' },
+              { value: 'APROBADA', label: 'Aprobadas' },
+              { value: 'RECHAZADA', label: 'Rechazadas' },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'tickets_desc', label: 'Más tickets' },
+              { value: 'precio_desc', label: 'Mayor precio ticket' },
+            ],
+          },
+        ]}
+        extraContent={
+          <div className="grid gap-2 text-xs text-slate-600 sm:grid-cols-3">
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-800">
+                1
+              </span>
+              <span>Revisa propuesta y habilita tarifa</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-100 font-bold text-amber-800">
+                2
+              </span>
+              <span>Confirma referencia de tarifa recibida</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-100 font-bold text-teal-800">
+                3
+              </span>
+              <span>Aprueba para generar rifa y premios</span>
+            </div>
+          </div>
+        }
+      />
+
+      <PanelSectionHeader
+        icon={ClipboardList}
+        title="Bandeja de Solicitudes"
+        subtitle="Resultados de la consulta activa"
+        badgeText={`${totalGlobal} solicitudes registradas`}
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total Solicitudes',
+            value: totalGlobal,
+            trendText: estado || 'Historial completo',
+            icon: ClipboardList,
+            accent: 'emerald',
+          },
+          {
+            label: 'En Revisión / Tarifa',
+            value: enProcesoCount,
+            trendText: 'Pendientes de cierre',
+            icon: Clock,
+            accent: 'amber',
+          },
+          {
+            label: 'Aprobadas (pág.)',
+            value: aprobadasCount,
+            trendText: 'Rifas generadas',
+            icon: CheckCircle2,
+            accent: 'sky',
+          },
+          {
+            label: 'Rechazadas (pág.)',
+            value: rechazadasCount,
+            trendText: 'Con observación',
+            icon: XCircle,
+            accent: 'rose',
+          },
+        ]}
+      />
 
       <DataTable
         columns={columns}
-        data={data?.items || []}
+        data={solicitudesVisibles}
         loading={isLoading}
         rowKey="rifaSolicitadaId"
         page={data?.pagination?.page || 1}
         totalPages={data?.pagination?.totalPages || 1}
-        total={data?.pagination?.total || 0}
+        total={totalGlobal}
+        pageSize={15}
+        itemLabel="solicitudes"
         onPageChange={setPage}
         emptyTitle="Sin solicitudes"
+        emptyDescription="No hay solicitudes registradas con el filtro actual."
       />
 
       {/* Modal cambiar estado */}
@@ -324,7 +449,9 @@ export function AdminSolicitudesPage() {
                 type="number"
                 required
                 value={formAprobar.cantidadTickets}
-                onChange={(e) => setFormAprobar((f) => ({ ...f, cantidadTickets: e.target.value }))}
+                onChange={(e) =>
+                  setFormAprobar((f) => ({ ...f, cantidadTickets: e.target.value }))
+                }
               />
               <Input
                 label="Inicio (La Paz)"
@@ -360,4 +487,3 @@ export function AdminSolicitudesPage() {
     </div>
   );
 }
-

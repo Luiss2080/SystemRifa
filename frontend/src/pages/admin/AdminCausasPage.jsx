@@ -1,7 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowUpDown, Edit2, ExternalLink, HeartHandshake, Plus, Search, Trash2, X } from 'lucide-react';
+import {
+  DollarSign,
+  Edit2,
+  ExternalLink,
+  HeartHandshake,
+  Plus,
+  SlidersHorizontal,
+  Target,
+  Ticket,
+  Trash2,
+} from 'lucide-react';
 import { getCausasPublicas } from '../../features/rifas/publicApi.js';
 import {
   actualizarCausaApi,
@@ -9,12 +19,18 @@ import {
   eliminarCausaApi,
 } from '../../features/panel/panelApi.js';
 import { extraerErrorApi } from '../../utils/apiError.js';
-import { formatearBs } from '../../utils/format.js';
+import { formatearBs, sumarMontosBs } from '../../utils/format.js';
 import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 export function AdminCausasPage() {
   const queryClient = useQueryClient();
@@ -26,22 +42,25 @@ export function AdminCausasPage() {
   });
 
   const [busqueda, setBusqueda] = useState('');
+  const [criterio, setCriterio] = useState('todas');
   const [orden, setOrden] = useState('recientes');
-  const [modal, setModal] = useState(null); // { modo: 'crear'|'editar', causa? }
+  const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ nombre: '', descripcion: '', meta: '' });
   const [saving, setSaving] = useState(false);
 
   const [aEliminar, setAEliminar] = useState(null);
   const [eliminando, setEliminando] = useState(false);
 
+  const causasBase = useMemo(() => data?.items || [], [data]);
+
   const causasFiltradas = useMemo(() => {
-    const items = data?.items || [];
     const q = busqueda.trim().toLowerCase();
-    const filtradas = q
-      ? items.filter(
-          (c) => c.nombre?.toLowerCase().includes(q) || c.descripcion?.toLowerCase().includes(q)
-        )
-      : [...items];
+    const filtradas = causasBase.filter((c) => {
+      if (criterio === 'con_rifas' && (c.rifasCount ?? 0) === 0) return false;
+      if (criterio === 'sin_rifas' && (c.rifasCount ?? 0) > 0) return false;
+      if (!q) return true;
+      return c.nombre?.toLowerCase().includes(q) || c.descripcion?.toLowerCase().includes(q);
+    });
 
     if (orden === 'meta') {
       return [...filtradas].sort((a, b) => Number(b.meta || 0) - Number(a.meta || 0));
@@ -49,8 +68,8 @@ export function AdminCausasPage() {
     if (orden === 'rifas') {
       return [...filtradas].sort((a, b) => (b.rifasCount ?? 0) - (a.rifasCount ?? 0));
     }
-    return filtradas;
-  }, [data, busqueda, orden]);
+    return [...filtradas].sort((a, b) => b.causaId - a.causaId);
+  }, [causasBase, busqueda, criterio, orden]);
 
   function abrirCrear() {
     setForm({ nombre: '', descripcion: '', meta: '5000.00' });
@@ -106,114 +125,163 @@ export function AdminCausasPage() {
     }
   }
 
+  const totalRifas = causasBase.reduce((acc, c) => acc + (c.rifasCount ?? 0), 0);
+  const metaAcumulada = sumarMontosBs(causasBase.map((c) => c.meta || '0'));
+
   const columns = [
-    { key: 'causaId', label: 'ID', render: (r) => <span className="font-mono">#{r.causaId}</span> },
     {
       key: 'nombre',
-      label: 'Causa',
+      label: 'Causa Solidaria',
+      icon: HeartHandshake,
       render: (r) => (
         <div>
-          <p className="font-semibold text-slate-900">{r.nombre}</p>
-          <p className="max-w-md truncate text-xs text-slate-500">{r.descripcion}</p>
+          <p className="font-bold text-slate-900">{r.nombre}</p>
+          <p className="max-w-md truncate text-xs text-slate-500">
+            ID #{r.causaId} · {r.descripcion}
+          </p>
         </div>
       ),
     },
     {
       key: 'meta',
-      label: 'Meta',
-      render: (r) => <span className="font-bold text-emerald-700">{formatearBs(r.meta)}</span>,
+      label: 'Meta Objetivo',
+      icon: Target,
+      render: (r) => (
+        <span className="text-base font-extrabold text-emerald-700">{formatearBs(r.meta)}</span>
+      ),
     },
-    { key: 'rifasCount', label: 'Rifas', render: (r) => r.rifasCount ?? 0 },
+    {
+      key: 'rifasCount',
+      label: 'Rifas Vinculadas',
+      icon: Ticket,
+      render: (r) => (
+        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+          {r.rifasCount ?? 0} campaña(s)
+        </span>
+      ),
+    },
     {
       key: 'acciones',
       label: 'Acciones',
+      icon: SlidersHorizontal,
       render: (r) => (
-        <div className="flex gap-1.5">
-          <Button size="sm" variant="secondary" title="Editar causa" onClick={() => abrirEditar(r)}>
-            <Edit2 className="h-3.5 w-3.5" />
-          </Button>
-          <Button size="sm" variant="ghost" title="Eliminar causa" onClick={() => setAEliminar(r)}>
-            <Trash2 className="h-3.5 w-3.5 text-rose-600" />
-          </Button>
+        <div className="flex items-center gap-1.5">
+          <Link to={`/?causaId=${r.causaId}`}>
+            <RowActionButton icon={ExternalLink} title="Ver rifas asociadas" tone="view" />
+          </Link>
+          <RowActionButton
+            icon={Edit2}
+            title="Editar causa"
+            tone="primary"
+            onClick={() => abrirEditar(r)}
+          />
+          <RowActionButton
+            icon={Trash2}
+            title="Eliminar causa"
+            tone="danger"
+            onClick={() => setAEliminar(r)}
+          />
         </div>
       ),
     },
   ];
 
+  const hasFilters = Boolean(busqueda.trim() || criterio !== 'todas' || orden !== 'recientes');
+
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-            <HeartHandshake className="h-3.5 w-3.5" />
-            Catálogo solidario ({data?.items?.length ?? 0} registradas)
+      <PanelFilterBar
+        title="Gestión de Causas Solidarias"
+        subtitle="Administración de beneficiarios, metas de recaudación y campañas vinculadas"
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder="Buscar causa por nombre o impacto..."
+        hasActiveFilters={hasFilters}
+        onResetFilters={() => {
+          setBusqueda('');
+          setCriterio('todas');
+          setOrden('recientes');
+        }}
+        selects={[
+          {
+            label: 'Criterio',
+            value: criterio,
+            onChange: setCriterio,
+            options: [
+              { value: 'todas', label: 'Todas las causas' },
+              { value: 'con_rifas', label: 'Con rifas vinculadas' },
+              { value: 'sin_rifas', label: 'Sin rifas aún' },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'meta', label: 'Mayor meta' },
+              { value: 'rifas', label: 'Más rifas' },
+            ],
+          },
+        ]}
+      />
+
+      <PanelSectionHeader
+        icon={HeartHandshake}
+        title="Catálogo de Causas Registradas"
+        subtitle="Resultados de la consulta activa"
+        badgeText={`${causasFiltradas.length} causas visibles`}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/causas">
+              <Button variant="secondary" size="sm">
+                <ExternalLink className="h-4 w-4" />
+                Vista pública
+              </Button>
+            </Link>
+            <Button size="sm" onClick={abrirCrear}>
+              <Plus className="h-4 w-4" />
+              Nueva causa
+            </Button>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Causas solidarias</h1>
-          <p className="text-sm text-slate-600">
-            Crea, edita y define metas financieras para las causas beneficiarias vinculadas a las rifas.
-          </p>
-        </div>
-        <Link to="/causas">
-          <Button variant="secondary" size="sm">
-            <ExternalLink className="h-4 w-4" />
-            Vista pública
-          </Button>
-        </Link>
-      </div>
+        }
+      />
 
-      {/* Buscador y botones en la misma fila */}
-      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="search"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar causa por nombre o descripción..."
-            aria-label="Buscar causas"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-9 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
-          />
-          {busqueda && (
-            <button
-              type="button"
-              onClick={() => setBusqueda('')}
-              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-              aria-label="Limpiar búsqueda"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant={orden === 'meta' ? 'emeraldSoft' : 'secondary'}
-            size="sm"
-            onClick={() => setOrden((o) => (o === 'meta' ? 'recientes' : 'meta'))}
-          >
-            <ArrowUpDown className="h-3.5 w-3.5" />
-            {orden === 'meta' ? 'Mayor meta' : 'Ordenar por meta'}
-          </Button>
-          <Button
-            variant={orden === 'rifas' ? 'emeraldSoft' : 'secondary'}
-            size="sm"
-            onClick={() => setOrden((o) => (o === 'rifas' ? 'recientes' : 'rifas'))}
-          >
-            Más rifas
-          </Button>
-          <Button size="sm" onClick={abrirCrear}>
-            <Plus className="h-4 w-4" />
-            Nueva causa
-          </Button>
-        </div>
-      </div>
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total Causas',
+            value: causasBase.length,
+            trendText: 'Habilitadas en catálogo',
+            icon: HeartHandshake,
+            accent: 'emerald',
+          },
+          {
+            label: 'Rifas Vinculadas',
+            value: totalRifas,
+            trendText: 'Campañas asociadas',
+            icon: Ticket,
+            accent: 'sky',
+          },
+          {
+            label: 'Meta Solidaria Acumulada',
+            value: formatearBs(metaAcumulada),
+            trendText: 'Objetivo conjunto',
+            icon: DollarSign,
+            accent: 'amber',
+          },
+        ]}
+      />
 
       <DataTable
         columns={columns}
         data={causasFiltradas}
         loading={isLoading}
         rowKey="causaId"
+        clientPageSize={8}
+        itemLabel="causas"
         emptyTitle="No hay causas registradas"
+        emptyDescription="Crea una causa solidaria o limpia los filtros aplicados."
       />
 
       <Modal
