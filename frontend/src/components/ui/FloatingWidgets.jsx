@@ -7,9 +7,12 @@ import {
   Check,
   Copy,
   ExternalLink,
+  Maximize2,
+  Minimize2,
   RotateCcw,
   Send,
   ShieldCheck,
+  Sparkles,
   X,
 } from 'lucide-react';
 import { useAuth } from '../../features/auth/AuthContext.jsx';

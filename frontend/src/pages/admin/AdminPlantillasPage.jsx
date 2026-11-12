@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit2, Eye, PlusCircle } from 'lucide-react';
+import { BellRing, CheckCircle2, Code2, Edit2, Eye, Mail, PauseCircle, PlusCircle } from 'lucide-react';
 import {
   actualizarTipoNotificacionApi,
   getTiposNotificacionApi,
@@ -12,6 +12,7 @@ import { FullPageSpinner } from '../../components/ui/Feedback.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../../components/panel/PanelKit.jsx';
 
 const EJEMPLOS_VARIABLES = {
   alias: 'AnaSolidaria',
@@ -43,6 +44,7 @@ export function AdminPlantillasPage() {
   });
 
   const [filtroEstado, setFiltroEstado] = useState('TODAS');
+  const [busqueda, setBusqueda] = useState('');
   const [editando, setEditando] = useState(null);
   const [form, setForm] = useState({
     plantillaTitulo: '',
@@ -74,85 +76,112 @@ export function AdminPlantillasPage() {
 
   const items = useMemo(() => {
     const base = data?.items || [];
-    if (filtroEstado === 'ACTIVAS') return base.filter((i) => i.estaActivo);
-    if (filtroEstado === 'INACTIVAS') return base.filter((i) => !i.estaActivo);
-    return base;
-  }, [data, filtroEstado]);
-
-  async function handleGuardar(e) {
-    e.preventDefault();
-    if (!editando) return;
-    setSaving(true);
-    try {
-      await actualizarTipoNotificacionApi(editando.tipoNotificacionId, {
-        plantillaTitulo: form.plantillaTitulo,
-        plantillaMensaje: form.plantillaMensaje,
-        estaActivo: form.estaActivo,
-      });
-      setEditando(null);
-      queryClient.invalidateQueries({ queryKey: ['admin-plantillas'] });
-      toast.success('Plantilla actualizada');
-    } catch (err) {
-      toast.error('Error al actualizar plantilla', extraerErrorApi(err).message);
-    } finally {
-      setSaving(false);
-    }
-  }
+    const byEstado =
+      filtroEstado === 'ACTIVAS'
+        ? base.filter((i) => i.estaActivo)
+        : filtroEstado === 'INACTIVAS'
+        ? base.filter((i) => !i.estaActivo)
+        : base;
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return byEstado;
+    return byEstado.filter(
+      (i) =>
+        (i.codigo || '').toLowerCase().includes(q) ||
+        (i.plantillaTitulo || '').toLowerCase().includes(q) ||
+        (i.plantillaMensaje || '').toLowerCase().includes(q)
+    );
+  }, [data, filtroEstado, busqueda]);
 
   if (isLoading) return <FullPageSpinner message="Cargando plantillas de notificación..." />;
 
+  const totalBase = data?.items || [];
+  const activasCount = totalBase.filter((i) => i.estaActivo).length;
+  const inactivasCount = totalBase.filter((i) => !i.estaActivo).length;
+
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Plantillas de notificación</h1>
-          <p className="text-sm text-slate-500">
-            Personaliza títulos y mensajes respetando únicamente las variables admitidas de cada evento
-          </p>
-        </div>
+      <PanelFilterBar
+        title="Plantillas de Notificación del Sistema"
+        subtitle="Personaliza títulos y mensajes respetando únicamente las variables admitidas por evento."
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder="Buscar por código de evento, título o mensaje..."
+        hasActiveFilters={Boolean(busqueda || filtroEstado !== 'TODAS')}
+        onResetFilters={() => {
+          setBusqueda('');
+          setFiltroEstado('TODAS');
+        }}
+        selects={[
+          {
+            label: 'Estado',
+            value: filtroEstado,
+            onChange: setFiltroEstado,
+            options: [
+              { value: 'TODAS', label: 'Todas' },
+              { value: 'ACTIVAS', label: 'Activas' },
+              { value: 'INACTIVAS', label: 'Inactivas' },
+            ],
+          },
+        ]}
+      />
 
-        <div className="flex flex-wrap gap-1.5">
-          {[
-            { key: 'TODAS', label: 'Todas' },
-            { key: 'ACTIVAS', label: 'Activas' },
-            { key: 'INACTIVAS', label: 'Inactivas' },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setFiltroEstado(tab.key)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
-                filtroEstado === tab.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PanelSectionHeader
+        icon={Mail}
+        title="Catálogo de Eventos & Mensajería"
+        subtitle="Renderizado seguro con previsualización de variables"
+        badgeText={`${items.length} Plantillas visibles`}
+        accent="emerald"
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total plantillas',
+            value: totalBase.length,
+            trendText: 'Eventos configurados',
+            icon: BellRing,
+            accent: 'emerald',
+          },
+          {
+            label: 'Plantillas activas',
+            value: activasCount,
+            trendText: 'Envío habilitado',
+            icon: CheckCircle2,
+            accent: 'sky',
+          },
+          {
+            label: 'Plantillas inactivas',
+            value: inactivasCount,
+            trendText: 'Pausadas temporalmente',
+            icon: PauseCircle,
+            accent: 'amber',
+          },
+        ]}
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         {items.map((tipo) => (
           <div
             key={tipo.tipoNotificacionId}
-            className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-emerald-300"
+            className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
           >
-            <div className="space-y-2">
+            <div className="space-y-2.5 p-5">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-sm font-bold text-slate-900">{tipo.codigo}</span>
+                <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs font-bold text-slate-900">
+                  <Code2 className="h-3.5 w-3.5 text-emerald-600" />
+                  {tipo.codigo}
+                </span>
                 <Badge color={tipo.estaActivo ? 'emerald' : 'slate'}>
                   {tipo.estaActivo ? 'Activa' : 'Inactiva'}
                 </Badge>
               </div>
-              <p className="text-sm font-semibold text-slate-800">{tipo.plantillaTitulo}</p>
-              <p className="text-xs text-slate-600">{tipo.plantillaMensaje}</p>
+              <p className="text-sm font-extrabold text-slate-900">{tipo.plantillaTitulo}</p>
+              <p className="text-xs leading-relaxed text-slate-600">{tipo.plantillaMensaje}</p>
               <div className="flex flex-wrap gap-1 pt-1">
                 {(tipo.variables || []).map((v) => (
                   <span
                     key={v}
-                    className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-700"
+                    className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-700"
                   >
                     {`{${v}}`}
                   </span>
@@ -160,7 +189,7 @@ export function AdminPlantillasPage() {
               </div>
             </div>
 
-            <div className="mt-4 border-t border-slate-100 pt-3">
+            <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-3">
               <Button variant="secondary" size="sm" onClick={() => abrirEditar(tipo)}>
                 <Edit2 className="h-3.5 w-3.5" />
                 Editar y previsualizar

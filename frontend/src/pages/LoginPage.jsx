@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  AlertCircle,
   ArrowRight,
   Check,
   ChevronDown,
+  Clock,
   KeyRound,
   Lock,
+  Mail,
   ShieldCheck,
   Sparkles,
   UserCheck,
@@ -131,64 +134,95 @@ export function LoginPage() {
   }
 
   return (
-    <div className="my-auto mx-auto w-full max-w-6xl py-2">
-      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda más compacta */}
-        <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-6 lg:col-span-4">
-          <div className="mx-auto w-full space-y-4">
-            <div className="text-center">
-              <div className="mb-3 flex justify-center">
-                <BrandMark size="xl" />
-              </div>
-              <div className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
-                Portal Rifas Solidarias
-              </div>
-              <h1 className="mt-2.5 text-xl font-extrabold tracking-tight sm:text-2xl">
+    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+      <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 ring-1 ring-slate-900/5 backdrop-blur-md lg:grid-cols-12">
+        {/* Columna izquierda informativa */}
+        <section className="relative flex flex-col justify-between overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white sm:p-8 lg:col-span-5">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-teal-400/10 blur-3xl" />
+
+          <div className="relative space-y-6">
+            <div className="flex items-center justify-between gap-3">
+              <BrandMark size="lg" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Acceso seguro
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <h1 className="text-2xl font-extrabold tracking-tight sm:text-[26px]">
                 Bienvenido de vuelta
               </h1>
-              <p className="mt-2 text-justify text-xs leading-relaxed text-slate-300">
-                Gestiona tus números reservados, pagos y campañas solidarias en tiempo real.
+              <p className="text-sm leading-relaxed text-slate-300">
+                Gestiona tus números reservados, valida pagos y administra campañas solidarias desde un solo panel.
               </p>
             </div>
 
-            <div className="space-y-2 border-t border-white/15 pt-3.5 text-[11px] text-slate-300">
-              <div className="flex items-start gap-2 rounded-xl bg-white/5 p-2.5">
-                <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
-                <span className="text-justify">
-                  Sesiones cifradas con tokens rotativos y control de permisos por rol.
+            <div className="space-y-2.5 border-t border-white/10 pt-5 text-xs text-slate-200">
+              <div className="flex items-start gap-3 rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300">
+                  <Lock className="h-4 w-4" />
                 </span>
+                <div>
+                  <p className="font-bold text-white">Sesiones cifradas por rol</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-300">
+                    Tokens rotativos y control granular de permisos sin exponer datos privados.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start gap-2 rounded-xl bg-white/5 p-2.5">
-                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-400" />
-                <span className="text-justify">
-                  Reservas de 15 min y sorteos auditados sin exponer datos privados.
+
+              <div className="flex items-start gap-3 rounded-2xl bg-white/[0.06] p-3 ring-1 ring-white/10">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-500/20 text-sky-300">
+                  <Clock className="h-4 w-4" />
                 </span>
+                <div>
+                  <p className="font-bold text-white">Reservas en tiempo real</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-300">
+                    Bloqueo temporal de 15 min por ticket mientras completas tu comprobante.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+
+          <div className="relative mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-slate-300">
+            <span>¿Solo quieres ver campañas?</span>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1 font-bold text-emerald-300 transition hover:text-emerald-200 hover:underline"
+            >
+              Ver catálogo
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </section>
 
-        {/* Columna derecha más amplia: Formulario + Desplegable de autocompletado */}
-        <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-8">
-          <div className="mx-auto w-full max-w-lg">
-            <div className="mb-5 text-center">
-              <div className="mx-auto mb-2.5 inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-700">
+        {/* Columna derecha: Formulario */}
+        <section className="flex flex-col justify-center p-6 sm:p-10 lg:col-span-7">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-6 flex items-start gap-3.5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
                 <KeyRound className="h-5 w-5" />
               </div>
-              <h2 className="text-2xl font-extrabold text-slate-900">Iniciar sesión</h2>
-              <p className="mt-1 text-xs text-slate-500">
-                Introduce tus credenciales o despliega una cuenta de prueba por rol.
-              </p>
+              <div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+                  Iniciar sesión
+                </h2>
+                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                  Introduce tus credenciales o selecciona una cuenta de prueba por rol.
+                </p>
+              </div>
             </div>
 
-            {/* Desplegable compacto para autocompletar por rol */}
+            {/* Desplegable compacto para autocompletar por rol (solo DEV) */}
             {perfilesDemo.length > 0 && (
-              <div ref={dropdownRef} className="relative mb-4">
+              <div ref={dropdownRef} className="relative mb-5">
                 <button
                   type="button"
                   onClick={() => setMenuDemoAbierto((v) => !v)}
                   aria-expanded={menuDemoAbierto}
-                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/90 px-3.5 py-2.5 text-left text-xs font-semibold text-slate-700 transition hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer"
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200/90 bg-slate-50/80 px-3.5 py-2.5 text-left text-xs font-semibold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50/50 cursor-pointer"
                 >
                   <span className="flex items-center gap-2 truncate">
                     <Sparkles className="h-4 w-4 shrink-0 text-emerald-600" />
@@ -202,14 +236,14 @@ export function LoginPage() {
                     )}
                   </span>
                   <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${
+                    className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${
                       menuDemoAbierto ? 'rotate-180' : ''
                     }`}
                   />
                 </button>
 
                 {menuDemoAbierto && (
-                  <div className="animate-modal-in absolute right-0 left-0 z-30 mt-1.5 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl">
+                  <div className="animate-modal-in absolute right-0 left-0 z-30 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl ring-1 ring-slate-900/5">
                     {perfilesDemo.map((p) => {
                       const Icon = p.icon;
                       const seleccionado = perfilActivo === p.id;
@@ -248,17 +282,19 @@ export function LoginPage() {
             {errorMsg && (
               <div
                 role="alert"
-                className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm text-rose-700"
+                className="mb-4 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700"
               >
-                {errorMsg}
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
+                <span>{errorMsg}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 label="Correo electrónico"
                 type="email"
                 name="email"
+                icon={Mail}
                 autoComplete="email"
                 required
                 placeholder="ejemplo@correo.com"
@@ -272,6 +308,7 @@ export function LoginPage() {
                 label="Contraseña"
                 type="password"
                 name="password"
+                icon={Lock}
                 autoComplete="current-password"
                 required
                 placeholder="Tu contraseña"
@@ -282,22 +319,22 @@ export function LoginPage() {
                 }}
               />
 
-              <Button type="submit" className="w-full" size="lg" loading={loading}>
-                Ingresar
+              <Button type="submit" className="mt-2 w-full shadow-md shadow-emerald-600/20" size="lg" loading={loading}>
+                Ingresar al sistema
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </form>
 
-            <p className="mt-4 text-center text-sm text-slate-600">
+            <div className="mt-6 border-t border-slate-100 pt-5 text-center text-sm text-slate-600">
               ¿Aún no tienes cuenta?{' '}
               <Link
                 to="/registro"
                 state={{ from: destinoRegistro }}
-                className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
+                className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
               >
                 Regístrate gratis aquí
               </Link>
-            </p>
+            </div>
           </div>
         </section>
       </div>

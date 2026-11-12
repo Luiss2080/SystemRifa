@@ -1,6 +1,17 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Trash2 } from 'lucide-react';
+import {
+  Activity,
+  CalendarClock,
+  KeyRound,
+  Plus,
+  Search,
+  Shield,
+  Sliders,
+  Trash2,
+  UserCheck,
+  Users,
+} from 'lucide-react';
 import {
   actualizarPermisoApi,
   asignarPermisoRolApi,
@@ -21,13 +32,20 @@ import { FullPageSpinner } from '../../components/ui/Feedback.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 export function AdminRolesPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
   const { tienePermiso } = useAuth();
 
-  const [tab, setTab] = useState('roles'); // 'roles' | 'historial'
+  const [tab, setTab] = useState('roles'); // 'roles' | 'permisos' | 'historial'
+  const [busqueda, setBusqueda] = useState('');
   const [histPage, setHistPage] = useState(1);
 
   const [modalRol, setModalRol] = useState(false);
@@ -118,8 +136,28 @@ export function AdminRolesPage() {
     }
   }
 
-  const roles = rolesData?.items || [];
+  const roles = useMemo(() => rolesData?.items || [], [rolesData]);
   const permisos = useMemo(() => permisosData?.items || [], [permisosData]);
+  const rolesFiltrados = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return roles;
+    return roles.filter(
+      (r) =>
+        (r.nombre || '').toLowerCase().includes(q) ||
+        (r.descripcion || '').toLowerCase().includes(q)
+    );
+  }, [roles, busqueda]);
+
+  const permisosFiltradosCatalogo = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return permisos;
+    return permisos.filter(
+      (p) =>
+        `${p.recurso}:${p.accion}`.toLowerCase().includes(q) ||
+        (p.nombre || '').toLowerCase().includes(q)
+    );
+  }, [permisos, busqueda]);
+
   const rolSeleccionadoActual = roles.find((r) => r.rolId === rolEditando?.rolId) || rolEditando;
   const permisosDeRolSet = new Set(
     (rolSeleccionadoActual?.permisos || []).map((p) => p.permisoId)
@@ -143,84 +181,164 @@ export function AdminRolesPage() {
   }, [permisos, filtroPermiso]);
 
   const histColumns = [
-    { key: 'fecha', label: 'Fecha', render: (r) => formatearFecha(r.fecha) },
-    { key: 'operacion', label: 'Operación', render: (r) => <Badge color="indigo">{r.operacion}</Badge> },
+    {
+      key: 'fecha',
+      label: 'Fecha',
+      icon: CalendarClock,
+      render: (r) => <span className="text-xs text-slate-600">{formatearFecha(r.fecha)}</span>,
+    },
+    {
+      key: 'operacion',
+      label: 'Operación',
+      icon: Activity,
+      render: (r) => <Badge color="indigo">{r.operacion}</Badge>,
+    },
     {
       key: 'admin',
       label: 'Admin',
-      render: (r) => r.usuarioAdmin?.alias || `ID ${r.usuarioAdminId}`,
+      icon: UserCheck,
+      render: (r) => (
+        <span className="font-semibold text-slate-800">
+          {r.usuarioAdmin?.alias || `ID ${r.usuarioAdminId}`}
+        </span>
+      ),
     },
     {
       key: 'objetivo',
       label: 'Afectado',
+      icon: Users,
       render: (r) => r.rolAfectado?.nombre || r.usuarioAfectado?.alias || '—',
     },
     {
       key: 'detalle',
       label: 'Rol / Permiso',
+      icon: KeyRound,
       render: (r) =>
-        r.permiso ? `${r.permiso.recurso}:${r.permiso.accion}` : r.rol?.nombre || '—',
+        r.permiso ? (
+          <span className="rounded-lg bg-slate-100 px-2 py-0.5 font-mono text-xs font-semibold text-slate-700">
+            {`${r.permiso.recurso}:${r.permiso.accion}`}
+          </span>
+        ) : (
+          r.rol?.nombre || '—'
+        ),
     },
   ];
 
+  const permisosActivosCount = permisos.filter((p) => p.estaActivo).length;
+
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Roles, permisos e historial</h1>
-          <p className="text-sm text-slate-500">
-            Administra los permisos asignados a cada rol y audita cambios de privilegios
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          <Button variant={tab === 'roles' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('roles')}>
-            Roles y matriz
-          </Button>
-          {tienePermiso('permisos', 'administrar') && (
-            <>
-              <Button
-                variant={tab === 'permisos' ? 'primary' : 'secondary'}
-                size="sm"
-                onClick={() => setTab('permisos')}
-              >
-                Catálogo de permisos
-              </Button>
-              <Button
-                variant={tab === 'historial' ? 'primary' : 'secondary'}
-                size="sm"
-                onClick={() => setTab('historial')}
-              >
-                Historial de permisos
-              </Button>
-            </>
-          )}
-          {tienePermiso('roles', 'administrar') && (
-            <Button size="sm" onClick={() => setModalRol(true)}>
-              <Plus className="h-4 w-4" />
-              Nuevo rol
+      <PanelFilterBar
+        title="Roles, Matriz de Permisos & Auditoría"
+        subtitle="Administra los privilegios asignados por rol, catálogo de permisos e historial."
+        searchValue={busqueda}
+        onSearchChange={setBusqueda}
+        searchPlaceholder={
+          tab === 'permisos'
+            ? 'Buscar permiso por recurso:acción o descripción...'
+            : 'Buscar rol por nombre o descripción...'
+        }
+        hasActiveFilters={Boolean(busqueda)}
+        onResetFilters={() => setBusqueda('')}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant={tab === 'roles' ? 'primary' : 'secondary'}
+              size="sm"
+              onClick={() => setTab('roles')}
+            >
+              Roles y matriz
             </Button>
-          )}
-        </div>
-      </div>
+            {tienePermiso('permisos', 'administrar') && (
+              <>
+                <Button
+                  variant={tab === 'permisos' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setTab('permisos')}
+                >
+                  Catálogo permisos
+                </Button>
+                <Button
+                  variant={tab === 'historial' ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setTab('historial')}
+                >
+                  Historial
+                </Button>
+              </>
+            )}
+            {tienePermiso('roles', 'administrar') && (
+              <Button size="sm" onClick={() => setModalRol(true)}>
+                <Plus className="h-4 w-4" />
+                Nuevo rol
+              </Button>
+            )}
+          </div>
+        }
+      />
+
+      <PanelSectionHeader
+        icon={Shield}
+        title={
+          tab === 'roles'
+            ? 'Matriz de Roles del Sistema'
+            : tab === 'permisos'
+            ? 'Catálogo Granular de Permisos'
+            : 'Historial de Cambios de Privilegios'
+        }
+        subtitle="Control de acceso basado en roles (RBAC)"
+        badgeText={`${roles.length} Roles configurados`}
+        accent="indigo"
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Roles registrados',
+            value: roles.length,
+            trendText: `${roles.filter((r) => ROLES_SISTEMA.has(r.nombre)).length} base del sistema`,
+            icon: Shield,
+            accent: 'indigo',
+          },
+          {
+            label: 'Permisos activos',
+            value: `${permisosActivosCount} / ${permisos.length}`,
+            trendText: 'Catálogo habilitado',
+            icon: KeyRound,
+            accent: 'emerald',
+          },
+          {
+            label: 'Eventos de privilegios',
+            value: historialData?.pagination?.total ?? '—',
+            trendText: 'Trazabilidad administrativa',
+            icon: Activity,
+            accent: 'sky',
+          },
+        ]}
+      />
 
       {tab === 'roles' ? (
         loadingRoles ? (
           <FullPageSpinner message="Cargando roles..." />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {roles.map((rol) => (
+            {rolesFiltrados.map((rol) => (
               <div
                 key={rol.rolId}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition hover:border-emerald-300"
+                className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
               >
-                <div className="space-y-2">
+                <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-base font-bold text-slate-900">{rol.nombre}</h2>
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                        <Shield className="h-4 w-4" />
+                      </span>
+                      <h2 className="text-base font-extrabold text-slate-900">{rol.nombre}</h2>
+                    </div>
                     <Badge color="slate">{rol.usuariosCount} usuario(s)</Badge>
                   </div>
-                  {rol.descripcion && <p className="text-xs text-slate-500">{rol.descripcion}</p>}
-                  <div className="flex flex-wrap gap-1 pt-2">
+                  {rol.descripcion && <p className="mt-2 text-xs text-slate-500">{rol.descripcion}</p>}
+                  <div className="mt-3 flex flex-wrap gap-1">
                     {rol.permisos.slice(0, 6).map((p) => (
                       <Badge key={p.permisoId} color="emerald">
                         {p.recurso}:{p.accion}
@@ -234,7 +352,7 @@ export function AdminRolesPage() {
 
                 {(tienePermiso('permisos', 'administrar') ||
                   (tienePermiso('roles', 'administrar') && !ROLES_SISTEMA.has(rol.nombre))) && (
-                  <div className="mt-4 flex gap-2 border-t border-slate-100 pt-3">
+                  <div className="flex items-center justify-between gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-3">
                     {tienePermiso('permisos', 'administrar') && (
                       <Button
                         variant="secondary"
@@ -245,18 +363,17 @@ export function AdminRolesPage() {
                           setRolEditando(rol);
                         }}
                       >
+                        <Sliders className="h-3.5 w-3.5" />
                         Configurar permisos ({rol.permisos.length})
                       </Button>
                     )}
                     {tienePermiso('roles', 'administrar') && !ROLES_SISTEMA.has(rol.nombre) && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                      <RowActionButton
+                        icon={Trash2}
                         title={`Eliminar rol ${rol.nombre}`}
+                        tone="danger"
                         onClick={() => setRolAEliminar(rol)}
-                      >
-                        <Trash2 className="h-4 w-4 text-rose-600" />
-                      </Button>
+                      />
                     )}
                   </div>
                 )}
@@ -266,10 +383,10 @@ export function AdminRolesPage() {
         )
       ) : tab === 'permisos' ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {permisos.map((p) => (
+          {permisosFiltradosCatalogo.map((p) => (
             <div
               key={p.permisoId}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/85 bg-white p-4 shadow-xs transition hover:border-emerald-200"
             >
               <div className="min-w-0">
                 <p className="truncate font-mono text-xs font-bold text-slate-900">
@@ -297,6 +414,7 @@ export function AdminRolesPage() {
           totalPages={historialData?.pagination?.totalPages || 1}
           total={historialData?.pagination?.total || 0}
           onPageChange={setHistPage}
+          itemLabel="movimientos"
           emptyTitle="Sin movimientos de permisos"
         />
       )}
