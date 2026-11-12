@@ -1,14 +1,16 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/app.js';
 import { prisma } from '../src/config/prisma.js';
 import { resetDb } from './helpers/resetDb.js';
-import { runSeed } from '../prisma/seed.js';
 
 describe('Flujo End-to-End Completo (Paso 14)', () => {
   beforeEach(async () => {
     await resetDb();
-    await runSeed(prisma);
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('cubre registro -> solicitud -> aprobación -> premios -> reserva -> pago -> verificación -> sorteo -> resultado sin PII -> entrega -> reportes y auditoría', async () => {
@@ -16,8 +18,8 @@ describe('Flujo End-to-End Completo (Paso 14)', () => {
     const adminLogin = await request(app)
       .post('/api/auth/login')
       .send({
-        email: process.env.SEED_ADMIN_EMAIL || 'admin@rifas.local',
-        password: process.env.SEED_ADMIN_PASSWORD || 'Admin1234!'
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD
       })
       .expect(200);
     const adminToken = adminLogin.body.accessToken;
