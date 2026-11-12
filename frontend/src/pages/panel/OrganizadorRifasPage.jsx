@@ -153,7 +153,7 @@ export function OrganizadorRifasPage() {
                 <div
                   className={`h-1.5 w-full bg-gradient-to-r ${
                     r.estado === 'FINALIZADA'
-                      ? 'from-indigo-500 to-purple-500'
+                      ? 'from-slate-600 to-slate-800'
                       : r.estado === 'EXTENDIDA'
                       ? 'from-amber-400 to-orange-500'
                       : 'from-emerald-500 to-teal-500'
