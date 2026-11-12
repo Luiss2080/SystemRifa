@@ -83,71 +83,64 @@ export function RegistroPage() {
   return (
     <div className="my-auto mx-auto w-full max-w-5xl py-2">
       <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda: Beneficios centrados y texto justificado */}
-        <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-6 text-white sm:p-7 lg:col-span-5">
-          <div className="mx-auto w-full max-w-sm space-y-4">
+        {/* Columna izquierda más compacta */}
+        <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-4">
+          <div className="mx-auto w-full space-y-3.5">
             <div className="text-center">
-              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold backdrop-blur-xs">
                 <HeartHandshake className="h-3.5 w-3.5" />
                 Únete a Rifas Solidarias
               </span>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+              <h1 className="mt-2.5 text-xl font-extrabold tracking-tight sm:text-2xl">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="mt-2 text-justify text-sm leading-relaxed text-emerald-50">
-                Elige tus números favoritos en tiempo real, confirma tus pagos sin complicaciones o
-                propón nuevas rifas para apoyar causas verificadas.
+              <p className="mt-1.5 text-justify text-xs leading-relaxed text-emerald-50">
+                Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
               </p>
             </div>
 
-            <div className="space-y-2 border-t border-white/15 pt-4 text-xs">
-              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-                <Ticket className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+            <div className="space-y-2 border-t border-white/15 pt-3 text-[11px]">
+              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
+                <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
                 <div className="text-justify">
-                  <p className="font-bold">Reservas instantáneas de 15 minutos</p>
-                  <p className="text-emerald-50/90">
-                    Bloquea tus números sin colisiones mientras completas tu comprobante.
-                  </p>
+                  <p className="font-bold">Reservas instantáneas de 15 min</p>
+                  <p className="text-emerald-50/90">Bloquea tus números mientras pagas.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
+                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
                 <div className="text-justify">
-                  <p className="font-bold">Privacidad protegida por alias</p>
-                  <p className="text-emerald-50/90">
-                    Solo tu alias público aparece en los tableros de ganadores.
-                  </p>
+                  <p className="font-bold">Privacidad por alias público</p>
+                  <p className="text-emerald-50/90">Tus datos privados permanecen protegidos.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-                <Bell className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+              <div className="flex items-start gap-2 rounded-xl bg-white/10 p-2.5 backdrop-blur-xs">
+                <Bell className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-200" />
                 <div className="text-justify">
                   <p className="font-bold">Avisos automáticos</p>
-                  <p className="text-emerald-50/90">
-                    Notificaciones inmediatas de pagos verificados y resultados.
-                  </p>
+                  <p className="text-emerald-50/90">Alertas de pagos y resultados al instante.</p>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-white/15 pt-3 text-center text-xs text-emerald-50">
-              ¿Ya tienes una cuenta?{' '}
+            <div className="border-t border-white/15 pt-2.5 text-center text-xs text-emerald-50">
+              ¿Ya tienes cuenta?{' '}
               <Link
                 to="/login"
                 state={{ from: destino }}
                 className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
               >
-                Inicia sesión aquí
+                Inicia sesión
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Columna derecha: Formulario centrado */}
-        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-7">
+        {/* Columna derecha ampliada: Formulario */}
+        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-8">
           <div className="mb-4 text-center sm:flex sm:items-center sm:justify-between sm:text-left">
             <div>
               <h2 className="text-xl font-extrabold text-slate-900">Datos de registro</h2>

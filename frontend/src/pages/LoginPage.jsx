@@ -118,43 +118,42 @@ export function LoginPage() {
 
   return (
     <div className="my-auto mx-auto w-full max-w-5xl py-2">
-      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-2">
-        {/* Columna izquierda: Presentación centrada y justificada */}
-        <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-6 text-white sm:p-8">
-          <div className="mx-auto w-full max-w-md space-y-5">
+      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
+        {/* Columna izquierda más compacta */}
+        <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-6 lg:col-span-4">
+          <div className="mx-auto w-full space-y-4">
             <div className="text-center">
-              <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-white/15">
+              <div className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-white/15">
                 <Ticket className="h-3.5 w-3.5" />
                 Portal Rifas Solidarias
               </div>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+              <h1 className="mt-2.5 text-xl font-extrabold tracking-tight sm:text-2xl">
                 Bienvenido de vuelta
               </h1>
-              <p className="mt-2 text-justify text-sm leading-relaxed text-slate-300">
-                Accede a tu espacio personal para gestionar tus números reservados, revisar la
-                validación de tus comprobantes y apoyar campañas solidarias en tiempo real.
+              <p className="mt-2 text-justify text-xs leading-relaxed text-slate-300">
+                Gestiona tus números reservados, pagos y campañas solidarias en tiempo real.
               </p>
             </div>
 
-            <div className="space-y-2.5 border-t border-white/15 pt-4 text-xs text-slate-300">
-              <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
-                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+            <div className="space-y-2 border-t border-white/15 pt-3.5 text-[11px] text-slate-300">
+              <div className="flex items-start gap-2 rounded-xl bg-white/5 p-2.5">
+                <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
                 <span className="text-justify">
-                  Acceso cifrado con rotación de tokens y control granular de permisos por rol.
+                  Sesiones cifradas con tokens rotativos y control de permisos por rol.
                 </span>
               </div>
-              <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
+              <div className="flex items-start gap-2 rounded-xl bg-white/5 p-2.5">
+                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-400" />
                 <span className="text-justify">
-                  Reservas atómicas de 15 minutos y sorteos verificables protegiendo tu privacidad.
+                  Reservas de 15 min y sorteos auditados sin exponer datos privados.
                 </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Columna derecha: Formulario centrado + Desplegable de autocompletado */}
-        <section className="flex flex-col justify-center p-6 sm:p-8">
+        {/* Columna derecha más amplia: Formulario + Desplegable de autocompletado */}
+        <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-8">
           <div className="mx-auto w-full max-w-md">
             <div className="mb-5 text-center">
               <div className="mx-auto mb-2.5 inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-700">

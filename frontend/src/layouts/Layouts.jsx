@@ -110,7 +110,7 @@ export function PanelLayout() {
   ].filter(Boolean);
 
   const navLinkClass = ({ isActive }) =>
-    `flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
+    `flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-[13px] font-medium transition ${
       isActive
         ? 'bg-emerald-600 text-white shadow-xs'
         : 'text-slate-700 hover:bg-slate-100'
@@ -119,9 +119,9 @@ export function PanelLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
-      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row">
-        <aside className="w-full shrink-0 lg:w-64">
-          <div className="space-y-5 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-sm backdrop-blur-md lg:sticky lg:top-20">
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-4 py-6 sm:px-6 lg:flex-row">
+        <aside className="w-full shrink-0 lg:w-52">
+          <div className="space-y-3.5 rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm backdrop-blur-md lg:sticky lg:top-20">
             {itemsOrganizador.length > 0 && (
               <div>
                 <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
