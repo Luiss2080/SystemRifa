@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CheckCircle2, Circle, KeyRound, User } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { cambiarMiPasswordRequest, updateMiPerfilRequest } from '../features/auth/authApi.js';
@@ -10,7 +11,15 @@ import { useToast } from '../components/ui/Toast.jsx';
 
 export function PerfilPage() {
   const { usuario, roles, recargarPerfil } = useAuth();
+  const location = useLocation();
   const toast = useToast();
+
+  useEffect(() => {
+    if (location.hash === '#seguridad') {
+      const el = document.getElementById('seguridad');
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [location.hash]);
 
   const [perfil, setPerfil] = useState({
     alias: '',
@@ -181,7 +190,10 @@ export function PerfilPage() {
           </form>
         </section>
 
-        <section className="flex flex-col rounded-3xl border border-amber-200/80 bg-white/90 p-6 shadow-md backdrop-blur-md">
+        <section
+          id="seguridad"
+          className="flex flex-col rounded-3xl border border-amber-200/80 bg-white/90 p-6 shadow-md backdrop-blur-md scroll-mt-24"
+        >
           <div className="mb-3.5 flex items-center gap-2.5 border-b border-slate-100 pb-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
               <KeyRound className="h-4 w-4" />

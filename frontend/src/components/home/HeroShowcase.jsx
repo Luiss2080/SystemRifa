@@ -646,7 +646,7 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
           </p>
           <button
             type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('open-help-widget'))}
+            onClick={() => window.dispatchEvent(new window.CustomEvent('open-help-widget'))}
             className="inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-800 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4" />
