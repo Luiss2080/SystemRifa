@@ -101,60 +101,60 @@ export function RegistroPage() {
   return (
     <div className="my-auto mx-auto w-full max-w-5xl py-2">
       <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 ring-1 ring-slate-900/5 backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda informativa */}
-        <section className="relative flex flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-800 via-teal-800 to-slate-900 p-6 text-white sm:p-8 lg:col-span-5">
-          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-cyan-400/15 blur-3xl" />
+        {/* Columna izquierda informativa (tema claro comercial) */}
+        <section className="relative flex flex-col justify-between overflow-hidden border-b border-slate-200/80 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/90 p-6 text-slate-900 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-300/25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-cyan-300/20 blur-3xl" />
 
           <div className="relative flex flex-1 flex-col justify-center space-y-5">
             <div className="text-center">
               <div className="mb-3 flex justify-center">
                 <BrandMark size="xl" />
               </div>
-              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-emerald-100 ring-1 ring-white/20 backdrop-blur-xs">
-                <HeartHandshake className="h-3.5 w-3.5" />
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 px-3 py-1 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200">
+                <HeartHandshake className="h-3.5 w-3.5 text-emerald-700" />
                 Únete a Rifas Solidarias
               </span>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-[26px]">
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[26px]">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="mt-2 text-xs leading-relaxed text-emerald-50/90 sm:text-sm">
+              <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
                 Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
               </p>
             </div>
 
-            <div className="space-y-2.5 border-t border-white/15 pt-4 text-xs">
-              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+            <div className="space-y-2.5 border-t border-slate-200/80 pt-4 text-xs">
+              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
                   <Ticket className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-bold text-white">Reservas instantáneas de 15 min</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                  <p className="font-bold text-slate-900">Reservas instantáneas de 15 min</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
                     Bloquea tus números disponibles mientras envías tu comprobante.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
                   <ShieldCheck className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-bold text-white">Privacidad con alias público</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                  <p className="font-bold text-slate-900">Privacidad con alias público</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
                     Tu nombre y contacto se mantienen privados en tableros y sorteos.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/15 backdrop-blur-xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-emerald-200">
+              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                   <Bell className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-bold text-white">Avisos automáticos</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-50/85">
+                  <p className="font-bold text-slate-900">Avisos automáticos</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
                     Recibe alertas sobre validación de pagos y resultados del sorteo.
                   </p>
                 </div>
@@ -162,12 +162,12 @@ export function RegistroPage() {
             </div>
           </div>
 
-          <div className="relative mt-6 border-t border-white/15 pt-4 text-center text-xs text-emerald-50">
+          <div className="relative mt-6 border-t border-slate-200/80 pt-4 text-center text-xs text-slate-600">
             ¿Ya tienes una cuenta?{' '}
             <Link
               to="/login"
               state={{ from: destino }}
-              className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
+              className="inline-flex items-center gap-1 font-bold text-emerald-700 underline-offset-2 hover:text-emerald-800 hover:underline"
             >
               Inicia sesión
               <ArrowRight className="h-3.5 w-3.5" />

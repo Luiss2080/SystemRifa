@@ -586,7 +586,7 @@ export function RoleShell({ children }) {
           }`}
         >
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-xs font-extrabold text-white">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-xs font-extrabold text-white shadow-2xs">
               {iniciales}
             </span>
             {(isMobile || !collapsed) && (

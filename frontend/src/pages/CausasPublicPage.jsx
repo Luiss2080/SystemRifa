@@ -28,10 +28,10 @@ const PALETAS_CAUSA = [
     hoverBorder: 'hover:border-emerald-300',
   },
   {
-    stripe: 'from-slate-800 to-emerald-900',
-    iconBg: 'bg-slate-100 text-slate-800 ring-slate-200',
-    badge: 'bg-slate-100 text-slate-800',
-    hoverBorder: 'hover:border-slate-400',
+    stripe: 'from-sky-500 to-indigo-600',
+    iconBg: 'bg-sky-50 text-sky-700 ring-sky-200',
+    badge: 'bg-sky-50 text-sky-800',
+    hoverBorder: 'hover:border-sky-300',
   },
   {
     stripe: 'from-teal-500 to-emerald-600',

@@ -22,10 +22,10 @@ const TONE_MAP = {
     badge: 'bg-rose-100/80 text-rose-800',
   },
   slate: {
-    bar: 'from-slate-800 via-slate-700 to-emerald-600',
-    headerBg: 'from-slate-100/80 via-white to-emerald-50/40',
-    iconWrap: 'bg-slate-900 text-white ring-slate-700',
-    badge: 'bg-slate-200/80 text-slate-800',
+    bar: 'from-emerald-600 via-teal-500 to-sky-500',
+    headerBg: 'from-slate-50/90 via-white to-emerald-50/40',
+    iconWrap: 'bg-emerald-100 text-emerald-700 ring-emerald-200/80',
+    badge: 'bg-slate-100 text-slate-800',
   },
 };
 

@@ -132,12 +132,12 @@ export function CatalogoPage({ mode = 'landing' }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {esVistaLanding ? (
         <HeroShowcase rifas={rifasBase} causas={causas} onSelectCausa={seleccionarCausa} />
       ) : (
         <>
-          <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/85 px-5 py-4 shadow-xs backdrop-blur-md">
+          <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/90 px-5 py-4 shadow-xs backdrop-blur-md">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
                 Catálogo en vivo · Sesión @{usuario?.alias}
@@ -196,30 +196,24 @@ export function CatalogoPage({ mode = 'landing' }) {
             </div>
           </section>
 
-          <CauseMarqueeTicker causas={causas} onSelectCausa={seleccionarCausa} />
+          <CauseMarqueeTicker causas={causas} onSelectCausa={seleccionarCausa} fullBleed={false} />
         </>
       )}
 
-      <section
-        id="catalogo-activo"
-        className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/85 p-4 shadow-xs backdrop-blur-md sm:p-5"
-      >
+      <section id="catalogo-activo" className="space-y-5">
         {esVistaLanding && (
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-            <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
-                Catálogo en vivo
-              </span>
-              <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
-                Rifas solidarias disponibles para participar
-              </h2>
-            </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200/80">
+          <div className="mx-auto max-w-2xl space-y-2 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
               <Ticket className="h-3.5 w-3.5 text-emerald-600" />
-              {rifasFiltradas.length} disponible(s)
+              Catálogo en vivo · {rifasFiltradas.length} disponible(s)
             </span>
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+              Rifas solidarias disponibles para participar
+            </h2>
           </div>
         )}
+
+        <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-xs backdrop-blur-md">
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
@@ -320,6 +314,7 @@ export function CatalogoPage({ mode = 'landing' }) {
               );
             })}
           </div>
+        </div>
         )}
       </section>
 
@@ -504,12 +499,10 @@ export function CatalogoPage({ mode = 'landing' }) {
         <>
           <CausasDestacadasSection causas={causas} onSelectCausa={seleccionarCausa} />
           <GarantiasSection />
+          <PlatformContentSection totalRifas={rifasBase.length} totalCausas={causas.length} />
+          <LandingFinalCta />
         </>
       )}
-
-      <PlatformContentSection totalRifas={rifasBase.length} totalCausas={causas.length} />
-
-      {esVistaLanding && <LandingFinalCta />}
     </div>
   );
 }
