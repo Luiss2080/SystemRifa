@@ -64,8 +64,13 @@ SystemRifa/
    ```bash
    npm run seed:demo
    ```
-   - Inicia el servidor backend:
+   - **Ejecución rápida desde la raíz del monorepo** (levanta backend en `3000` y frontend en `5173` a la vez):
      ```bash
+     npm run dev
+     ```
+   - O inicia solo el servidor backend:
+     ```bash
+     cd backend
      npm run dev
      ```
    - Documentación OpenAPI disponible solo en `NODE_ENV=development` en: `http://localhost:3000/api/docs`

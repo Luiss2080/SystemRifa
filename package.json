@@ -1,0 +1,18 @@
+{
+  "name": "rifas-solidarias-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scripts raíz para el monorepo Sistema de Rifas Solidarias",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend test",
+    "test:ci": "npm --prefix backend run test:ci",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "seed": "npm --prefix backend run seed",
+    "seed:demo": "npm --prefix backend run seed:demo"
+  }
+}
