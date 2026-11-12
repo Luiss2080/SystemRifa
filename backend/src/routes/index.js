@@ -6,3 +6,4 @@ const router = Router();
 router.use('/health', healthRoutes);
 
 export default router;
+

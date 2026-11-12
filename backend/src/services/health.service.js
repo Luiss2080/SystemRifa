@@ -13,3 +13,4 @@ export async function verificarSalud() {
     throw new AppError(503, 'DATABASE_UNAVAILABLE', 'No se pudo conectar con la base de datos.');
   }
 }
+

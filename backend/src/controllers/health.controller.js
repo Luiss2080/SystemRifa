@@ -8,3 +8,4 @@ export async function getHealth(_req, res, next) {
     next(err);
   }
 }
+
