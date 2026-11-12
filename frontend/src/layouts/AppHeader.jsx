@@ -185,9 +185,19 @@ export function AppHeader({ variant = 'public' }) {
   const rolEtiqueta = !autenticado
     ? null
     : esAdmin
-      ? { label: 'Administrador', cls: esPanelDark ? 'bg-indigo-500/20 text-indigo-200 ring-indigo-400/30' : 'bg-indigo-50 text-indigo-700 ring-indigo-200' }
+      ? {
+          label: 'Administrador',
+          cls: esPanelDark
+            ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-400/30'
+            : 'bg-slate-800 text-emerald-300 ring-slate-700',
+        }
       : esOrganizador
-        ? { label: 'Organizador', cls: esPanelDark ? 'bg-sky-500/20 text-sky-200 ring-sky-400/30' : 'bg-sky-50 text-sky-700 ring-sky-200' }
+        ? {
+            label: 'Organizador',
+            cls: esPanelDark
+              ? 'bg-teal-500/20 text-teal-200 ring-teal-400/30'
+              : 'bg-teal-50 text-teal-800 ring-teal-200',
+          }
         : { label: 'Participante', cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200' };
 
   async function handleLogout() {
@@ -223,11 +233,11 @@ export function AppHeader({ variant = 'public' }) {
         esPanelDark
           ? 'border-slate-800 bg-slate-900/95 text-white'
           : variant === 'user'
-            ? 'border-sky-200/80 bg-white/95 text-slate-900'
+            ? 'border-emerald-200/80 bg-white/95 text-slate-900'
             : 'border-slate-200 bg-white/95 text-slate-900'
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="flex h-16 w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3 lg:gap-5">
           <Link to={homeDestino} className="flex shrink-0 items-center gap-2 font-bold">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-600/20 transition hover:scale-105">

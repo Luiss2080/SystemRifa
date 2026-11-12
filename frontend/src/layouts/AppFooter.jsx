@@ -30,7 +30,7 @@ export function AppFooter() {
     <footer className="relative z-10 mt-12 border-t border-slate-800/80 bg-slate-950/95 text-slate-300 backdrop-blur-md">
       <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-sky-500" />
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <div className="w-full px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-12">
           {/* Identidad y propósito */}
           <div className="space-y-4 lg:col-span-5">
