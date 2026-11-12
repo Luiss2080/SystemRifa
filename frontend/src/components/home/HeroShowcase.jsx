@@ -507,3 +507,188 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
     </div>
   );
 }
+
+const FAQS = [
+  {
+    q: '¿Cómo funciona la reserva temporal de 15 minutos?',
+    a: 'Cuando seleccionas tus números en una rifa activa y confirmas la reserva, el sistema bloquea esos boletos de forma atómica exclusivamente para ti durante 15 minutos, evitando que otra persona los tome mientras realizas y subes tu comprobante de pago.',
+  },
+  {
+    q: '¿Qué métodos de pago se aceptan y cuánto tarda la verificación?',
+    a: 'Puedes registrar transferencias bancarias o pagos QR indicando tu número de referencia y adjuntando el comprobante. Nuestro equipo administrativo verifica cada comprobante y recibirás una notificación automática en tu perfil cuando tus tickets pasen a estado VENDIDO.',
+  },
+  {
+    q: '¿Qué necesito para organizar una rifa solidaria?',
+    a: 'Solo crea una cuenta gratuita, ingresa a "Organizar rifa" y completa el formulario indicando el nombre de la campaña, la causa solidaria, el precio por ticket, la cantidad de números y la fecha de cierre. Una vez aprobada por administración, podrás cargar los premios y publicarla.',
+  },
+  {
+    q: '¿Cómo se protege mi privacidad en los resultados públicos?',
+    a: 'En la pantalla pública de resultados y ganadores únicamente se muestra tu alias público junto al número ganador y el premio adjudicado. Tus datos personales y de contacto se mantienen privados.',
+  },
+];
+
+export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
+  const [openFaq, setOpenFaq] = useState(0);
+
+  return (
+    <div className="space-y-8 pt-4">
+      {/* Beneficios por perfil (Contenido Comercial) */}
+      <section
+        id="beneficios-plataforma"
+        className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md sm:p-8"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-100 pb-5">
+          <div className="max-w-2xl space-y-1.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+              <Sparkles className="h-3.5 w-3.5" />
+              Ecosistema solidario completo
+            </span>
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+              Diseñado para participantes, organizadores y causas reales
+            </h2>
+            <p className="text-sm text-slate-600">
+              Cada rol cuenta con herramientas claras para participar, recaudar y verificar sorteos
+              en tiempo real.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-2 text-center">
+              <p className="text-lg font-extrabold text-emerald-700">{totalRifas}</p>
+              <p className="text-[11px] font-semibold text-slate-600">Rifas en catálogo</p>
+            </div>
+            <div className="rounded-2xl border border-amber-100 bg-amber-50/70 px-4 py-2 text-center">
+              <p className="text-lg font-extrabold text-amber-700">{totalCausas}</p>
+              <p className="text-[11px] font-semibold text-slate-600">Causas activas</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-5 md:grid-cols-3">
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm">
+            <div className="space-y-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                <Users className="h-5 w-5" />
+              </span>
+              <h3 className="text-base font-extrabold text-slate-900">Para Participantes</h3>
+              <p className="text-xs leading-relaxed text-slate-600">
+                Explora números disponibles al instante, bloquea tus boletos favoritos por 15
+                minutos y sigue el estado de tus pagos y sorteos desde tu espacio personal.
+              </p>
+            </div>
+            <Link
+              to="/registro"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800"
+            >
+              Crear cuenta gratis
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </article>
+
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-amber-300 hover:bg-white hover:shadow-sm">
+            <div className="space-y-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+                <FilePlus2 className="h-5 w-5" />
+              </span>
+              <h3 className="text-base font-extrabold text-slate-900">Para Organizadores</h3>
+              <p className="text-xs leading-relaxed text-slate-600">
+                Solicita campañas en minutos, configura múltiples premios, monitorea el avance de
+                ventas en vivo y ejecuta sorteos transparentes con entrega registrada.
+              </p>
+            </div>
+            <Link
+              to="/solicitudes/nueva"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800"
+            >
+              Solicitar nueva rifa
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </article>
+
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-teal-300 hover:bg-white hover:shadow-sm">
+            <div className="space-y-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-100 text-teal-700">
+                <HeartHandshake className="h-5 w-5" />
+              </span>
+              <h3 className="text-base font-extrabold text-slate-900">Para Causas Verificadas</h3>
+              <p className="text-xs leading-relaxed text-slate-600">
+                Cada recaudación confirmada se vincula a una causa social aprobada, con metas
+                visibles y reportes ejecutivos auditables en todo momento.
+              </p>
+            </div>
+            <Link
+              to="/causas"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 hover:text-teal-800"
+            >
+              Explorar directorio de causas
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </article>
+        </div>
+      </section>
+
+      {/* Preguntas Frecuentes Interactivas */}
+      <section
+        id="preguntas-frecuentes"
+        className="grid gap-6 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md lg:grid-cols-12 lg:p-8"
+      >
+        <div className="space-y-3 lg:col-span-5">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
+            <HelpCircle className="h-3.5 w-3.5 text-amber-600" />
+            Centro de dudas
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            Preguntas frecuentes
+          </h2>
+          <p className="text-sm leading-relaxed text-slate-600">
+            Resolvemos las consultas más habituales sobre reservas, pagos, sorteos y creación de
+            campañas solidarias.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-help-widget'))}
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-800 cursor-pointer"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Chatear con RifaBot
+          </button>
+        </div>
+
+        <div className="space-y-2.5 lg:col-span-7">
+          {FAQS.map((item, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div
+                key={item.q}
+                className={`overflow-hidden rounded-2xl border transition ${
+                  isOpen
+                    ? 'border-emerald-300 bg-emerald-50/40'
+                    : 'border-slate-200 bg-white hover:border-slate-300'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? -1 : idx)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-bold text-slate-900 cursor-pointer"
+                >
+                  <span>{item.q}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-emerald-600 transition-transform ${
+                      isOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <p className="border-t border-emerald-100 px-4 pt-2.5 pb-4 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                    {item.a}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
