@@ -58,3 +58,4 @@ describe('Seed idempotente del sistema', () => {
     expect(permisoRolCount).toBe(18 + 5 + 5);
   });
 });
+
