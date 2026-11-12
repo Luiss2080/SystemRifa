@@ -29,9 +29,20 @@ export const loginRateLimiter = createLimiter({
   message: 'Demasiados intentos de inicio de sesión. Intenta nuevamente en 15 minutos.'
 });
 
+export const reservasRateLimiter = createLimiter({
+  windowMs: 60 * 1000,
+  max: 60,
+  message: 'Demasiadas solicitudes de reserva de tickets. Intenta nuevamente en un minuto.'
+});
+
+export const pagosRateLimiter = createLimiter({
+  windowMs: 5 * 60 * 1000,
+  max: 30,
+  message: 'Demasiados intentos de registro de pago. Intenta nuevamente en unos minutos.'
+});
+
 export function resetRateLimiters() {
   for (const store of stores) {
     store.resetAll();
   }
 }
-

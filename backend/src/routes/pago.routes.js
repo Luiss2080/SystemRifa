@@ -7,6 +7,7 @@ import {
 } from '../controllers/pago.controller.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { authorize } from '../middlewares/authorize.js';
+import { pagosRateLimiter } from '../middlewares/rateLimit.js';
 import { validate } from '../middlewares/validate.js';
 import { idParamSchema } from '../validators/usuario.validator.js';
 import {

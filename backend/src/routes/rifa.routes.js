@@ -18,6 +18,7 @@ import {
 } from '../controllers/sorteo.controller.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { authorize, exigirPropietarioORAdmin } from '../middlewares/authorize.js';
+import { reservasRateLimiter } from '../middlewares/rateLimit.js';
 import { validate } from '../middlewares/validate.js';
 import { idParamSchema } from '../validators/usuario.validator.js';
 import {
