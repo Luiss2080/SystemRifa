@@ -223,6 +223,9 @@ export function AdminPlantillasPage() {
         open={Boolean(editando)}
         onClose={() => setEditando(null)}
         title={`Editar plantilla · ${editando?.codigo || ''}`}
+        description="Personaliza el título, cuerpo e insertables dinámicos de esta notificación automática."
+        badge="Mensajería del sistema"
+        icon={Mail}
         maxWidth="max-w-2xl"
       >
         {editando && (

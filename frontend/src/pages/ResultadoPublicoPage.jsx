@@ -54,28 +54,38 @@ export function ResultadoPublicoPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900">{rifa.nombre}</h1>
-            <Badge estado={rifa.estado} />
+      <section className="overflow-hidden rounded-3xl border border-emerald-200/80 bg-white/95 shadow-xs backdrop-blur-md">
+        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
+        <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:px-6">
+          <div className="flex items-center gap-3.5">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-200/80 shadow-2xs">
+              <Trophy className="h-6 w-6" />
+            </span>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+                  {rifa.nombre}
+                </h1>
+                <Badge estado={rifa.estado} />
+              </div>
+              <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
+                Causa solidaria: <strong className="text-slate-700">{rifa.causa?.nombre}</strong>
+              </p>
+            </div>
           </div>
-          <p className="mt-1 text-sm text-slate-500">
-            Causa solidaria: <strong>{rifa.causa?.nombre}</strong>
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" size="sm" onClick={copiarEnlace}>
-            {copiado ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
-            {copiado ? 'Enlace copiado' : 'Compartir resultado'}
-          </Button>
-          <Link to={`/rifas/${id}`}>
-            <Button variant="secondary" size="sm">
-              Volver al detalle
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" size="sm" onClick={copiarEnlace}>
+              {copiado ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
+              {copiado ? 'Enlace copiado' : 'Compartir resultado'}
             </Button>
-          </Link>
+            <Link to={`/rifas/${id}`}>
+              <Button variant="secondary" size="sm">
+                Volver al detalle
+              </Button>
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
 
       {sorteo ? (
         <section className="animate-modal-in rounded-3xl bg-gradient-to-br from-amber-500 via-amber-500 to-orange-500 p-6 text-white shadow-sm sm:p-8">

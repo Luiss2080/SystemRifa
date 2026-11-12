@@ -330,7 +330,7 @@ export function AdminRolesPage() {
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                         <Shield className="h-4 w-4" />
                       </span>
                       <h2 className="text-base font-extrabold text-slate-900">{rol.nombre}</h2>
@@ -419,7 +419,14 @@ export function AdminRolesPage() {
         />
       )}
 
-      <Modal open={modalRol} onClose={() => setModalRol(false)} title="Crear nuevo rol">
+      <Modal
+        open={modalRol}
+        onClose={() => setModalRol(false)}
+        title="Crear nuevo rol"
+        description="Define el identificador único y propósito del nuevo rol en el sistema RBAC."
+        badge="Seguridad RBAC"
+        icon={Shield}
+      >
         <form onSubmit={handleCrearRol} className="space-y-4">
           <Input
             label="Nombre del rol"
@@ -449,6 +456,8 @@ export function AdminRolesPage() {
         onClose={() => setRolEditando(null)}
         title={`Permisos del rol · ${rolSeleccionadoActual?.nombre || ''}`}
         description={`Activos actualmente: ${rolSeleccionadoActual?.permisos?.length || 0} de ${permisos.length}`}
+        badge="Matriz de permisos"
+        icon={KeyRound}
         maxWidth="max-w-2xl"
       >
         {rolSeleccionadoActual && (
