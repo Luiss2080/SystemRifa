@@ -1,14 +1,18 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
   BarChart3,
+  Bell,
   CheckSquare,
   ClipboardList,
+  CreditCard,
   FilePlus2,
   HeartHandshake,
   History,
   KeyRound,
   Mail,
+  Shield,
   Ticket,
+  User,
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
@@ -18,7 +22,7 @@ import { AppFooter } from './AppFooter.jsx';
 export function PublicLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-      <AppHeader />
+      <AppHeader variant="public" />
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6">
         <Outlet />
       </main>
@@ -28,9 +32,41 @@ export function PublicLayout() {
 }
 
 export function UserLayout() {
+  const userNavClass = ({ isActive }) =>
+    `inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+      isActive
+        ? 'bg-sky-600 text-white shadow-xs'
+        : 'bg-white/80 text-slate-600 ring-1 ring-slate-200 hover:bg-sky-50 hover:text-sky-800'
+    }`;
+
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-      <AppHeader />
+      <AppHeader variant="user" />
+      <div className="border-b border-sky-200/60 bg-sky-50/70 backdrop-blur-xs">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-sky-800">
+            Mi espacio personal
+          </span>
+          <nav className="flex flex-wrap items-center gap-1.5">
+            <NavLink to="/mis-tickets" className={userNavClass}>
+              <Ticket className="h-3.5 w-3.5" />
+              Mis tickets
+            </NavLink>
+            <NavLink to="/mis-pagos" className={userNavClass}>
+              <CreditCard className="h-3.5 w-3.5" />
+              Mis pagos
+            </NavLink>
+            <NavLink to="/notificaciones" className={userNavClass}>
+              <Bell className="h-3.5 w-3.5" />
+              Notificaciones
+            </NavLink>
+            <NavLink to="/perfil" className={userNavClass}>
+              <User className="h-3.5 w-3.5" />
+              Mi perfil
+            </NavLink>
+          </nav>
+        </div>
+      </div>
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6">
         <Outlet />
       </main>
@@ -118,14 +154,38 @@ export function PanelLayout() {
 
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-      <AppHeader />
+      <AppHeader variant="panel" />
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-4 py-6 sm:px-6 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-52">
-          <div className="space-y-3.5 rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm backdrop-blur-md lg:sticky lg:top-20">
+          <div className="space-y-3.5 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-sm backdrop-blur-md lg:sticky lg:top-20">
+            <div className="flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white">
+              <Shield className="h-3.5 w-3.5 text-emerald-400" />
+              <span>{esAdmin ? 'Consola Admin' : 'Panel Organizador'}</span>
+            </div>
+
+            {esAdmin && itemsAdmin.length > 0 && (
+              <div>
+                <p className="mb-1.5 px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
+                  Administración
+                </p>
+                <nav className="flex flex-wrap gap-1 lg:flex-col">
+                  {itemsAdmin.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink key={item.to} to={item.to} className={navLinkClass}>
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </NavLink>
+                    );
+                  })}
+                </nav>
+              </div>
+            )}
+
             {itemsOrganizador.length > 0 && (
               <div>
-                <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Organización
+                <p className="mb-1.5 px-2 text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                  {esAdmin ? 'Campañas' : 'Organización'}
                 </p>
                 <nav className="flex flex-wrap gap-1 lg:flex-col">
                   {itemsOrganizador.map((item) => {
@@ -141,9 +201,9 @@ export function PanelLayout() {
               </div>
             )}
 
-            {itemsAdmin.length > 0 && (
+            {!esAdmin && itemsAdmin.length > 0 && (
               <div>
-                <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <p className="mb-1.5 px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
                   Administración
                 </p>
                 <nav className="flex flex-wrap gap-1 lg:flex-col">

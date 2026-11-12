@@ -5,6 +5,8 @@ import {
   Bell,
   Check,
   CheckCheck,
+  CheckSquare,
+  ChevronDown,
   CreditCard,
   ExternalLink,
   FilePlus2,
@@ -29,13 +31,18 @@ import { useAuth } from '../features/auth/AuthContext.jsx';
 import { formatearFechaCorta } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
 
-export function AppHeader() {
-  const { usuario, autenticado, esAdmin, logout, tienePermiso, tieneAlgunPermiso } = useAuth();
+export function AppHeader({ variant = 'public' }) {
+  const { usuario, autenticado, esAdmin, esOrganizador, logout, tienePermiso, tieneAlgunPermiso } =
+    useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [notifAbierto, setNotifAbierto] = useState(false);
+  const [cuentaAbierta, setCuentaAbierta] = useState(false);
   const popoverRef = useRef(null);
+  const cuentaRef = useRef(null);
+
+  const esPanelDark = variant === 'panel';
 
   const { data: notifResumen } = useQuery({
     queryKey: ['notificaciones-badge'],
@@ -70,14 +77,19 @@ export function AppHeader() {
   });
 
   useEffect(() => {
-    if (!notifAbierto) return undefined;
     function handleClickFuera(e) {
-      if (popoverRef.current && !popoverRef.current.contains(e.target)) {
+      if (notifAbierto && popoverRef.current && !popoverRef.current.contains(e.target)) {
         setNotifAbierto(false);
+      }
+      if (cuentaAbierta && cuentaRef.current && !cuentaRef.current.contains(e.target)) {
+        setCuentaAbierta(false);
       }
     }
     function handleEscape(e) {
-      if (e.key === 'Escape') setNotifAbierto(false);
+      if (e.key === 'Escape') {
+        setNotifAbierto(false);
+        setCuentaAbierta(false);
+      }
     }
     document.addEventListener('mousedown', handleClickFuera);
     document.addEventListener('keydown', handleEscape);
@@ -85,105 +97,168 @@ export function AppHeader() {
       document.removeEventListener('mousedown', handleClickFuera);
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [notifAbierto]);
+  }, [notifAbierto, cuentaAbierta]);
 
   const noLeidas = notifResumen?.noLeidasCount || 0;
   const recientes = notifRecientes?.items || [];
 
-  const navPublica = [
-    { to: '/', label: 'Rifas', icon: Ticket, end: true },
-    { to: '/causas', label: 'Causas', icon: HeartHandshake },
-    ...(!autenticado
-      ? [
-          { to: '/#como-funciona', label: 'Cómo funciona', icon: Sparkles },
-          { to: '/solicitudes/nueva', label: 'Organizar rifa', icon: FilePlus2 },
-        ]
-      : []),
-  ];
+  const tieneAdminPanel =
+    esAdmin ||
+    tieneAlgunPermiso([
+      ['solicitudes', 'revisar'],
+      ['pagos', 'verificar'],
+      ['causas', 'crud'],
+      ['usuarios', 'leer'],
+      ['roles', 'administrar'],
+      ['permisos', 'administrar'],
+      ['plantillas', 'administrar'],
+    ]);
 
-  const navParticipante = autenticado
+  const tieneOrganizadorPanel =
+    esOrganizador ||
+    tieneAlgunPermiso([
+      ['rifas', 'administrar'],
+      ['premios', 'crud'],
+      ['sorteos', 'realizar'],
+      ['ganadores', 'publicar'],
+    ]);
+
+  const primerAdminDestino = tienePermiso('reportes', 'leer')
+    ? '/admin/reportes'
+    : tienePermiso('solicitudes', 'revisar')
+      ? '/admin/solicitudes'
+      : '/admin/pagos';
+
+  // Navegación principal estrictamente acotada por rol (máximo 5 enlaces para evitar colisiones)
+  let navItems = [];
+  if (!autenticado) {
+    navItems = [
+      { to: '/', label: 'Rifas', icon: Ticket, end: true },
+      { to: '/causas', label: 'Causas', icon: HeartHandshake },
+      { to: '/#como-funciona', label: 'Cómo funciona', icon: Sparkles },
+      { to: '/solicitudes/nueva', label: 'Organizar rifa', icon: FilePlus2 },
+    ];
+  } else if (tieneAdminPanel) {
+    navItems = [
+      { to: primerAdminDestino, label: 'Panel Admin', icon: LayoutDashboard },
+      { to: '/admin/solicitudes', label: 'Solicitudes', icon: FolderKanban },
+      { to: '/admin/pagos', label: 'Pagos', icon: CheckSquare },
+      { to: '/', label: 'Catálogo', icon: Ticket, end: true },
+      { to: '/causas', label: 'Causas', icon: HeartHandshake },
+    ];
+  } else if (tieneOrganizadorPanel) {
+    navItems = [
+      { to: '/organizador/rifas', label: 'Mis rifas', icon: Sparkles },
+      { to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban },
+      { to: '/solicitudes/nueva', label: 'Solicitar rifa', icon: FilePlus2 },
+      { to: '/', label: 'Catálogo', icon: Ticket, end: true },
+      { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
+    ];
+  } else {
+    navItems = [
+      { to: '/', label: 'Rifas', icon: Ticket, end: true },
+      { to: '/causas', label: 'Causas', icon: HeartHandshake },
+      { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
+      { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
+      { to: '/solicitudes/nueva', label: 'Solicitar rifa', icon: FilePlus2 },
+    ];
+  }
+
+  // Enlaces secundarios del menú de cuenta (para mantener la barra superior limpia)
+  const cuentaLinks = autenticado
     ? [
+        { to: '/perfil', label: 'Mi perfil y contraseña', icon: User },
         { to: '/mis-tickets', label: 'Mis tickets', icon: Ticket },
         { to: '/mis-pagos', label: 'Mis pagos', icon: CreditCard },
+        ...(tienePermiso('solicitudes', 'crear')
+          ? [{ to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban }]
+          : []),
+        ...(tieneOrganizadorPanel || tienePermiso('rifas', 'leer')
+          ? [{ to: '/organizador/rifas', label: 'Gestionar rifas', icon: Sparkles }]
+          : []),
+        ...(tieneAdminPanel
+          ? [{ to: primerAdminDestino, label: 'Panel Administración', icon: LayoutDashboard }]
+          : []),
       ]
     : [];
 
-  const navPanel = [];
-  if (autenticado) {
-    if (tienePermiso('solicitudes', 'crear')) {
-      navPanel.push({ to: '/solicitudes/nueva', label: 'Solicitar rifa', icon: FilePlus2 });
-      navPanel.push({ to: '/solicitudes/mias', label: 'Mis solicitudes', icon: FolderKanban });
-    }
-    if (
-      tieneAlgunPermiso([
-        ['rifas', 'administrar'],
-        ['premios', 'crud'],
-        ['sorteos', 'realizar'],
-        ['ganadores', 'publicar'],
-      ]) ||
-      tienePermiso('rifas', 'leer')
-    ) {
-      navPanel.push({ to: '/organizador/rifas', label: 'Mis rifas', icon: Sparkles });
-    }
-    const tieneAdminPanel =
-      esAdmin ||
-      tieneAlgunPermiso([
-        ['solicitudes', 'revisar'],
-        ['pagos', 'verificar'],
-        ['causas', 'crud'],
-        ['usuarios', 'leer'],
-        ['roles', 'administrar'],
-        ['permisos', 'administrar'],
-        ['plantillas', 'administrar'],
-      ]);
-    if (tieneAdminPanel) {
-      const primerAdminDestino = tienePermiso('reportes', 'leer')
-        ? '/admin/reportes'
-        : tienePermiso('solicitudes', 'revisar')
-          ? '/admin/solicitudes'
-          : '/admin/pagos';
-      navPanel.push({ to: primerAdminDestino, label: 'Admin', icon: LayoutDashboard });
-    }
-  }
-
-  const allNavItems = [...navPublica, ...navParticipante, ...navPanel];
+  const rolEtiqueta = !autenticado
+    ? null
+    : esAdmin
+      ? { label: 'Administrador', cls: esPanelDark ? 'bg-indigo-500/20 text-indigo-200 ring-indigo-400/30' : 'bg-indigo-50 text-indigo-700 ring-indigo-200' }
+      : esOrganizador
+        ? { label: 'Organizador', cls: esPanelDark ? 'bg-sky-500/20 text-sky-200 ring-sky-400/30' : 'bg-sky-50 text-sky-700 ring-sky-200' }
+        : { label: 'Participante', cls: 'bg-emerald-50 text-emerald-700 ring-emerald-200' };
 
   async function handleLogout() {
     setNotifAbierto(false);
+    setCuentaAbierta(false);
     await logout();
     setMenuAbierto(false);
     navigate('/');
   }
 
   const linkClass = ({ isActive }) =>
-    `inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium transition ${
-      isActive
-        ? 'bg-emerald-50 font-semibold text-emerald-700 ring-1 ring-emerald-200'
-        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+    `inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium transition ${
+      esPanelDark
+        ? isActive
+          ? 'bg-emerald-500/20 font-semibold text-emerald-300 ring-1 ring-emerald-400/40'
+          : 'text-slate-300 hover:bg-white/10 hover:text-white'
+        : isActive
+          ? 'bg-emerald-50 font-semibold text-emerald-700 ring-1 ring-emerald-200'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
     }`;
 
+  const homeDestino = !autenticado
+    ? '/'
+    : tieneAdminPanel
+      ? primerAdminDestino
+      : tieneOrganizadorPanel
+        ? '/organizador/rifas'
+        : '/';
+
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-xs backdrop-blur-xs">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
-        <div className="flex min-w-0 items-center gap-4 lg:gap-5">
-          <Link to="/" className="flex shrink-0 items-center gap-2 font-bold text-slate-900">
+    <header
+      className={`sticky top-0 z-30 border-b backdrop-blur-md shadow-xs ${
+        esPanelDark
+          ? 'border-slate-800 bg-slate-900/95 text-white'
+          : variant === 'user'
+            ? 'border-sky-200/80 bg-white/95 text-slate-900'
+            : 'border-slate-200 bg-white/95 text-slate-900'
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3 lg:gap-5">
+          <Link to={homeDestino} className="flex shrink-0 items-center gap-2 font-bold">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-600/20 transition hover:scale-105">
               <Ticket className="h-5 w-5" />
             </span>
             <span className="text-base tracking-tight">Rifas Solidarias</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
-            {allNavItems.map((item) => {
+          {rolEtiqueta && (
+            <span
+              className={`hidden shrink-0 items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 xl:inline-flex ${rolEtiqueta.cls}`}
+            >
+              {rolEtiqueta.label}
+            </span>
+          )}
+
+          <nav className="hidden items-center gap-1 overflow-x-auto lg:flex">
+            {navItems.map((item) => {
               const Icon = item.icon;
               if (item.to.includes('#')) {
                 return (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                    className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-sm font-medium transition ${
+                      esPanelDark
+                        ? 'text-slate-300 hover:bg-white/10 hover:text-white'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
                   >
-                    <Icon className="h-4 w-4 text-emerald-600" />
+                    <Icon className="h-4 w-4 text-emerald-500" />
                     {item.label}
                   </Link>
                 );
@@ -204,11 +279,18 @@ export function AppHeader() {
               <div className="relative" ref={popoverRef}>
                 <button
                   type="button"
-                  onClick={() => setNotifAbierto((v) => !v)}
+                  onClick={() => {
+                    setNotifAbierto((v) => !v);
+                    setCuentaAbierta(false);
+                  }}
                   className={`relative rounded-xl p-2 transition cursor-pointer ${
-                    notifAbierto
-                      ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    esPanelDark
+                      ? notifAbierto
+                        ? 'bg-white/15 text-emerald-300 ring-1 ring-white/20'
+                        : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                      : notifAbierto
+                        ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                   aria-label="Abrir notificaciones recientes"
                   aria-expanded={notifAbierto}
@@ -223,7 +305,7 @@ export function AppHeader() {
                 </button>
 
                 {notifAbierto && (
-                  <div className="animate-modal-in absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                  <div className="animate-modal-in absolute right-0 mt-2 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl">
                     <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-4 py-3">
                       <div>
                         <p className="text-sm font-bold text-slate-900">Notificaciones</p>
@@ -299,18 +381,67 @@ export function AppHeader() {
                 )}
               </div>
 
-              <Link
-                to="/perfil"
-                className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50/40"
-              >
-                <User className="h-4 w-4 text-emerald-600" />
-                <span>{usuario?.alias}</span>
-              </Link>
+              {/* Desplegable de cuenta para evitar saturar la barra superior */}
+              <div className="relative" ref={cuentaRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCuentaAbierta((v) => !v);
+                    setNotifAbierto(false);
+                  }}
+                  aria-expanded={cuentaAbierta}
+                  className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-medium transition cursor-pointer ${
+                    esPanelDark
+                      ? 'border-slate-700 bg-slate-800 text-slate-100 hover:border-emerald-500/60 hover:bg-slate-700'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/40'
+                  }`}
+                >
+                  <User className="h-4 w-4 text-emerald-500" />
+                  <span className="max-w-[110px] truncate">{usuario?.alias}</span>
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${cuentaAbierta ? 'rotate-180' : ''}`}
+                  />
+                </button>
 
-              <Button variant="ghost" size="sm" onClick={handleLogout} title="Cerrar sesión">
-                <LogOut className="h-4 w-4" />
-                Salir
-              </Button>
+                {cuentaAbierta && (
+                  <div className="animate-modal-in absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl">
+                    <div className="border-b border-slate-100 px-3 py-2">
+                      <p className="truncate text-xs font-bold text-slate-900">
+                        {usuario?.nombres} {usuario?.apellidos}
+                      </p>
+                      <p className="truncate text-[11px] text-slate-500">{usuario?.email}</p>
+                    </div>
+
+                    <div className="my-1 space-y-0.5">
+                      {cuentaLinks.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.to}
+                            to={item.to}
+                            onClick={() => setCuentaAbierta(false)}
+                            className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-800"
+                          >
+                            <Icon className="h-4 w-4 text-emerald-600" />
+                            <span>{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+
+                    <div className="border-t border-slate-100 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-semibold text-rose-600 transition hover:bg-rose-50 cursor-pointer"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Cerrar sesión</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -331,7 +462,9 @@ export function AppHeader() {
         <button
           type="button"
           onClick={() => setMenuAbierto((v) => !v)}
-          className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 lg:hidden cursor-pointer"
+          className={`rounded-xl p-2 lg:hidden cursor-pointer ${
+            esPanelDark ? 'text-slate-200 hover:bg-white/10' : 'text-slate-600 hover:bg-slate-100'
+          }`}
           aria-label="Abrir menú"
         >
           {menuAbierto ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -339,9 +472,9 @@ export function AppHeader() {
       </div>
 
       {menuAbierto && (
-        <div className="animate-slide-up border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
+        <div className="animate-slide-up border-t border-slate-200 bg-white px-4 py-4 text-slate-800 lg:hidden">
           <nav className="flex flex-col gap-1">
-            {allNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               if (item.to.includes('#')) {
                 return (
@@ -361,10 +494,10 @@ export function AppHeader() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setMenuAbierto(false)}
-                  className={linkClass}
+                  className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
                   end={Boolean(item.end)}
                 >
-                  <Icon className="h-4 w-4 opacity-80" />
+                  <Icon className="h-4 w-4 text-emerald-600" />
                   {item.label}
                 </NavLink>
               );
@@ -373,14 +506,28 @@ export function AppHeader() {
 
           <div className="mt-4 border-t border-slate-100 pt-4">
             {autenticado ? (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1.5">
+                {cuentaLinks.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={`mob-${item.to}`}
+                      to={item.to}
+                      onClick={() => setMenuAbierto(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                    >
+                      <Icon className="h-4 w-4 text-emerald-600" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
                 <Link
                   to="/notificaciones"
                   onClick={() => setMenuAbierto(false)}
                   className="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
                 >
                   <span className="flex items-center gap-2">
-                    <Bell className="h-4 w-4" />
+                    <Bell className="h-4 w-4 text-emerald-600" />
                     Notificaciones
                   </span>
                   {noLeidas > 0 && (
@@ -389,18 +536,12 @@ export function AppHeader() {
                     </span>
                   )}
                 </Link>
-                <Link
-                  to="/perfil"
-                  onClick={() => setMenuAbierto(false)}
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-                >
-                  <Shield className="h-4 w-4 text-emerald-600" />
-                  Mi perfil ({usuario?.alias})
-                </Link>
-                <Button variant="secondary" size="sm" onClick={handleLogout} className="justify-start">
-                  <LogOut className="h-4 w-4" />
-                  Cerrar sesión
-                </Button>
+                <div className="pt-2">
+                  <Button variant="secondary" size="sm" onClick={handleLogout} className="w-full justify-center">
+                    <LogOut className="h-4 w-4" />
+                    Cerrar sesión
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col gap-2">

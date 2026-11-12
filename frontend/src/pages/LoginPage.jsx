@@ -77,7 +77,8 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const dropdownRef = useRef(null);
-  const destino = location.state?.from || '/';
+  const fromRuta = location.state?.from;
+  const destinoRegistro = fromRuta || '/';
   const perfilesDemo = useMemo(() => obtenerPerfilesDemoDev(), []);
   const perfilSeleccionado = perfilesDemo.find((p) => p.id === perfilActivo) || null;
 
@@ -105,9 +106,15 @@ export function LoginPage() {
     setErrorMsg('');
     setLoading(true);
     try {
-      await login({ email: email.trim(), password });
+      const me = await login({ email: email.trim(), password });
       toast.success('Bienvenido', 'Iniciaste sesión correctamente.');
-      navigate(destino, { replace: true });
+      const roles = me?.roles || [];
+      const destinoPorRol = roles.includes('ADMINISTRADOR')
+        ? '/admin/reportes'
+        : roles.includes('ORGANIZADOR')
+          ? '/organizador/rifas'
+          : '/mis-tickets';
+      navigate(fromRuta || destinoPorRol, { replace: true });
     } catch (err) {
       const apiErr = extraerErrorApi(err);
       setErrorMsg(apiErr.message);
@@ -276,7 +283,7 @@ export function LoginPage() {
               ¿Aún no tienes cuenta?{' '}
               <Link
                 to="/registro"
-                state={{ from: destino }}
+                state={{ from: destinoRegistro }}
                 className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
               >
                 Regístrate gratis aquí

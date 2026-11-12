@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { getCausasPublicas } from '../features/rifas/publicApi.js';
+import { useAuth } from '../features/auth/AuthContext.jsx';
 import { formatearBs, sumarMontosBs } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
@@ -47,6 +48,7 @@ const PALETAS_CAUSA = [
 ];
 
 export function CausasPublicPage() {
+  const { esAdmin, esOrganizador } = useAuth();
   const [busqueda, setBusqueda] = useState('');
   const [soloConRifas, setSoloConRifas] = useState(false);
   const [orden, setOrden] = useState('rifas');
@@ -100,18 +102,50 @@ export function CausasPublicPage() {
               a través de campañas auditadas en tiempo real.
             </p>
             <div className="flex flex-wrap gap-2.5 pt-1">
-              <Link to="/solicitudes/nueva">
-                <Button size="md">
-                  <FilePlus2 className="h-4 w-4" />
-                  Proponer una rifa para una causa
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button variant="secondary" size="md">
-                  <Ticket className="h-4 w-4 text-emerald-600" />
-                  Explorar catálogo activo
-                </Button>
-              </Link>
+              {esAdmin ? (
+                <>
+                  <Link to="/admin/causas">
+                    <Button size="md">
+                      <ShieldCheck className="h-4 w-4" />
+                      Administrar causas
+                    </Button>
+                  </Link>
+                  <Link to="/admin/reportes">
+                    <Button variant="secondary" size="md">
+                      Ver reportes por causa
+                    </Button>
+                  </Link>
+                </>
+              ) : esOrganizador ? (
+                <>
+                  <Link to="/solicitudes/nueva">
+                    <Button size="md">
+                      <FilePlus2 className="h-4 w-4" />
+                      Nueva campaña para causa
+                    </Button>
+                  </Link>
+                  <Link to="/organizador/rifas">
+                    <Button variant="secondary" size="md">
+                      Gestionar mis rifas
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/solicitudes/nueva">
+                    <Button size="md">
+                      <FilePlus2 className="h-4 w-4" />
+                      Proponer una rifa para una causa
+                    </Button>
+                  </Link>
+                  <Link to="/">
+                    <Button variant="secondary" size="md">
+                      <Ticket className="h-4 w-4 text-emerald-600" />
+                      Explorar catálogo activo
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
