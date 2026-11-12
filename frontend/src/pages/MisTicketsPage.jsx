@@ -178,7 +178,7 @@ export function MisTicketsPage() {
               <p className="text-lg font-extrabold text-amber-600">{conteos.RESERVADO}</p>
             </div>
             <div className="flex flex-col gap-1.5 sm:flex-row">
-              <Link to="/">
+              <Link to="/explorar">
                 <Button variant="secondary" size="sm">
                   <Search className="h-4 w-4 text-emerald-600" />
                   Explorar rifas
@@ -287,7 +287,7 @@ export function MisTicketsPage() {
                 Ver todos
               </Button>
             ) : (
-              <Link to="/">
+              <Link to="/explorar">
                 <Button>Ver rifas activas</Button>
               </Link>
             )

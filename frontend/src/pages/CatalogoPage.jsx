@@ -32,8 +32,9 @@ function horasRestantes(fechaFin) {
   return (new Date(fechaFin).getTime() - Date.now()) / (1000 * 60 * 60);
 }
 
-export function CatalogoPage() {
+export function CatalogoPage({ mode = 'landing' }) {
   const { autenticado, esAdmin, esOrganizador, usuario } = useAuth();
+  const esVistaLanding = mode === 'landing' && !autenticado;
   const [searchParams, setSearchParams] = useSearchParams();
   const causaInicial = searchParams.get('causaId') || '';
   const [causaId, setCausaId] = useState(causaInicial);
@@ -108,7 +109,7 @@ export function CatalogoPage() {
 
   return (
     <div className="space-y-6">
-      {!autenticado ? (
+      {esVistaLanding ? (
         <HeroShowcase rifas={rifasBase} causas={causas} onSelectCausa={seleccionarCausa} />
       ) : (
         <>

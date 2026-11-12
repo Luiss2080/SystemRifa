@@ -210,7 +210,7 @@ export function RifaDetallePage() {
         title="No se encontró la rifa"
         description={extraerErrorApi(errorDetalle).message}
         action={
-          <Link to="/">
+          <Link to={autenticado ? '/explorar' : '/'}>
             <Button variant="secondary">Volver al catálogo</Button>
           </Link>
         }

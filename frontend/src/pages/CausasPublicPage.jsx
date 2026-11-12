@@ -48,7 +48,8 @@ const PALETAS_CAUSA = [
 ];
 
 export function CausasPublicPage() {
-  const { esAdmin, esOrganizador } = useAuth();
+  const { autenticado, esAdmin, esOrganizador } = useAuth();
+  const catalogoRuta = autenticado ? '/explorar' : '/';
   const [busqueda, setBusqueda] = useState('');
   const [soloConRifas, setSoloConRifas] = useState(false);
   const [orden, setOrden] = useState('rifas');
@@ -138,7 +139,7 @@ export function CausasPublicPage() {
                       Proponer una rifa para una causa
                     </Button>
                   </Link>
-                  <Link to="/">
+                  <Link to={catalogoRuta}>
                     <Button variant="secondary" size="md">
                       <Ticket className="h-4 w-4 text-emerald-600" />
                       Explorar catálogo activo
@@ -254,7 +255,7 @@ export function CausasPublicPage() {
             </Button>
           </Link>
 
-          <Link to="/">
+          <Link to={catalogoRuta}>
             <Button variant="secondary" size="sm">
               Ver todas las rifas
             </Button>

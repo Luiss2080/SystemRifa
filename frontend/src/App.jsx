@@ -1,10 +1,12 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from './features/auth/AuthContext.jsx';
+import { AuthProvider, useAuth } from './features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from './features/auth/roleAccess.js';
 import { ToastProvider } from './components/ui/Toast.jsx';
 import { InteractiveBackground } from './components/ui/InteractiveBackground.jsx';
 import { FloatingWidgets } from './components/ui/FloatingWidgets.jsx';
-import { PanelLayout, PublicLayout, UserLayout } from './layouts/Layouts.jsx';
+import { FullPageSpinner } from './components/ui/Feedback.jsx';
+import { AdaptiveLayout, PanelLayout, PublicLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
 import { RequirePermiso } from './routes/RequirePermiso.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
@@ -41,6 +43,28 @@ const queryClient = new QueryClient({
   },
 });
 
+function LandingORedireccion() {
+  const { autenticado, cargando, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } =
+    useAuth();
+
+  if (cargando) {
+    return <FullPageSpinner message="Verificando sesión..." />;
+  }
+
+  if (autenticado) {
+    const { homeDestino } = resolverAccesoRol({
+      autenticado,
+      esAdmin,
+      esOrganizador,
+      tienePermiso,
+      tieneAlgunPermiso,
+    });
+    return <Navigate to={homeDestino} replace />;
+  }
+
+  return <PublicLayout />;
+}
+
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -50,38 +74,47 @@ export function App() {
             <InteractiveBackground />
             <FloatingWidgets />
             <Routes>
-              {/* Rutas públicas */}
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<CatalogoPage />} />
+              {/* Landing pública exclusiva para visitantes sin sesión */}
+              <Route element={<LandingORedireccion />}>
+                <Route path="/" element={<CatalogoPage mode="landing" />} />
+              </Route>
+
+              {/* Rutas compartidas: Landing si es visitante, Sistema si está autenticado */}
+              <Route element={<AdaptiveLayout />}>
                 <Route path="/causas" element={<CausasPublicPage />} />
                 <Route path="/rifas/:id" element={<RifaDetallePage />} />
                 <Route path="/rifas/:id/resultado" element={<ResultadoPublicoPage />} />
+              </Route>
+
+              {/* Acceso y errores */}
+              <Route element={<PublicLayout />}>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/registro" element={<RegistroPage />} />
                 <Route path="/403" element={<ForbiddenPage />} />
               </Route>
 
-              {/* Rutas participante autenticado */}
+              {/* Sistema autenticado */}
               <Route element={<RequireAuth />}>
-                <Route element={<UserLayout />}>
+                {/* Espacio del rol (Participante en UserLayout; Organizador/Admin en PanelLayout) */}
+                <Route element={<AdaptiveLayout />}>
+                  <Route path="/explorar" element={<CatalogoPage mode="app" />} />
                   <Route path="/perfil" element={<PerfilPage />} />
                   <Route path="/mis-tickets" element={<MisTicketsPage />} />
                   <Route path="/mis-pagos" element={<MisPagosPage />} />
                   <Route path="/notificaciones" element={<NotificacionesPage />} />
-                </Route>
 
-                {/* Panel Organizador y Administrador */}
-                <Route element={<PanelLayout />}>
                   <Route element={<RequirePermiso recurso="solicitudes" accion="crear" />}>
                     <Route path="/solicitudes/nueva" element={<NuevaSolicitudPage />} />
                     <Route path="/solicitudes/mias" element={<MisSolicitudesPage />} />
                   </Route>
+                </Route>
 
+                {/* Panel de gestión Organizador y Administrador */}
+                <Route element={<PanelLayout />}>
                   <Route
                     element={
                       <RequirePermiso
                         anyOf={[
-                          ['rifas', 'leer'],
                           ['rifas', 'administrar'],
                           ['premios', 'crud'],
                           ['sorteos', 'realizar'],
@@ -128,7 +161,7 @@ export function App() {
                 </Route>
               </Route>
 
-              <Route element={<PublicLayout />}>
+              <Route element={<AdaptiveLayout />}>
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>

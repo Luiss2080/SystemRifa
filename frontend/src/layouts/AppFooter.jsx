@@ -20,6 +20,7 @@ import {
   Ticket,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { BrandMark } from '../components/ui/BrandLogo.jsx';
@@ -140,16 +141,16 @@ function SocialLinks() {
 }
 
 export function AppFooter() {
-  const { autenticado, tieneAlgunPermiso, esAdmin } = useAuth();
+  const { autenticado, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } = useAuth();
   const [modalActivo, setModalActivo] = useState(null);
 
-  const puedeVerOrganizador =
-    tieneAlgunPermiso([
-      ['rifas', 'leer'],
-      ['rifas', 'administrar'],
-      ['premios', 'crud'],
-      ['sorteos', 'realizar'],
-    ]) || esAdmin;
+  const { rolPrincipal, homeDestino } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
 
   const year = new Date().getFullYear();
 
@@ -157,77 +158,105 @@ export function AppFooter() {
     window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
-  const servicios = [
-    {
-      label: 'Catálogo de Rifas',
-      to: '/',
-      icon: Ticket,
-      highlight: true,
-    },
-    {
-      label: 'Causas Solidarias',
-      to: '/causas',
-      icon: HeartHandshake,
-      highlight: true,
-    },
-    {
-      label: 'Organizar una Rifa',
-      to: '/solicitudes/nueva',
-      icon: FilePlus2,
-      highlight: false,
-    },
-    {
-      label: puedeVerOrganizador ? 'Panel de Gestión' : 'Acceso Organizadores',
-      to: puedeVerOrganizador ? '/organizador/rifas' : '/login',
-      icon: LayoutDashboard,
-      highlight: true,
-    },
-    {
-      label: 'Soporte Técnico 24/7',
-      action: openHelpWidget,
-      icon: Headphones,
-      highlight: false,
-    },
-  ];
+  let servicios = [];
+  let guias = [];
 
-  const guias = [
-    {
-      label: 'Cómo Participar',
-      to: '/#como-funciona',
-      icon: Lightbulb,
-      highlight: false,
-    },
-    {
-      label: 'Garantías y Auditoría',
-      action: () => setModalActivo('auditoria'),
-      icon: ShieldCheck,
-      highlight: true,
-    },
-    {
-      label: autenticado ? 'Mis Tickets y Reservas' : 'Consultar Mis Tickets',
-      to: autenticado ? '/mis-tickets' : '/login',
-      icon: BookOpen,
-      highlight: false,
-    },
-    {
-      label: autenticado ? 'Mis Pagos y Comprobantes' : 'Registrar Comprobante',
-      to: autenticado ? '/mis-pagos' : '/login',
-      icon: CreditCard,
-      highlight: false,
-    },
-    {
-      label: 'Transparencia de Sorteos',
-      to: '/#garantias',
-      icon: CheckCircle2,
-      highlight: false,
-    },
-    {
-      label: 'Preguntas Frecuentes',
-      action: openHelpWidget,
-      icon: HelpCircle,
-      highlight: false,
-    },
-  ];
+  if (!autenticado) {
+    servicios = [
+      { label: 'Catálogo de Rifas', to: '/', icon: Ticket, highlight: true },
+      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
+      { label: 'Organizar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Acceso Organizadores', to: '/login', icon: LayoutDashboard, highlight: true },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Cómo Participar', to: '/#como-funciona', icon: Lightbulb, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Consultar Mis Tickets', to: '/login', icon: BookOpen, highlight: false },
+      { label: 'Registrar Comprobante', to: '/login', icon: CreditCard, highlight: false },
+      { label: 'Transparencia de Sorteos', to: '/#garantias', icon: CheckCircle2, highlight: false },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  } else if (rolPrincipal === 'ADMINISTRADOR') {
+    servicios = [
+      { label: 'Reportes y Métricas', to: '/admin/reportes', icon: LayoutDashboard, highlight: true },
+      { label: 'Revisar Solicitudes', to: '/admin/solicitudes', icon: FilePlus2, highlight: true },
+      { label: 'Verificar Pagos', to: '/admin/pagos', icon: CreditCard, highlight: true },
+      { label: 'Gestionar Causas', to: '/admin/causas', icon: HeartHandshake, highlight: false },
+      { label: 'Catálogo Activo', to: '/explorar', icon: Ticket, highlight: false },
+    ];
+    guias = [
+      { label: 'Usuarios del Sistema', to: '/admin/usuarios', icon: BookOpen, highlight: false },
+      { label: 'Roles y Permisos', to: '/admin/roles', icon: ShieldCheck, highlight: true },
+      { label: 'Plantillas Notif.', to: '/admin/plantillas', icon: Mail, highlight: false },
+      { label: 'Auditoría Inmutable', to: '/admin/auditoria', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías del Sistema',
+        action: () => setModalActivo('auditoria'),
+        icon: Lightbulb,
+        highlight: false,
+      },
+    ];
+  } else if (rolPrincipal === 'ORGANIZADOR') {
+    servicios = [
+      { label: 'Mis Rifas Aprobadas', to: '/organizador/rifas', icon: Sparkles, highlight: true },
+      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: true },
+      { label: 'Nueva Solicitud', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: false },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: false },
+      { label: 'Mis Pagos', to: '/mis-pagos', icon: CreditCard, highlight: false },
+      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  } else {
+    servicios = [
+      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: true },
+      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
+      { label: 'Solicitar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: false },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: true },
+      { label: 'Mis Pagos y Comprobantes', to: '/mis-pagos', icon: CreditCard, highlight: false },
+      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  }
+
+  const col1Title = !autenticado
+    ? 'Servicios'
+    : rolPrincipal === 'ADMINISTRADOR'
+      ? 'Consola Admin'
+      : rolPrincipal === 'ORGANIZADOR'
+        ? 'Gestión Organizador'
+        : 'Explorar y Participar';
+
+  const col2Title = !autenticado
+    ? 'Aprende y Participa'
+    : rolPrincipal === 'ADMINISTRADOR'
+      ? 'Sistema y Control'
+      : 'Mi Espacio';
 
   const modalContent = modalActivo ? LEGAL_MODALS[modalActivo] : null;
 
@@ -251,7 +280,7 @@ export function AppFooter() {
           {/* Columna 1: Identidad comercial y redes sociales */}
           <div className="space-y-5 lg:col-span-4 lg:pr-8">
             <Link
-              to="/"
+              to={homeDestino}
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-emerald-500/40"
             >
               <BrandMark size="xl" className="shadow-lg shadow-emerald-950/60 group-hover:scale-105" />
@@ -288,7 +317,7 @@ export function AppFooter() {
           {/* Columna 2: SERVICIOS */}
           <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-white/10 lg:px-8">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              Servicios
+              {col1Title}
             </h3>
             <ul className="space-y-3 text-sm">
               {servicios.map((item) => {
@@ -335,7 +364,7 @@ export function AppFooter() {
           {/* Columna 3: GUÍAS Y TRANSPARENCIA */}
           <div className="space-y-4 lg:col-span-2 lg:border-l lg:border-white/10 lg:px-7">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              Aprende y Participa
+              {col2Title}
             </h3>
             <ul className="space-y-3 text-sm">
               {guias.map((item) => {

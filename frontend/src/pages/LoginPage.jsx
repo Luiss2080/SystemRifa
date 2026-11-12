@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
 import { extraerErrorApi } from '../utils/apiError.js';
 import { BrandMark } from '../components/ui/BrandLogo.jsx';
 import { Button } from '../components/ui/Button.jsx';
@@ -109,12 +110,18 @@ export function LoginPage() {
       const me = await login({ email: email.trim(), password });
       toast.success('Bienvenido', 'Iniciaste sesión correctamente.');
       const roles = me?.roles || [];
-      const destinoPorRol = roles.includes('ADMINISTRADOR')
-        ? '/admin/reportes'
-        : roles.includes('ORGANIZADOR')
-          ? '/organizador/rifas'
-          : '/mis-tickets';
-      navigate(fromRuta || destinoPorRol, { replace: true });
+      const perms = me?.permisos || [];
+      const esAdminMe = roles.includes('ADMINISTRADOR');
+      const tienePermMe = (recurso, accion) => esAdminMe || perms.includes(`${recurso}:${accion}`);
+      const { homeDestino } = resolverAccesoRol({
+        autenticado: true,
+        esAdmin: esAdminMe,
+        esOrganizador: roles.includes('ORGANIZADOR'),
+        tienePermiso: tienePermMe,
+        tieneAlgunPermiso: (lista) => lista.some(([r, a]) => tienePermMe(r, a)),
+      });
+      const destinoFinal = fromRuta && fromRuta !== '/' ? fromRuta : homeDestino;
+      navigate(destinoFinal, { replace: true });
     } catch (err) {
       const apiErr = extraerErrorApi(err);
       setErrorMsg(apiErr.message);
