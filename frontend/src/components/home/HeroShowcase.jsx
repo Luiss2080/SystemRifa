@@ -749,33 +749,33 @@ export function GarantiasSection() {
           })}
         </div>
 
-        <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-950 p-6 text-white shadow-xl lg:col-span-5">
+        <div className="flex flex-col justify-between rounded-3xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/90 p-6 text-slate-900 shadow-sm lg:col-span-5">
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-amber-300 ring-1 ring-white/15">
-            <Sparkles className="h-3.5 w-3.5" />
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 px-3 py-1 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200">
+            <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
             Ciclo de confianza verificado
           </div>
 
-          <h3 className="text-xl font-extrabold leading-snug">
+          <h3 className="text-xl font-extrabold leading-snug text-slate-900">
             Solo los tickets con pago aprobado participan en el sorteo oficial
           </h3>
 
-          <ul className="space-y-2.5 text-xs text-slate-200">
-            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+          <ul className="space-y-2.5 text-xs text-slate-700">
+            <li className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-white/90 p-2.5 shadow-2xs">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
               <span>
                 Tablero sincronizado en vivo cada pocos segundos con estados claros: Disponible,
                 Reservado y Vendido.
               </span>
             </li>
-            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+            <li className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-white/90 p-2.5 shadow-2xs">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
               <span>
                 Liberación automática tras 15 minutos si una reserva no registra comprobante de pago.
               </span>
             </li>
-            <li className="flex items-start gap-2.5 rounded-xl bg-white/5 p-2.5">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sky-300" />
+            <li className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-white/90 p-2.5 shadow-2xs">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sky-600" />
               <span>
                 URL pública por campaña para auditar premios entregados y ganadores por alias.
               </span>
@@ -783,17 +783,17 @@ export function GarantiasSection() {
           </ul>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2.5 border-t border-white/15 pt-4">
+        <div className="mt-6 flex flex-wrap gap-2.5 border-t border-emerald-200/70 pt-4">
           <Link
             to="/registro"
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-4 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 transition hover:brightness-105"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-4 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-xs transition hover:brightness-105"
           >
             <UserPlus className="h-3.5 w-3.5" />
             Crear cuenta
           </Link>
           <Link
             to="/causas"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-white/20 transition hover:bg-white/20"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
           >
             Ver causas
           </Link>
@@ -806,20 +806,20 @@ export function GarantiasSection() {
 
 export function LandingFinalCta() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 px-6 py-10 text-center text-white shadow-xl sm:px-10">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full bg-amber-400/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-emerald-400/15 blur-3xl" />
+    <section className="relative overflow-hidden rounded-3xl border border-emerald-200/85 bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/75 px-6 py-10 text-center text-slate-900 shadow-sm sm:px-10">
+      <div className="pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full bg-amber-300/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-emerald-300/25 blur-3xl" />
 
       <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
         <div className="space-y-2.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1 text-xs font-bold text-amber-300 ring-1 ring-white/15">
-            <Sparkles className="h-3.5 w-3.5" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
+            <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
             Comienza hoy mismo
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             ¿Listo para elegir tus números y apoyar una causa real?
           </h2>
-          <p className="text-sm leading-relaxed text-emerald-50/90">
+          <p className="text-sm leading-relaxed text-slate-600">
             Regístrate gratis en menos de un minuto para reservar boletos con seguridad, validar pagos y seguir sorteos auditados.
           </p>
         </div>
@@ -827,7 +827,7 @@ export function LandingFinalCta() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/registro"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:brightness-105"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-md shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105"
           >
             <UserPlus className="h-4 w-4" />
             Crear cuenta gratis
@@ -835,9 +835,9 @@ export function LandingFinalCta() {
           </Link>
           <Link
             to="/solicitudes/nueva"
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-white backdrop-blur-xs transition hover:-translate-y-0.5 hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-white px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-emerald-800 shadow-2xs transition hover:-translate-y-0.5 hover:bg-emerald-50"
           >
-            <FilePlus2 className="h-4 w-4 text-amber-300" />
+            <FilePlus2 className="h-4 w-4 text-emerald-600" />
             Organizar una rifa
           </Link>
         </div>

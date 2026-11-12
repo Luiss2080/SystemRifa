@@ -314,8 +314,8 @@ export function CatalogoPage({ mode = 'landing' }) {
               );
             })}
           </div>
-        </div>
         )}
+        </div>
       </section>
 
       {isLoading ? (
