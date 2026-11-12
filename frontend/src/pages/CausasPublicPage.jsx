@@ -311,25 +311,25 @@ export function CausasPublicPage() {
       )}
 
       {!isLoading && causas.length > 0 && !autenticado && (
-        <section className="flex flex-col items-start justify-between gap-4 rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/70 p-6 shadow-2xs sm:flex-row sm:items-center">
-          <div className="space-y-1">
-            <h2 className="text-lg font-extrabold text-slate-900">
-              ¿Quieres respaldar una de estas causas o crear una campaña?
+        <section className="mx-auto max-w-2xl space-y-4 py-4 text-center">
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              ¿Listo para apoyar una de estas causas?
             </h2>
-            <p className="text-xs text-slate-600 sm:text-sm">
-              Explora las rifas activas asociadas o envía una solicitud para organizar un nuevo sorteo solidario.
+            <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
+              Explora las rifas activas asociadas o envía una solicitud para impulsar un nuevo sorteo solidario.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
             <Link to={catalogoRuta}>
-              <Button variant="secondary" size="sm">
-                <Ticket className="h-4 w-4 text-emerald-600" />
+              <Button size="sm">
+                <Ticket className="h-4 w-4" />
                 Explorar catálogo
               </Button>
             </Link>
             <Link to="/solicitudes/nueva">
-              <Button size="sm">
-                <FilePlus2 className="h-4 w-4" />
+              <Button variant="secondary" size="sm">
+                <FilePlus2 className="h-4 w-4 text-emerald-600" />
                 Proponer campaña
               </Button>
             </Link>
