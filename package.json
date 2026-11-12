@@ -16,3 +16,4 @@
     "seed:demo": "npm --prefix backend run seed:demo"
   }
 }
+
