@@ -20,6 +20,7 @@ import {
   Ticket,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { BrandMark } from '../components/ui/BrandLogo.jsx';
@@ -140,16 +141,16 @@ function SocialLinks() {
 }
 
 export function AppFooter() {
-  const { autenticado, tieneAlgunPermiso, esAdmin } = useAuth();
+  const { autenticado, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } = useAuth();
   const [modalActivo, setModalActivo] = useState(null);
 
-  const puedeVerOrganizador =
-    tieneAlgunPermiso([
-      ['rifas', 'leer'],
-      ['rifas', 'administrar'],
-      ['premios', 'crud'],
-      ['sorteos', 'realizar'],
-    ]) || esAdmin;
+  const { rolPrincipal, homeDestino } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
 
   const year = new Date().getFullYear();
 
@@ -157,77 +158,105 @@ export function AppFooter() {
     window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
-  const servicios = [
-    {
-      label: 'Catálogo de Rifas',
-      to: '/',
-      icon: Ticket,
-      highlight: true,
-    },
-    {
-      label: 'Causas Solidarias',
-      to: '/causas',
-      icon: HeartHandshake,
-      highlight: true,
-    },
-    {
-      label: 'Organizar una Rifa',
-      to: '/solicitudes/nueva',
-      icon: FilePlus2,
-      highlight: false,
-    },
-    {
-      label: puedeVerOrganizador ? 'Panel de Gestión' : 'Acceso Organizadores',
-      to: puedeVerOrganizador ? '/organizador/rifas' : '/login',
-      icon: LayoutDashboard,
-      highlight: true,
-    },
-    {
-      label: 'Soporte Técnico 24/7',
-      action: openHelpWidget,
-      icon: Headphones,
-      highlight: false,
-    },
-  ];
+  let servicios = [];
+  let guias = [];
 
-  const guias = [
-    {
-      label: 'Cómo Participar',
-      to: '/#como-funciona',
-      icon: Lightbulb,
-      highlight: false,
-    },
-    {
-      label: 'Garantías y Auditoría',
-      action: () => setModalActivo('auditoria'),
-      icon: ShieldCheck,
-      highlight: true,
-    },
-    {
-      label: autenticado ? 'Mis Tickets y Reservas' : 'Consultar Mis Tickets',
-      to: autenticado ? '/mis-tickets' : '/login',
-      icon: BookOpen,
-      highlight: false,
-    },
-    {
-      label: autenticado ? 'Mis Pagos y Comprobantes' : 'Registrar Comprobante',
-      to: autenticado ? '/mis-pagos' : '/login',
-      icon: CreditCard,
-      highlight: false,
-    },
-    {
-      label: 'Transparencia de Sorteos',
-      to: '/#garantias',
-      icon: CheckCircle2,
-      highlight: false,
-    },
-    {
-      label: 'Preguntas Frecuentes',
-      action: openHelpWidget,
-      icon: HelpCircle,
-      highlight: false,
-    },
-  ];
+  if (!autenticado) {
+    servicios = [
+      { label: 'Catálogo de Rifas', to: '/', icon: Ticket, highlight: true },
+      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
+      { label: 'Organizar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Acceso Organizadores', to: '/login', icon: LayoutDashboard, highlight: true },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Cómo Participar', to: '/#como-funciona', icon: Lightbulb, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Consultar Mis Tickets', to: '/login', icon: BookOpen, highlight: false },
+      { label: 'Registrar Comprobante', to: '/login', icon: CreditCard, highlight: false },
+      { label: 'Transparencia de Sorteos', to: '/#garantias', icon: CheckCircle2, highlight: false },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  } else if (rolPrincipal === 'ADMINISTRADOR') {
+    servicios = [
+      { label: 'Reportes y Métricas', to: '/admin/reportes', icon: LayoutDashboard, highlight: true },
+      { label: 'Revisar Solicitudes', to: '/admin/solicitudes', icon: FilePlus2, highlight: true },
+      { label: 'Verificar Pagos', to: '/admin/pagos', icon: CreditCard, highlight: true },
+      { label: 'Gestionar Causas', to: '/admin/causas', icon: HeartHandshake, highlight: false },
+      { label: 'Catálogo Activo', to: '/explorar', icon: Ticket, highlight: false },
+    ];
+    guias = [
+      { label: 'Usuarios del Sistema', to: '/admin/usuarios', icon: BookOpen, highlight: false },
+      { label: 'Roles y Permisos', to: '/admin/roles', icon: ShieldCheck, highlight: true },
+      { label: 'Plantillas Notif.', to: '/admin/plantillas', icon: Mail, highlight: false },
+      { label: 'Auditoría Inmutable', to: '/admin/auditoria', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías del Sistema',
+        action: () => setModalActivo('auditoria'),
+        icon: Lightbulb,
+        highlight: false,
+      },
+    ];
+  } else if (rolPrincipal === 'ORGANIZADOR') {
+    servicios = [
+      { label: 'Mis Rifas Aprobadas', to: '/organizador/rifas', icon: Sparkles, highlight: true },
+      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: true },
+      { label: 'Nueva Solicitud', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: false },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: false },
+      { label: 'Mis Pagos', to: '/mis-pagos', icon: CreditCard, highlight: false },
+      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  } else {
+    servicios = [
+      { label: 'Explorar Rifas', to: '/explorar', icon: Ticket, highlight: true },
+      { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
+      { label: 'Solicitar una Rifa', to: '/solicitudes/nueva', icon: FilePlus2, highlight: false },
+      { label: 'Mis Solicitudes', to: '/solicitudes/mias', icon: LayoutDashboard, highlight: false },
+      { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    ];
+    guias = [
+      { label: 'Mis Tickets y Reservas', to: '/mis-tickets', icon: BookOpen, highlight: true },
+      { label: 'Mis Pagos y Comprobantes', to: '/mis-pagos', icon: CreditCard, highlight: false },
+      { label: 'Notificaciones', to: '/notificaciones', icon: CheckCircle2, highlight: false },
+      {
+        label: 'Garantías y Auditoría',
+        action: () => setModalActivo('auditoria'),
+        icon: ShieldCheck,
+        highlight: true,
+      },
+      { label: 'Preguntas Frecuentes', action: openHelpWidget, icon: HelpCircle, highlight: false },
+    ];
+  }
+
+  const col1Title = !autenticado
+    ? 'Servicios'
+    : rolPrincipal === 'ADMINISTRADOR'
+      ? 'Consola Admin'
+      : rolPrincipal === 'ORGANIZADOR'
+        ? 'Gestión Organizador'
+        : 'Explorar y Participar';
+
+  const col2Title = !autenticado
+    ? 'Aprende y Participa'
+    : rolPrincipal === 'ADMINISTRADOR'
+      ? 'Sistema y Control'
+      : 'Mi Espacio';
 
   const modalContent = modalActivo ? LEGAL_MODALS[modalActivo] : null;
 
@@ -239,12 +268,12 @@ export function AppFooter() {
       {/* Franja superior luminosa acorde a la identidad de la web */}
       <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400" />
 
-      <div className="relative w-full px-4 pt-11 pb-7 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-0">
+      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-11 pb-24 sm:px-6 lg:px-8 xl:pb-10">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4 xl:gap-0">
           {/* Columna 1: Identidad comercial y redes sociales */}
-          <div className="space-y-5 lg:col-span-4 lg:pr-8">
+          <div className="space-y-5 xl:pr-6">
             <Link
-              to="/"
+              to={homeDestino}
               className="group inline-flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white px-4 py-3 shadow-2xs transition hover:border-emerald-300 hover:shadow-sm"
             >
               <BrandMark size="xl" className="shadow-sm shadow-emerald-600/20 group-hover:scale-105" />
@@ -279,9 +308,9 @@ export function AppFooter() {
           </div>
 
           {/* Columna 2: SERVICIOS */}
-          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-slate-200/80 lg:px-8">
+          <div className="space-y-4 xl:border-l xl:border-slate-200/80 xl:px-6">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
-              Servicios
+              {col1Title}
             </h3>
             <ul className="space-y-3 text-sm">
               {servicios.map((item) => {
@@ -326,9 +355,9 @@ export function AppFooter() {
           </div>
 
           {/* Columna 3: APRENDE Y PARTICIPA */}
-          <div className="space-y-4 lg:col-span-2 lg:border-l lg:border-slate-200/80 lg:px-7">
+          <div className="space-y-4 xl:border-l xl:border-slate-200/80 xl:px-6">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
-              Aprende y Participa
+              {col2Title}
             </h3>
             <ul className="space-y-3 text-sm">
               {guias.map((item) => {
@@ -373,7 +402,7 @@ export function AppFooter() {
           </div>
 
           {/* Columna 4: CONTACTO */}
-          <div className="space-y-4 lg:col-span-3 lg:border-l lg:border-slate-200/80 lg:pl-8">
+          <div className="space-y-4 xl:border-l xl:border-slate-200/80 xl:pl-6">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-900">
               Contacto
             </h3>
@@ -382,7 +411,7 @@ export function AppFooter() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700">
                   <MapPin className="h-4 w-4" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold text-slate-900">Ubicación</p>
                   <p className="text-xs text-slate-600">Santa Cruz de la Sierra · Bolivia</p>
                 </div>
@@ -395,9 +424,9 @@ export function AppFooter() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-2xs transition group-hover:border-emerald-300 group-hover:text-emerald-700">
                   <Mail className="h-4 w-4" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold text-slate-900">Email</p>
-                  <p className="text-xs text-slate-600 transition group-hover:text-emerald-700">
+                  <p className="truncate text-xs text-slate-600 transition group-hover:text-emerald-700">
                     soporte@rifassolidarias.bo
                   </p>
                 </div>
@@ -407,7 +436,7 @@ export function AppFooter() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-amber-700 transition group-hover:bg-amber-100">
                   <Phone className="h-4 w-4" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold text-amber-800">Teléfono / WhatsApp</p>
                   <p className="text-xs font-medium text-slate-700 transition group-hover:text-slate-950">
                     +591 700 20004
@@ -419,7 +448,7 @@ export function AppFooter() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-2xs">
                   <Clock className="h-4 w-4" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold text-slate-900">Horarios de verificación</p>
                   <p className="text-xs text-slate-600">Lun - Vie: 08:00 - 19:00</p>
                   <p className="text-xs text-slate-600">Sáb: 08:00 - 14:00</p>
@@ -429,14 +458,14 @@ export function AppFooter() {
           </div>
         </div>
 
-        {/* Barra inferior legal */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200/80 pt-6 text-xs text-slate-500 sm:flex-row">
-          <p className="flex items-center gap-2 text-center sm:text-left">
-            <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+        {/* Barra inferior legal con espacio libre respecto a los botones flotantes */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200/80 pt-6 text-xs text-slate-500 md:flex-row xl:px-16">
+          <p className="flex items-center gap-2 text-center md:text-left">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
             <span>© {year} Rifas Solidarias. Todos los derechos reservados.</span>
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-5 font-medium">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-medium">
             <button
               type="button"
               onClick={() => setModalActivo('privacidad')}
