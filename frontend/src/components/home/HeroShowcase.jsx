@@ -579,35 +579,31 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
   const destacadas = causas.slice(0, 3);
 
   return (
-    <section
-      id="causas-destacadas"
-      className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md sm:p-8"
-    >
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-100 pb-5">
-        <div className="max-w-2xl space-y-1.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-0.5 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
-            <HeartHandshake className="h-3.5 w-3.5" />
-            Impacto social verificado
-          </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-            Causas que transforman realidades
-          </h2>
-          <p className="text-sm text-slate-600">
-            Cada ticket vendido respalda una causa aprobada con metas claras y trazabilidad pública.
-          </p>
+    <section id="causas-destacadas" className="space-y-6 pt-4">
+      <div className="mx-auto max-w-2xl space-y-2.5 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
+          <HeartHandshake className="h-3.5 w-3.5" />
+          Impacto social verificado
+        </span>
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          Causas que transforman realidades
+        </h2>
+        <p className="text-sm text-slate-600">
+          Cada ticket vendido respalda una causa aprobada con metas claras y trazabilidad pública.
+        </p>
+        <div className="pt-1">
+          <Link
+            to="/causas"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+          >
+            Ver todas las causas
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
-
-        <Link
-          to="/causas"
-          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-extrabold text-emerald-800 transition hover:bg-emerald-100"
-        >
-          Ver todas las causas
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
       </div>
 
       {destacadas.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-center sm:flex-row sm:text-left">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-200 bg-white/80 p-6 text-center sm:flex-row sm:text-left">
           <div className="space-y-1">
             <p className="text-sm font-bold text-slate-900">
               Explora el directorio completo de causas solidarias
@@ -625,13 +621,13 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
           </Link>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {destacadas.map((causa) => {
             const cantRifas = causa.rifasCount ?? 0;
             return (
               <article
                 key={causa.causaId}
-                className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/70 p-5 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-white hover:shadow-md"
+                className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-2">
@@ -720,42 +716,40 @@ export function GarantiasSection() {
   ];
 
   return (
-    <section
-      id="garantias"
-      className="grid gap-6 rounded-3xl border border-emerald-200/70 bg-white/90 p-6 shadow-xs backdrop-blur-md lg:grid-cols-12 lg:p-8"
-    >
-      <div className="space-y-4 lg:col-span-7">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
+    <section id="garantias" className="space-y-6 pt-4">
+      <div className="mx-auto max-w-2xl space-y-2 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
           Garantías del sistema
         </span>
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
           Transparencia técnica en cada boleto y sorteo
         </h2>
         <p className="text-sm leading-relaxed text-slate-600">
-          Nuestra arquitectura protege tanto a quien participa como a quien organiza una campaña solidaria, asegurando equidad real desde la reserva hasta la entrega del premio.
+          Nuestra arquitectura protege a participantes y organizadores, asegurando equidad real desde la reserva hasta la entrega del premio.
         </p>
+      </div>
 
-        <div className="grid gap-3 pt-1 sm:grid-cols-2">
+      <div className="grid items-stretch gap-6 lg:grid-cols-12">
+        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
           {garantias.map((g) => {
             const Icon = g.icon;
             return (
               <div
                 key={g.title}
-                className="rounded-2xl border border-slate-200/80 bg-slate-50/75 p-4 transition hover:border-emerald-300 hover:bg-white"
+                className="rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:border-emerald-300 hover:shadow-md"
               >
-                <span className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${g.color}`}>
-                  <Icon className="h-4.5 w-4.5" />
+                <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${g.color}`}>
+                  <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-2.5 text-sm font-extrabold text-slate-900">{g.title}</h3>
+                <h3 className="mt-3 text-sm font-extrabold text-slate-900">{g.title}</h3>
                 <p className="mt-1 text-xs leading-relaxed text-slate-600">{g.desc}</p>
               </div>
             );
           })}
         </div>
-      </div>
 
-      <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-950 p-6 text-white shadow-lg lg:col-span-5">
+        <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-950 p-6 text-white shadow-xl lg:col-span-5">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-amber-300 ring-1 ring-white/15">
             <Sparkles className="h-3.5 w-3.5" />
@@ -805,31 +799,32 @@ export function GarantiasSection() {
           </Link>
         </div>
       </div>
+      </div>
     </section>
   );
 }
 
 export function LandingFinalCta() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 p-6 text-white shadow-xl sm:p-10">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 px-6 py-10 text-center text-white shadow-xl sm:px-10">
       <div className="pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full bg-amber-400/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-emerald-400/15 blur-3xl" />
 
-      <div className="relative flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
-        <div className="max-w-2xl space-y-2.5">
+      <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">
+        <div className="space-y-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1 text-xs font-bold text-amber-300 ring-1 ring-white/15">
             <Sparkles className="h-3.5 w-3.5" />
             Comienza hoy mismo
           </span>
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-            ¿Listo para elegir tus números o lanzar una campaña solidaria?
+            ¿Listo para elegir tus números y apoyar una causa real?
           </h2>
           <p className="text-sm leading-relaxed text-emerald-50/90">
-            Regístrate gratis en menos de un minuto para reservar boletos con seguridad o envía una solicitud para recaudar fondos para tu causa.
+            Regístrate gratis en menos de un minuto para reservar boletos con seguridad, validar pagos y seguir sorteos auditados.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/registro"
             className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/25 transition hover:-translate-y-0.5 hover:brightness-105"
@@ -878,41 +873,32 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="space-y-8 pt-4">
-      {/* Beneficios por perfil (Contenido Comercial) */}
-      <section
-        id="beneficios-plataforma"
-        className="rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md sm:p-8"
-      >
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-100 pb-5">
-          <div className="max-w-2xl space-y-1.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
-              <Sparkles className="h-3.5 w-3.5" />
-              Ecosistema solidario completo
+    <div className="space-y-12 pt-4">
+      {/* Beneficios por perfil sin contenedor blanco externo redundante */}
+      <section id="beneficios-plataforma" className="space-y-6">
+        <div className="mx-auto max-w-2xl space-y-2.5 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+            <Sparkles className="h-3.5 w-3.5" />
+            Ecosistema solidario completo
+          </span>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            Diseñado para participantes, organizadores y causas reales
+          </h2>
+          <p className="text-sm text-slate-600">
+            Cada rol cuenta con herramientas claras para participar, recaudar y verificar sorteos en tiempo real.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-emerald-700">
+              <strong className="font-extrabold">{totalRifas}</strong> rifas en catálogo
             </span>
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              Diseñado para participantes, organizadores y causas reales
-            </h2>
-            <p className="text-sm text-slate-600">
-              Cada rol cuenta con herramientas claras para participar, recaudar y verificar sorteos
-              en tiempo real.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-2 text-center">
-              <p className="text-lg font-extrabold text-emerald-700">{totalRifas}</p>
-              <p className="text-[11px] font-semibold text-slate-600">Rifas en catálogo</p>
-            </div>
-            <div className="rounded-2xl border border-amber-100 bg-amber-50/70 px-4 py-2 text-center">
-              <p className="text-lg font-extrabold text-amber-700">{totalCausas}</p>
-              <p className="text-[11px] font-semibold text-slate-600">Causas activas</p>
-            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-amber-700">
+              <strong className="font-extrabold">{totalCausas}</strong> causas activas
+            </span>
           </div>
         </div>
 
-        <div className="mt-6 grid gap-5 md:grid-cols-3">
-          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-emerald-300 hover:bg-white hover:shadow-sm">
+        <div className="grid gap-5 md:grid-cols-3">
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:border-emerald-300 hover:shadow-md">
             <div className="space-y-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                 <Users className="h-5 w-5" />
@@ -932,7 +918,7 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
             </Link>
           </article>
 
-          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-amber-300 hover:bg-white hover:shadow-sm">
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:border-amber-300 hover:shadow-md">
             <div className="space-y-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
                 <FilePlus2 className="h-5 w-5" />
@@ -952,7 +938,7 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
             </Link>
           </article>
 
-          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/60 p-5 transition hover:border-teal-300 hover:bg-white hover:shadow-sm">
+          <article className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:border-teal-300 hover:shadow-md">
             <div className="space-y-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-100 text-teal-700">
                 <HeartHandshake className="h-5 w-5" />
@@ -975,33 +961,31 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
       </section>
 
       {/* Preguntas Frecuentes Interactivas */}
-      <section
-        id="preguntas-frecuentes"
-        className="grid gap-6 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-xs backdrop-blur-md lg:grid-cols-12 lg:p-8"
-      >
-        <div className="space-y-3 lg:col-span-5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
+      <section id="preguntas-frecuentes" className="space-y-6">
+        <div className="mx-auto max-w-2xl space-y-2.5 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
             <HelpCircle className="h-3.5 w-3.5 text-amber-600" />
             Centro de dudas
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             Preguntas frecuentes
           </h2>
           <p className="text-sm leading-relaxed text-slate-600">
-            Resolvemos las consultas más habituales sobre reservas, pagos, sorteos y creación de
-            campañas solidarias.
+            Resolvemos las consultas más habituales sobre reservas, pagos, sorteos y creación de campañas solidarias.
           </p>
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new window.CustomEvent('open-help-widget'))}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Chatear con RifaBot
-          </button>
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new window.CustomEvent('open-help-widget'))}
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Chatear con RifaBot
+            </button>
+          </div>
         </div>
 
-        <div className="space-y-2.5 lg:col-span-7">
+        <div className="mx-auto max-w-3xl space-y-2.5">
           {FAQS.map((item, idx) => {
             const isOpen = openFaq === idx;
             return (
@@ -1009,15 +993,15 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
                 key={item.q}
                 className={`overflow-hidden rounded-2xl border transition ${
                   isOpen
-                    ? 'border-emerald-300 bg-emerald-50/40'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
+                    ? 'border-emerald-300 bg-white shadow-sm'
+                    : 'border-slate-200/90 bg-white/90 hover:border-slate-300'
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setOpenFaq(isOpen ? -1 : idx)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-bold text-slate-900 cursor-pointer"
+                  className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-bold text-slate-900 cursor-pointer"
                 >
                   <span>{item.q}</span>
                   <ChevronDown
@@ -1027,7 +1011,7 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
                   />
                 </button>
                 {isOpen && (
-                  <p className="border-t border-emerald-100 px-4 pt-2.5 pb-4 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  <p className="border-t border-emerald-100 px-5 pt-3 pb-4 text-xs leading-relaxed text-slate-600 sm:text-sm">
                     {item.a}
                   </p>
                 )}
