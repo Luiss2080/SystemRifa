@@ -20,6 +20,8 @@ import {
   Users,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
+import { resolverAccesoRol } from '../features/auth/roleAccess.js';
+import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { AppHeader } from './AppHeader.jsx';
 import { AppFooter } from './AppFooter.jsx';
 
@@ -282,4 +284,37 @@ export function PanelLayout() {
       </div>
     </div>
   );
+}
+
+/**
+ * Layout adaptativo según rol:
+ * - Visitante sin sesión -> PublicLayout
+ * - Participante -> UserLayout
+ * - Organizador / Administrador -> PanelLayout
+ */
+export function AdaptiveLayout() {
+  const { autenticado, cargando, esAdmin, esOrganizador, tienePermiso, tieneAlgunPermiso } =
+    useAuth();
+
+  if (cargando) {
+    return <FullPageSpinner message="Cargando plataforma..." />;
+  }
+
+  if (!autenticado) {
+    return <PublicLayout />;
+  }
+
+  const { tieneAdminPanel, tieneOrganizadorPanel } = resolverAccesoRol({
+    autenticado,
+    esAdmin,
+    esOrganizador,
+    tienePermiso,
+    tieneAlgunPermiso,
+  });
+
+  if (tieneAdminPanel || tieneOrganizadorPanel) {
+    return <PanelLayout />;
+  }
+
+  return <UserLayout />;
 }
