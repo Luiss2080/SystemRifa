@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Search, Shield, UserCheck, UserX, X } from 'lucide-react';
+import { Search, Shield, ShieldCheck, UserCheck, Users, UserX, X } from 'lucide-react';
 import {
   asignarPermisoUsuarioApi,
   asignarRolUsuarioApi,
@@ -26,6 +27,7 @@ export function AdminUsuariosPage() {
   const { tienePermiso } = useAuth();
 
   const [search, setSearch] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('all'); // all | active | inactive
   const [page, setPage] = useState(1);
 
   const [usuarioDetalleId, setUsuarioDetalleId] = useState(null);

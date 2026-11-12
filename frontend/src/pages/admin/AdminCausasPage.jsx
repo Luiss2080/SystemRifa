@@ -142,37 +142,70 @@ export function AdminCausasPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Causas solidarias</h1>
-          <p className="text-sm text-slate-500">Administra las causas sociales del sistema</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+            <HeartHandshake className="h-3.5 w-3.5" />
+            Catálogo solidario ({data?.items?.length ?? 0} registradas)
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Causas solidarias</h1>
+          <p className="text-sm text-slate-600">
+            Crea, edita y define metas financieras para las causas beneficiarias vinculadas a las rifas.
+          </p>
         </div>
-        <Button onClick={abrirCrear}>
-          <Plus className="h-4 w-4" />
-          Nueva causa
-        </Button>
+        <Link to="/causas">
+          <Button variant="secondary" size="sm">
+            <ExternalLink className="h-4 w-4" />
+            Vista pública
+          </Button>
+        </Link>
       </div>
 
-      <div className="relative max-w-sm">
-        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <input
-          type="search"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          placeholder="Buscar causa por nombre o descripción..."
-          aria-label="Buscar causas"
-          className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-9 pl-9 text-sm shadow-xs focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
-        />
-        {busqueda && (
-          <button
-            type="button"
-            onClick={() => setBusqueda('')}
-            className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-            aria-label="Limpiar búsqueda"
+      {/* Buscador y botones en la misma fila */}
+      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
+        <div className="relative min-w-[220px] flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            placeholder="Buscar causa por nombre o descripción..."
+            aria-label="Buscar causas"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-9 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+          />
+          {busqueda && (
+            <button
+              type="button"
+              onClick={() => setBusqueda('')}
+              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+              aria-label="Limpiar búsqueda"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant={orden === 'meta' ? 'emeraldSoft' : 'secondary'}
+            size="sm"
+            onClick={() => setOrden((o) => (o === 'meta' ? 'recientes' : 'meta'))}
           >
-            <X className="h-4 w-4" />
-          </button>
-        )}
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            {orden === 'meta' ? 'Mayor meta' : 'Ordenar por meta'}
+          </Button>
+          <Button
+            variant={orden === 'rifas' ? 'emeraldSoft' : 'secondary'}
+            size="sm"
+            onClick={() => setOrden((o) => (o === 'rifas' ? 'recientes' : 'rifas'))}
+          >
+            Más rifas
+          </Button>
+          <Button size="sm" onClick={abrirCrear}>
+            <Plus className="h-4 w-4" />
+            Nueva causa
+          </Button>
+        </div>
       </div>
 
       <DataTable
