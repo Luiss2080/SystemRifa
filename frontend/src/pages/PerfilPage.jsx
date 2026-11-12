@@ -101,11 +101,11 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-4">
-      {/* Cabecera superior compacta para que todo quepa en una pantalla */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
+    <div className="my-auto mx-auto w-full max-w-5xl space-y-5 py-2">
+      {/* Cabecera superior centrada y equilibrada */}
+      <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-md backdrop-blur-md">
         <div className="h-12 bg-gradient-to-r from-indigo-600 via-violet-600 to-sky-500" />
-        <div className="flex flex-wrap items-center justify-between gap-4 px-5 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-6 pb-4">
           <div className="-mt-6 flex items-end gap-3.5">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-lg font-extrabold text-white shadow-md ring-4 ring-white">
               {iniciales}
@@ -131,69 +131,71 @@ export function PerfilPage() {
         </div>
       </section>
 
-      {/* Doble columna lado a lado: Datos personales + Cambiar contraseña */}
+      {/* Doble columna simétrica de igual altura: Datos personales + Cambiar contraseña */}
       <div className="grid gap-5 lg:grid-cols-2">
-        <section className="flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md">
-          <div>
-            <div className="mb-3.5 flex items-center gap-2 border-b border-slate-100 pb-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-                <User className="h-4 w-4" />
-              </span>
-              <div>
-                <h2 className="text-base font-bold text-slate-900">Datos personales</h2>
-                <p className="text-xs text-slate-500">Actualiza tu identidad pública y contacto</p>
-              </div>
+        <section className="flex flex-col rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-md backdrop-blur-md">
+          <div className="mb-3.5 flex items-center gap-2.5 border-b border-slate-100 pb-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <User className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold text-slate-900">Datos personales</h2>
+              <p className="text-justify text-xs text-slate-500">
+                Actualiza tu identidad pública y datos de contacto visibles solo cuando corresponda.
+              </p>
             </div>
-
-            <form onSubmit={handleGuardarPerfil} className="space-y-3">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Input
-                  label="Nombres"
-                  required
-                  value={perfil.nombres}
-                  onChange={(e) => setPerfil((p) => ({ ...p, nombres: e.target.value }))}
-                />
-                <Input
-                  label="Apellidos"
-                  required
-                  value={perfil.apellidos}
-                  onChange={(e) => setPerfil((p) => ({ ...p, apellidos: e.target.value }))}
-                />
-                <Input
-                  label="Alias público"
-                  required
-                  helperText="Visible en resultados de sorteos"
-                  value={perfil.alias}
-                  onChange={(e) => setPerfil((p) => ({ ...p, alias: e.target.value }))}
-                />
-                <Input
-                  label="Teléfono"
-                  value={perfil.telefono}
-                  onChange={(e) => setPerfil((p) => ({ ...p, telefono: e.target.value }))}
-                />
-              </div>
-              <div className="flex justify-end pt-2">
-                <Button type="submit" loading={savingPerfil}>
-                  Guardar cambios
-                </Button>
-              </div>
-            </form>
           </div>
+
+          <form onSubmit={handleGuardarPerfil} className="flex flex-1 flex-col justify-between space-y-4">
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <Input
+                label="Nombres"
+                required
+                value={perfil.nombres}
+                onChange={(e) => setPerfil((p) => ({ ...p, nombres: e.target.value }))}
+              />
+              <Input
+                label="Apellidos"
+                required
+                value={perfil.apellidos}
+                onChange={(e) => setPerfil((p) => ({ ...p, apellidos: e.target.value }))}
+              />
+              <Input
+                label="Alias público"
+                required
+                helperText="Visible en resultados de sorteos"
+                value={perfil.alias}
+                onChange={(e) => setPerfil((p) => ({ ...p, alias: e.target.value }))}
+              />
+              <Input
+                label="Teléfono"
+                value={perfil.telefono}
+                onChange={(e) => setPerfil((p) => ({ ...p, telefono: e.target.value }))}
+              />
+            </div>
+            <div className="flex justify-end border-t border-slate-100 pt-3">
+              <Button type="submit" loading={savingPerfil} className="w-full sm:w-auto">
+                Guardar cambios
+              </Button>
+            </div>
+          </form>
         </section>
 
-        <section className="flex flex-col justify-between rounded-3xl border border-amber-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md">
-          <div>
-            <div className="mb-3.5 flex items-center gap-2 border-b border-slate-100 pb-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                <KeyRound className="h-4 w-4" />
-              </span>
-              <div>
-                <h2 className="text-base font-bold text-slate-900">Cambiar contraseña</h2>
-                <p className="text-xs text-slate-500">Protege tu cuenta renovando tu clave de acceso</p>
-              </div>
+        <section className="flex flex-col rounded-3xl border border-amber-200/80 bg-white/90 p-6 shadow-md backdrop-blur-md">
+          <div className="mb-3.5 flex items-center gap-2.5 border-b border-slate-100 pb-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+              <KeyRound className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold text-slate-900">Cambiar contraseña</h2>
+              <p className="text-justify text-xs text-slate-500">
+                Protege tu cuenta renovando tu clave; las sesiones activas previas se cerrarán.
+              </p>
             </div>
+          </div>
 
-            <form onSubmit={handleCambiarPassword} className="space-y-3">
+          <form onSubmit={handleCambiarPassword} className="flex flex-1 flex-col justify-between space-y-3.5">
+            <div className="space-y-3">
               <Input
                 label="Contraseña actual"
                 type="password"
@@ -201,7 +203,7 @@ export function PerfilPage() {
                 value={passwords.passwordActual}
                 onChange={(e) => setPasswords((p) => ({ ...p, passwordActual: e.target.value }))}
               />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3.5 sm:grid-cols-2">
                 <Input
                   label="Nueva contraseña"
                   type="password"
@@ -218,7 +220,7 @@ export function PerfilPage() {
                   onChange={(e) => setPasswords((p) => ({ ...p, confirmarPassword: e.target.value }))}
                 />
               </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 rounded-xl bg-slate-50 px-3 py-2 text-xs">
+              <div className="flex flex-wrap justify-between gap-x-3 gap-y-1.5 rounded-xl bg-slate-50 px-3 py-2 text-xs">
                 {reglasPassword.map((r) => (
                   <span
                     key={r.label}
@@ -235,13 +237,13 @@ export function PerfilPage() {
                   </span>
                 ))}
               </div>
-              <div className="flex justify-end pt-2">
-                <Button type="submit" variant="amber" loading={savingPassword}>
-                  Actualizar contraseña
-                </Button>
-              </div>
-            </form>
-          </div>
+            </div>
+            <div className="flex justify-end border-t border-slate-100 pt-3">
+              <Button type="submit" variant="amber" loading={savingPassword} className="w-full sm:w-auto">
+                Actualizar contraseña
+              </Button>
+            </div>
+          </form>
         </section>
       </div>
     </div>
