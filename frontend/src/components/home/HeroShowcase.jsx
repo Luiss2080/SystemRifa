@@ -1,11 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   Award,
   CheckCircle2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock,
+  Eye,
   FilePlus2,
   HeartHandshake,
   HelpCircle,
@@ -14,7 +17,9 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
+  Target,
   Ticket,
+  UserPlus,
   Users,
 } from 'lucide-react';
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
@@ -163,6 +168,17 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa }) {
 export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
   const navigate = useNavigate();
   const [centerIndex, setCenterIndex] = useState(2);
+  const [isCompactScreen, setIsCompactScreen] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  );
+
+  useEffect(() => {
+    function onResize() {
+      setIsCompactScreen(window.innerWidth < 640);
+    }
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const cards = useMemo(() => {
     const reales = rifas.slice(0, 5).map((r, idx) => ({
@@ -170,6 +186,7 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
       rifaId: r.rifaId,
       nombre: r.nombre,
       causa: r.causa,
+      premios: r.premios || [],
       precioTicket: r.precioTicket,
       ticketsDisponibles: r.ticketsDisponibles ?? 0,
       cantidadTickets: r.cantidadTickets || 100,
@@ -192,6 +209,7 @@ export function HeroShowcase({ rifas = [], causas = [], onSelectCausa }) {
   }, [rifas]);
 
   const activeIdx = Math.min(centerIndex, cards.length - 1);
+  const fanStepX = isCompactScreen ? 42 : 68;
 
   return (
     <div className="space-y-6">
