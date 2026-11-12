@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   ArrowRight,
   ArrowUpDown,
+  Award,
   Calendar,
   CheckSquare,
   Clock,
@@ -19,14 +20,17 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { getCatalogoRifas, getCausasPublicas } from '../features/rifas/publicApi.js';
-import { formatearBs, formatearFechaCorta } from '../utils/format.js';
+import { formatearBs, formatearFechaCorta, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
 import {
   CauseMarqueeTicker,
+  CausasDestacadasSection,
+  GarantiasSection,
   HeroShowcase,
+  LandingFinalCta,
   PlatformContentSection,
 } from '../components/home/HeroShowcase.jsx';
 
@@ -39,6 +43,7 @@ function horasRestantes(fechaFin) {
 export function CatalogoPage({ mode = 'landing' }) {
   const { autenticado, esAdmin, esOrganizador, usuario } = useAuth();
   const esVistaLanding = mode === 'landing' && !autenticado;
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const causaInicial = searchParams.get('causaId') || '';
   const urgenteInicial = searchParams.get('urgente') === '1';
@@ -50,7 +55,17 @@ export function CatalogoPage({ mode = 'landing' }) {
 
   useEffect(() => {
     setSoloCierraPronto(searchParams.get('urgente') === '1');
+    setCausaId(searchParams.get('causaId') || '');
   }, [searchParams]);
+
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.replace('#', '');
+    const timer = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [location.hash]);
 
   function seleccionarCausa(nextId) {
     setCausaId(nextId);

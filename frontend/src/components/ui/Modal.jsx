@@ -1,19 +1,52 @@
 import { useEffect, useId } from 'react';
-import { AlertTriangle, ShieldCheck, X } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { Button } from './Button.jsx';
+
+const TONE_MAP = {
+  emerald: {
+    bar: 'from-emerald-600 via-teal-500 to-amber-400',
+    headerBg: 'from-emerald-50/65 via-white to-teal-50/40',
+    iconWrap: 'bg-emerald-100 text-emerald-700 ring-emerald-200/80',
+    badge: 'bg-emerald-100/80 text-emerald-800',
+  },
+  amber: {
+    bar: 'from-amber-400 via-orange-500 to-amber-500',
+    headerBg: 'from-amber-50/70 via-white to-orange-50/35',
+    iconWrap: 'bg-amber-100 text-amber-700 ring-amber-200/80',
+    badge: 'bg-amber-100/80 text-amber-900',
+  },
+  danger: {
+    bar: 'from-rose-500 via-red-500 to-orange-500',
+    headerBg: 'from-rose-50/70 via-white to-orange-50/30',
+    iconWrap: 'bg-rose-100 text-rose-700 ring-rose-200/80',
+    badge: 'bg-rose-100/80 text-rose-800',
+  },
+  slate: {
+    bar: 'from-slate-800 via-slate-700 to-emerald-600',
+    headerBg: 'from-slate-100/80 via-white to-emerald-50/40',
+    iconWrap: 'bg-slate-900 text-white ring-slate-700',
+    badge: 'bg-slate-200/80 text-slate-800',
+  },
+};
 
 export function Modal({
   open,
   onClose,
   title,
   description,
+  badge,
+  icon = Sparkles,
+  tone = 'emerald',
   children,
   footer,
   maxWidth = 'max-w-2xl',
   closeOnBackdrop = true,
-  accentClass = 'from-emerald-500 via-teal-500 to-sky-500',
+  accentClass,
 }) {
   const titleId = useId();
+  const palette = TONE_MAP[tone] || TONE_MAP.emerald;
+  const barClass = accentClass || palette.bar;
+  const IconComp = icon;
 
   useEffect(() => {
     if (!open) return undefined;
@@ -49,33 +82,54 @@ export function Modal({
       }}
     >
       <div
-        className={`animate-modal-in w-full ${maxWidth} overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl ring-1 ring-black/5`}
+        className={`animate-modal-in w-full ${maxWidth} overflow-hidden rounded-3xl border border-slate-200/90 bg-white/98 shadow-2xl ring-1 ring-slate-900/5 backdrop-blur-md`}
       >
-        <div className={`h-1.5 w-full bg-gradient-to-r ${accentClass}`} />
+        <div className={`h-1.5 w-full bg-gradient-to-r ${barClass}`} />
 
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 bg-slate-50/60 px-6 py-5 sm:px-7">
-          <div className="min-w-0 pr-2">
-            <h3 id={titleId} className="text-lg font-extrabold tracking-tight text-slate-900">
-              {title}
-            </h3>
-            {description && (
-              <p className="mt-1 text-sm leading-relaxed text-slate-500">{description}</p>
+        <div
+          className={`flex items-start justify-between gap-4 border-b border-slate-100 bg-gradient-to-r ${palette.headerBg} px-6 py-4.5 sm:px-7`}
+        >
+          <div className="flex min-w-0 items-start gap-3.5 pr-2">
+            {IconComp && (
+              <span
+                className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ring-1 shadow-2xs ${palette.iconWrap}`}
+              >
+                <IconComp className="h-5 w-5" />
+              </span>
             )}
+            <div className="min-w-0">
+              {badge && (
+                <span
+                  className={`mb-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${palette.badge}`}
+                >
+                  {badge}
+                </span>
+              )}
+              <h3 id={titleId} className="text-lg font-extrabold tracking-tight text-slate-900">
+                {title}
+              </h3>
+              {description && (
+                <p className="mt-0.5 text-xs leading-relaxed text-slate-500 sm:text-sm">
+                  {description}
+                </p>
+              )}
+            </div>
           </div>
+
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-xl bg-white p-2 text-slate-400 shadow-2xs ring-1 ring-slate-200/80 transition hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 shadow-2xs ring-1 ring-slate-200/90 transition hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer"
             aria-label="Cerrar ventana"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4.5 w-4.5" />
           </button>
         </div>
 
-        <div className="max-h-[80vh] overflow-y-auto px-6 py-5 sm:px-7">{children}</div>
+        <div className="max-h-[78vh] overflow-y-auto px-6 py-5 sm:px-7">{children}</div>
 
         {footer && (
-          <div className="flex flex-wrap items-center justify-end gap-2.5 border-t border-slate-100 bg-slate-50/90 px-6 py-4 sm:px-7">
+          <div className="flex flex-wrap items-center justify-end gap-2.5 border-t border-slate-100 bg-slate-50/85 px-6 py-4 sm:px-7">
             {footer}
           </div>
         )}
@@ -95,22 +149,20 @@ export function ConfirmModal({
   variant = 'danger',
   maxWidth = 'max-w-xl',
   loading = false,
+  badge,
   children,
 }) {
   const esAlerta = variant === 'danger' || variant === 'amber';
-  const Icon = esAlerta ? AlertTriangle : ShieldCheck;
+  const HeaderIcon = esAlerta ? AlertTriangle : ShieldCheck;
+  const tone = variant === 'danger' ? 'danger' : variant === 'amber' ? 'amber' : 'emerald';
   const iconWrap =
     variant === 'danger'
       ? 'bg-rose-100 text-rose-600 ring-rose-200'
       : variant === 'amber'
-      ? 'bg-amber-100 text-amber-600 ring-amber-200'
-      : 'bg-emerald-100 text-emerald-600 ring-emerald-200';
-  const accentClass =
-    variant === 'danger'
-      ? 'from-rose-500 via-red-500 to-orange-500'
-      : variant === 'amber'
-      ? 'from-amber-400 via-orange-500 to-amber-500'
-      : 'from-emerald-500 via-teal-500 to-sky-500';
+        ? 'bg-amber-100 text-amber-600 ring-amber-200'
+        : 'bg-emerald-100 text-emerald-600 ring-emerald-200';
+  const resolvedBadge =
+    badge || (variant === 'danger' ? 'ACCIÓN CRÍTICA' : variant === 'amber' ? 'PRECAUCIÓN' : 'CONFIRMACIÓN');
 
   return (
     <Modal
@@ -118,8 +170,10 @@ export function ConfirmModal({
       onClose={loading ? undefined : onClose}
       closeOnBackdrop={!loading}
       title={title}
+      badge={resolvedBadge}
+      icon={HeaderIcon}
+      tone={tone}
       maxWidth={maxWidth}
-      accentClass={accentClass}
       footer={
         <>
           <Button variant="secondary" onClick={onClose} disabled={loading}>
@@ -133,13 +187,13 @@ export function ConfirmModal({
     >
       <div className="space-y-4">
         {message && (
-          <div className="flex items-start gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
+          <div className="flex items-start gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4">
             <span
-              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 ${iconWrap}`}
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ring-1 ${iconWrap}`}
             >
-              <Icon className="h-5 w-5" />
+              <HeaderIcon className="h-4.5 w-4.5" />
             </span>
-            <p className="text-justify text-sm leading-relaxed text-slate-700">{message}</p>
+            <p className="text-sm leading-relaxed text-slate-700">{message}</p>
           </div>
         )}
         {children}

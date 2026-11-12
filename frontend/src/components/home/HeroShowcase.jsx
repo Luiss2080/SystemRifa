@@ -1018,7 +1018,7 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0 }) {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new window.CustomEvent('open-help-widget'))}
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-800 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4" />
             Chatear con RifaBot
