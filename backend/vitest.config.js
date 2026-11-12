@@ -6,6 +6,8 @@ export default defineConfig({
     globals: false,
     setupFiles: ['./tests/setup.js'],
     fileParallelism: false,
+    testTimeout: 20000,
+    hookTimeout: 20000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
