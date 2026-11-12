@@ -75,6 +75,8 @@ export function MisTicketsPage() {
   const toast = useToast();
 
   const [filtroEstado, setFiltroEstado] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [page, setPage] = useState(1);
   const [grupoAPagar, setGrupoAPagar] = useState(null);
   const [metodo, setMetodo] = useState('TRANSFERENCIA_QR');
   const [referencia, setReferencia] = useState('');
@@ -97,9 +99,25 @@ export function MisTicketsPage() {
   }, [todosTickets]);
 
   const tickets = useMemo(() => {
-    if (!filtroEstado) return todosTickets;
-    return todosTickets.filter((t) => t.estado === filtroEstado);
-  }, [todosTickets, filtroEstado]);
+    const byEstado = !filtroEstado
+      ? todosTickets
+      : todosTickets.filter((t) => t.estado === filtroEstado);
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return byEstado;
+    return byEstado.filter(
+      (t) =>
+        String(t.numeroTicket).includes(q) ||
+        (t.rifa?.nombre || '').toLowerCase().includes(q)
+    );
+  }, [todosTickets, filtroEstado, busqueda]);
+
+  const pageSize = 8;
+  const totalPages = Math.max(1, Math.ceil(tickets.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const ticketsPaginados = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return tickets.slice(start, start + pageSize);
+  }, [tickets, safePage]);
 
   // Agrupamos tickets RESERVADO sin pagoId por rifaId para facilitar el pago o liberación
   const reservasSinPagoPorRifa = useMemo(() => {
@@ -163,64 +181,84 @@ export function MisTicketsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Billetera digital de tickets con colores oficiales */}
-      <section className="rounded-3xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 via-white/95 to-teal-50/90 p-6 shadow-xs backdrop-blur-md">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-800">
-              <Ticket className="h-3.5 w-3.5" />
-              Billetera digital de participación
-            </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Mis tickets</h1>
-            <p className="text-sm text-slate-600">
-              Administra tus talones reservados, confirma pagos pendientes y conserva tus números oficiales.
-            </p>
-          </div>
-
+    <div className="space-y-5">
+      <PanelFilterBar
+        title="Billetera Digital de Participación"
+        subtitle="Administra tus talones reservados, confirma pagos pendientes y conserva tus números oficiales."
+        searchValue={busqueda}
+        onSearchChange={(val) => {
+          setBusqueda(val);
+          setPage(1);
+        }}
+        searchPlaceholder="Buscar por número de ticket o nombre de rifa..."
+        hasActiveFilters={Boolean(busqueda || filtroEstado)}
+        onResetFilters={() => {
+          setBusqueda('');
+          setFiltroEstado('');
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Estado del ticket',
+            value: filtroEstado,
+            onChange: (val) => {
+              setFiltroEstado(val);
+              setPage(1);
+            },
+            options: filtros.map((f) => ({ value: f.key, label: f.label })),
+          },
+        ]}
+        rightActions={
           <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-2xl border border-emerald-200 bg-white/90 px-3.5 py-2 text-center shadow-2xs">
-              <p className="text-[11px] font-medium text-slate-500">Confirmados</p>
-              <p className="text-lg font-extrabold text-emerald-700">{conteos.VENDIDO}</p>
-            </div>
-            <div className="rounded-2xl border border-amber-200 bg-white/90 px-3.5 py-2 text-center shadow-2xs">
-              <p className="text-[11px] font-medium text-slate-500">Reservados</p>
-              <p className="text-lg font-extrabold text-amber-600">{conteos.RESERVADO}</p>
-            </div>
-            <div className="flex flex-col gap-1.5 sm:flex-row">
-              <Link to="/explorar">
-                <Button variant="secondary" size="sm">
-                  <Search className="h-4 w-4 text-emerald-600" />
-                  Explorar rifas
-                </Button>
-              </Link>
-              <Link to="/mis-pagos">
-                <Button size="sm">
-                  <CreditCard className="h-4 w-4" />
-                  Mis pagos
-                </Button>
-              </Link>
-            </div>
+            <Link to="/explorar">
+              <Button variant="secondary" size="sm">
+                <Search className="h-4 w-4 text-emerald-600" />
+                Explorar rifas
+              </Button>
+            </Link>
+            <Link to="/mis-pagos">
+              <Button size="sm">
+                <CreditCard className="h-4 w-4" />
+                Mis pagos
+              </Button>
+            </Link>
           </div>
-        </div>
+        }
+      />
 
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-emerald-200/60 pt-4">
-          {filtros.map((f) => (
-            <button
-              key={f.key || 'all'}
-              type="button"
-              onClick={() => setFiltroEstado(f.key)}
-              className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
-                filtroEstado === f.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-white/85 text-slate-700 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-800'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </section>
+      <PanelSectionHeader
+        icon={Ticket}
+        title="Talonario Oficial del Participante"
+        subtitle="Seguimiento en vivo de reservas y comprobantes acreditados"
+        badgeText={`${tickets.length} Talones visibles`}
+        accent="emerald"
+      />
+
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total tickets',
+            value: conteos.TOTAL,
+            trendText: 'Historial completo',
+            icon: Ticket,
+            accent: 'indigo',
+          },
+          {
+            label: 'Vendidos confirmados',
+            value: conteos.VENDIDO,
+            trendText: 'Participando en sorteos',
+            icon: CheckCircle2,
+            accent: 'emerald',
+          },
+          {
+            label: 'Reservados activos',
+            value: conteos.RESERVADO,
+            trendText: 'Pendientes de pago/validación',
+            icon: Clock,
+            accent: 'amber',
+          },
+        ]}
+      />
 
       {reservasSinPagoPorRifa.length > 0 && (
         <section className="space-y-3">
