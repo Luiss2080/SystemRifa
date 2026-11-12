@@ -117,168 +117,173 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-14rem)] max-w-5xl items-center py-1">
-      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-lg backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda: Presentación limpia y sin saturación */}
-        <section className="flex flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-5 text-white sm:p-7 lg:col-span-5">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-              <Ticket className="h-3.5 w-3.5" />
-              Portal Rifas Solidarias
+    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-2">
+        {/* Columna izquierda: Presentación centrada y justificada */}
+        <section className="flex flex-col justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 p-6 text-white sm:p-8">
+          <div className="mx-auto w-full max-w-md space-y-5">
+            <div className="text-center">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-white/15">
+                <Ticket className="h-3.5 w-3.5" />
+                Portal Rifas Solidarias
+              </div>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+                Bienvenido de vuelta
+              </h1>
+              <p className="mt-2 text-justify text-sm leading-relaxed text-slate-300">
+                Accede a tu espacio personal para gestionar tus números reservados, revisar la
+                validación de tus comprobantes y apoyar campañas solidarias en tiempo real.
+              </p>
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Bienvenido de vuelta
-            </h1>
-            <p className="text-sm leading-relaxed text-slate-300">
-              Ingresa para gestionar tus boletos reservados, comprobar pagos y seguir campañas
-              solidarias en tiempo real.
-            </p>
-          </div>
 
-          <div className="mt-6 space-y-2.5 border-t border-white/15 pt-5 text-xs text-slate-300">
-            <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
-              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-              <span>Acceso cifrado con tokens rotativos y control de permisos por rol.</span>
-            </div>
-            <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
-              <span>Reservas atómicas de 15 min y sorteos auditados sin datos personales expuestos.</span>
+            <div className="space-y-2.5 border-t border-white/15 pt-4 text-xs text-slate-300">
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
+                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                <span className="text-justify">
+                  Acceso cifrado con rotación de tokens y control granular de permisos por rol.
+                </span>
+              </div>
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white/5 p-3">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sky-400" />
+                <span className="text-justify">
+                  Reservas atómicas de 15 minutos y sorteos verificables protegiendo tu privacidad.
+                </span>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Columna derecha: Formulario + Desplegable de autocompletado */}
-        <section className="flex flex-col justify-center p-5 sm:p-7 lg:col-span-7">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <div>
+        {/* Columna derecha: Formulario centrado + Desplegable de autocompletado */}
+        <section className="flex flex-col justify-center p-6 sm:p-8">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-5 text-center">
+              <div className="mx-auto mb-2.5 inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-700">
+                <KeyRound className="h-5 w-5" />
+              </div>
               <h2 className="text-2xl font-extrabold text-slate-900">Iniciar sesión</h2>
-              <p className="text-xs text-slate-500">
-                Introduce tus credenciales o elige un rol rápido en desarrollo.
+              <p className="mt-1 text-xs text-slate-500">
+                Introduce tus credenciales o despliega una cuenta de prueba por rol.
               </p>
             </div>
-            <div className="inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700">
-              <KeyRound className="h-5 w-5" />
-            </div>
-          </div>
 
-          {/* Desplegable compacto para autocompletar por rol */}
-          {perfilesDemo.length > 0 && (
-            <div ref={dropdownRef} className="relative mb-4">
-              <button
-                type="button"
-                onClick={() => setMenuDemoAbierto((v) => !v)}
-                aria-expanded={menuDemoAbierto}
-                className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/90 px-3.5 py-2.5 text-left text-xs font-semibold text-slate-700 transition hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer"
-              >
-                <span className="flex items-center gap-2 truncate">
-                  <Sparkles className="h-4 w-4 shrink-0 text-emerald-600" />
-                  {perfilSeleccionado ? (
-                    <span>
-                      Rol cargado:{' '}
-                      <strong className="text-emerald-700">{perfilSeleccionado.titulo}</strong> (
-                      {perfilSeleccionado.email})
-                    </span>
-                  ) : (
-                    <span>Autocompletar cuenta de prueba por rol...</span>
-                  )}
-                </span>
-                <ChevronDown
-                  className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${
-                    menuDemoAbierto ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
+            {/* Desplegable compacto para autocompletar por rol */}
+            {perfilesDemo.length > 0 && (
+              <div ref={dropdownRef} className="relative mb-4">
+                <button
+                  type="button"
+                  onClick={() => setMenuDemoAbierto((v) => !v)}
+                  aria-expanded={menuDemoAbierto}
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/90 px-3.5 py-2.5 text-left text-xs font-semibold text-slate-700 transition hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer"
+                >
+                  <span className="flex items-center gap-2 truncate">
+                    <Sparkles className="h-4 w-4 shrink-0 text-emerald-600" />
+                    {perfilSeleccionado ? (
+                      <span>
+                        Rol cargado:{' '}
+                        <strong className="text-emerald-700">{perfilSeleccionado.titulo}</strong>
+                      </span>
+                    ) : (
+                      <span>Autocompletar cuenta de prueba por rol...</span>
+                    )}
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${
+                      menuDemoAbierto ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
 
-              {menuDemoAbierto && (
-                <div className="animate-modal-in absolute right-0 left-0 z-30 mt-1.5 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl">
-                  {perfilesDemo.map((p) => {
-                    const Icon = p.icon;
-                    const seleccionado = perfilActivo === p.id;
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => autocompletarPerfil(p)}
-                        className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-xs transition cursor-pointer ${
-                          seleccionado ? 'bg-emerald-50 text-emerald-900' : 'hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex min-w-0 items-center gap-2.5">
-                          <span
-                            className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${p.badgeClass}`}
-                          >
-                            <Icon className="h-3 w-3" />
-                            {p.rol}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="truncate font-bold text-slate-900">{p.titulo}</p>
-                            <p className="truncate font-mono text-[11px] text-slate-500">
-                              {p.email}
-                            </p>
+                {menuDemoAbierto && (
+                  <div className="animate-modal-in absolute right-0 left-0 z-30 mt-1.5 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl">
+                    {perfilesDemo.map((p) => {
+                      const Icon = p.icon;
+                      const seleccionado = perfilActivo === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => autocompletarPerfil(p)}
+                          className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-xs transition cursor-pointer ${
+                            seleccionado ? 'bg-emerald-50 text-emerald-900' : 'hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="flex min-w-0 items-center gap-2.5">
+                            <span
+                              className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${p.badgeClass}`}
+                            >
+                              <Icon className="h-3 w-3" />
+                              {p.rol}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="truncate font-bold text-slate-900">{p.titulo}</p>
+                              <p className="truncate font-mono text-[11px] text-slate-500">
+                                {p.email}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        {seleccionado && <Check className="h-4 w-4 shrink-0 text-emerald-600" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
+                          {seleccionado && <Check className="h-4 w-4 shrink-0 text-emerald-600" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
-          {errorMsg && (
-            <div
-              role="alert"
-              className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm text-rose-700"
-            >
-              {errorMsg}
-            </div>
-          )}
+            {errorMsg && (
+              <div
+                role="alert"
+                className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm text-rose-700"
+              >
+                {errorMsg}
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            <Input
-              label="Correo electrónico"
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-              placeholder="ejemplo@correo.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setPerfilActivo(null);
-              }}
-            />
-            <Input
-              label="Contraseña"
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              required
-              placeholder="Tu contraseña"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setPerfilActivo(null);
-              }}
-            />
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <Input
+                label="Correo electrónico"
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                placeholder="ejemplo@correo.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setPerfilActivo(null);
+                }}
+              />
+              <Input
+                label="Contraseña"
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                required
+                placeholder="Tu contraseña"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPerfilActivo(null);
+                }}
+              />
 
-            <Button type="submit" className="w-full" size="lg" loading={loading}>
-              Ingresar
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </form>
+              <Button type="submit" className="w-full" size="lg" loading={loading}>
+                Ingresar
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </form>
 
-          <p className="mt-4 text-center text-sm text-slate-600">
-            ¿Aún no tienes cuenta?{' '}
-            <Link
-              to="/registro"
-              state={{ from: destino }}
-              className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
-            >
-              Regístrate gratis aquí
-            </Link>
-          </p>
+            <p className="mt-4 text-center text-sm text-slate-600">
+              ¿Aún no tienes cuenta?{' '}
+              <Link
+                to="/registro"
+                state={{ from: destino }}
+                className="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
+              >
+                Regístrate gratis aquí
+              </Link>
+            </p>
+          </div>
         </section>
       </div>
     </div>

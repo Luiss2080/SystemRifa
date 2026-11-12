@@ -19,7 +19,7 @@ export function PublicLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6">
         <Outlet />
       </main>
       <AppFooter />
@@ -31,7 +31,7 @@ export function UserLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
       <AppHeader />
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6">
         <Outlet />
       </main>
       <AppFooter />

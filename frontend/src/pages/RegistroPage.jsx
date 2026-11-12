@@ -81,71 +81,82 @@ export function RegistroPage() {
   ];
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-14rem)] max-w-5xl items-center py-1">
-      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-lg backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda: Beneficios y privacidad */}
-        <section className="flex flex-col justify-between bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-5 text-white sm:p-6 lg:col-span-5">
-          <div className="space-y-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
-              <HeartHandshake className="h-3.5 w-3.5" />
-              Únete a Rifas Solidarias
-            </span>
-            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Crea tu cuenta en segundos
-            </h1>
-            <p className="text-sm leading-relaxed text-emerald-50">
-              Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
-            </p>
-          </div>
+    <div className="my-auto mx-auto w-full max-w-5xl py-2">
+      <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/90 shadow-xl backdrop-blur-md lg:grid-cols-12">
+        {/* Columna izquierda: Beneficios centrados y texto justificado */}
+        <section className="flex flex-col justify-center bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-700 p-6 text-white sm:p-7 lg:col-span-5">
+          <div className="mx-auto w-full max-w-sm space-y-4">
+            <div className="text-center">
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur-xs">
+                <HeartHandshake className="h-3.5 w-3.5" />
+                Únete a Rifas Solidarias
+              </span>
+              <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
+                Crea tu cuenta en segundos
+              </h1>
+              <p className="mt-2 text-justify text-sm leading-relaxed text-emerald-50">
+                Elige tus números favoritos en tiempo real, confirma tus pagos sin complicaciones o
+                propón nuevas rifas para apoyar causas verificadas.
+              </p>
+            </div>
 
-          <div className="my-4 space-y-2.5 text-xs">
-            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-              <Ticket className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
-              <div>
-                <p className="font-bold">Reservas instantáneas de 15 minutos</p>
-                <p className="text-emerald-50/90">Bloquea tus números sin colisiones mientras pagas.</p>
+            <div className="space-y-2 border-t border-white/15 pt-4 text-xs">
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+                <Ticket className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+                <div className="text-justify">
+                  <p className="font-bold">Reservas instantáneas de 15 minutos</p>
+                  <p className="text-emerald-50/90">
+                    Bloquea tus números sin colisiones mientras completas tu comprobante.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+                <div className="text-justify">
+                  <p className="font-bold">Privacidad protegida por alias</p>
+                  <p className="text-emerald-50/90">
+                    Solo tu alias público aparece en los tableros de ganadores.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
+                <Bell className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
+                <div className="text-justify">
+                  <p className="font-bold">Avisos automáticos</p>
+                  <p className="text-emerald-50/90">
+                    Notificaciones inmediatas de pagos verificados y resultados.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
-              <div>
-                <p className="font-bold">Privacidad protegida por alias</p>
-                <p className="text-emerald-50/90">Solo tu alias público aparece en los resultados.</p>
-              </div>
+            <div className="border-t border-white/15 pt-3 text-center text-xs text-emerald-50">
+              ¿Ya tienes una cuenta?{' '}
+              <Link
+                to="/login"
+                state={{ from: destino }}
+                className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
+              >
+                Inicia sesión aquí
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
-
-            <div className="flex items-start gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-xs">
-              <Bell className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
-              <div>
-                <p className="font-bold">Avisos automáticos</p>
-                <p className="text-emerald-50/90">Confirmación de pagos y sorteos al instante.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-white/15 pt-3 text-xs text-emerald-50">
-            ¿Ya tienes una cuenta?{' '}
-            <Link
-              to="/login"
-              state={{ from: destino }}
-              className="inline-flex items-center gap-1 font-bold text-white underline-offset-2 hover:underline"
-            >
-              Inicia sesión aquí
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
           </div>
         </section>
 
-        {/* Columna derecha: Formulario de registro */}
-        <section className="flex flex-col justify-center p-5 sm:p-6 lg:col-span-7">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700">
-              <UserPlus className="h-5 w-5" />
-            </div>
+        {/* Columna derecha: Formulario centrado */}
+        <section className="flex flex-col justify-center p-6 sm:p-7 lg:col-span-7">
+          <div className="mb-4 text-center sm:flex sm:items-center sm:justify-between sm:text-left">
             <div>
               <h2 className="text-xl font-extrabold text-slate-900">Datos de registro</h2>
-              <p className="text-xs text-slate-500">Completa tus datos para habilitar tu cuenta</p>
+              <p className="text-xs text-slate-500">
+                Completa tus datos para habilitar tu cuenta solidaria
+              </p>
+            </div>
+            <div className="mx-auto mt-2 inline-flex rounded-xl bg-emerald-100 p-2 text-emerald-700 sm:mx-0 sm:mt-0">
+              <UserPlus className="h-5 w-5" />
             </div>
           </div>
 
