@@ -1,7 +1,16 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Search, Shield, ShieldCheck, UserCheck, Users, UserX, X } from 'lucide-react';
+import {
+  CheckCircle2,
+  Mail,
+  Shield,
+  ShieldCheck,
+  SlidersHorizontal,
+  UserCheck,
+  Users,
+  UserX,
+} from 'lucide-react';
 import {
   asignarPermisoUsuarioApi,
   asignarRolUsuarioApi,
@@ -20,6 +29,12 @@ import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 export function AdminUsuariosPage() {
   const queryClient = useQueryClient();
@@ -28,6 +43,7 @@ export function AdminUsuariosPage() {
 
   const [search, setSearch] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('all'); // all | active | inactive
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const [usuarioDetalleId, setUsuarioDetalleId] = useState(null);
@@ -109,27 +125,74 @@ export function AdminUsuariosPage() {
     }
   }
 
+  const usuariosBase = useMemo(() => data?.items || [], [data]);
+
+  const usuariosVisibles = useMemo(() => {
+    let lista = usuariosBase;
+    if (filtroEstado === 'active') lista = lista.filter((u) => u.activo);
+    if (filtroEstado === 'inactive') lista = lista.filter((u) => !u.activo);
+
+    return [...lista].sort((a, b) => {
+      if (orden === 'az') {
+        return `${a.nombres} ${a.apellidos}`.localeCompare(`${b.nombres} ${b.apellidos}`);
+      }
+      if (orden === 'id_asc') return a.usuarioId - b.usuarioId;
+      return b.usuarioId - a.usuarioId;
+    });
+  }, [usuariosBase, filtroEstado, orden]);
+
+  const totalGlobal = data?.pagination?.total ?? usuariosBase.length;
+  const activosCount = usuariosBase.filter((u) => u.activo).length;
+  const inactivosCount = usuariosBase.filter((u) => !u.activo).length;
+  const staffCount = usuariosBase.filter((u) =>
+    (u.roles || []).some((r) => r === 'ADMINISTRADOR' || r === 'ORGANIZADOR')
+  ).length;
+
   const columns = [
-    { key: 'usuarioId', label: 'ID', render: (r) => <span className="font-mono">#{r.usuarioId}</span> },
     {
       key: 'usuario',
-      label: 'Usuario',
+      label: 'Usuario / Perfil',
+      icon: Users,
+      render: (r) => {
+        const iniciales =
+          `${(r.nombres || '')[0] || ''}${(r.apellidos || '')[0] || ''}`.toUpperCase() ||
+          (r.alias || 'U').slice(0, 2).toUpperCase();
+        return (
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-200">
+              {iniciales}
+            </span>
+            <div>
+              <p className="font-bold text-slate-900">
+                {r.nombres} {r.apellidos}
+              </p>
+              <p className="text-xs text-slate-500">
+                ID #{r.usuarioId} · @{r.alias}
+              </p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: 'email',
+      label: 'Contacto',
+      icon: Mail,
       render: (r) => (
         <div>
-          <p className="font-semibold text-slate-900">
-            {r.nombres} {r.apellidos} <span className="text-slate-500">(@{r.alias})</span>
-          </p>
-          <p className="text-xs text-slate-500">{r.email}</p>
+          <p className="font-medium text-slate-800">{r.email}</p>
+          <p className="text-xs text-slate-400">{r.telefono || 'Sin teléfono'}</p>
         </div>
       ),
     },
     {
       key: 'roles',
-      label: 'Roles',
+      label: 'Roles Asignados',
+      icon: Shield,
       render: (r) => (
         <div className="flex flex-wrap gap-1">
           {(r.roles || []).map((rol) => (
-            <Badge key={rol} color="indigo">
+            <Badge key={rol} color={rol === 'ADMINISTRADOR' ? 'emerald' : 'indigo'}>
               {rol}
             </Badge>
           ))}
@@ -139,6 +202,7 @@ export function AdminUsuariosPage() {
     {
       key: 'activo',
       label: 'Estado',
+      icon: CheckCircle2,
       render: (r) => (
         <Badge color={r.activo ? 'emerald' : 'rose'}>{r.activo ? 'Activo' : 'Inactivo'}</Badge>
       ),
@@ -146,21 +210,22 @@ export function AdminUsuariosPage() {
     {
       key: 'acciones',
       label: 'Acciones',
+      icon: SlidersHorizontal,
       render: (r) => (
-        <div className="flex flex-wrap gap-1.5">
-          <Button size="sm" variant="secondary" onClick={() => setUsuarioDetalleId(r.usuarioId)}>
-            <Shield className="h-3.5 w-3.5" />
-            Detalle / Roles
-          </Button>
+        <div className="flex items-center gap-1.5">
+          <RowActionButton
+            icon={Shield}
+            title="Ver detalle, roles y permisos"
+            tone="view"
+            onClick={() => setUsuarioDetalleId(r.usuarioId)}
+          />
           {tienePermiso('usuarios', 'administrar') && (
-            <Button
-              size="sm"
-              variant={r.activo ? 'danger' : 'primary'}
+            <RowActionButton
+              icon={r.activo ? UserX : UserCheck}
+              title={r.activo ? 'Desactivar cuenta' : 'Activar cuenta'}
+              tone={r.activo ? 'danger' : 'primary'}
               onClick={() => setUsuarioToggle(r)}
-            >
-              {r.activo ? <UserX className="h-3.5 w-3.5" /> : <UserCheck className="h-3.5 w-3.5" />}
-              {r.activo ? 'Desactivar' : 'Activar'}
-            </Button>
+            />
           )}
         </div>
       ),
@@ -169,89 +234,99 @@ export function AdminUsuariosPage() {
 
   const rolesUsuarioSet = new Set((detalleData?.roles || []).map((r) => r.rolId));
   const permisosDirectosSet = new Set((detalleData?.permisosDirectos || []).map((p) => p.clave));
-
-  const usuariosVisibles = useMemo(() => {
-    const items = data?.items || [];
-    if (filtroEstado === 'active') return items.filter((u) => u.activo);
-    if (filtroEstado === 'inactive') return items.filter((u) => !u.activo);
-    return items;
-  }, [data, filtroEstado]);
+  const hasFilters = Boolean(search.trim() || filtroEstado !== 'all' || orden !== 'recientes');
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
-            <Users className="h-3.5 w-3.5" />
-            Control de identidad y accesos
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Usuarios y permisos</h1>
-          <p className="text-sm text-slate-600">
-            Administra cuentas registradas, activa o desactiva accesos y asigna roles o permisos granulares.
-          </p>
-        </div>
+      <PanelFilterBar
+        title="Directorio y Gestión de Usuarios"
+        subtitle="Control de identidad, roles RBAC y permisos directos"
+        searchValue={search}
+        onSearchChange={(val) => {
+          setSearch(val);
+          setPage(1);
+        }}
+        searchPlaceholder="Buscar por nombre, alias o correo..."
+        hasActiveFilters={hasFilters}
+        onResetFilters={() => {
+          setSearch('');
+          setFiltroEstado('all');
+          setOrden('recientes');
+          setPage(1);
+        }}
+        selects={[
+          {
+            label: 'Estado de cuenta',
+            value: filtroEstado,
+            onChange: setFiltroEstado,
+            options: [
+              { value: 'all', label: 'Todos los estados' },
+              { value: 'active', label: 'Solo activos' },
+              { value: 'inactive', label: 'Solo inactivos' },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'az', label: 'Nombre A - Z' },
+              { value: 'id_asc', label: 'ID ascendente' },
+            ],
+          },
+        ]}
+      />
 
-        {tienePermiso('roles', 'administrar') && (
-          <Link to="/admin/roles">
-            <Button variant="secondary" size="sm">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              Gestionar roles
-            </Button>
-          </Link>
-        )}
-      </div>
+      <PanelSectionHeader
+        icon={Users}
+        title="Cartera de Usuarios Registrados"
+        subtitle="Resultados de la consulta activa"
+        badgeText={`${totalGlobal} Usuarios registrados`}
+        actions={
+          tienePermiso('roles', 'administrar') && (
+            <Link to="/admin/roles">
+              <Button variant="secondary" size="sm">
+                <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                Gestionar roles
+              </Button>
+            </Link>
+          )
+        }
+      />
 
-      {/* Buscador + botones rápidos en la misma fila */}
-      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-xs">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="search"
-            placeholder="Buscar por nombre, alias o email..."
-            aria-label="Buscar usuarios"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-9 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
-          />
-          {search && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch('');
-                setPage(1);
-              }}
-              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
-              aria-label="Limpiar búsqueda"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1.5">
-          {[
-            { key: 'all', label: 'Todos' },
-            { key: 'active', label: 'Activos' },
-            { key: 'inactive', label: 'Inactivos' },
-          ].map((opt) => (
-            <button
-              key={opt.key}
-              type="button"
-              onClick={() => setFiltroEstado(opt.key)}
-              className={`rounded-xl px-3 py-2 text-xs font-semibold transition cursor-pointer ${
-                filtroEstado === opt.key
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-slate-50 text-slate-600 ring-1 ring-slate-200 hover:bg-emerald-50 hover:text-emerald-700'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PanelKpiGrid
+        items={[
+          {
+            label: 'Total Usuarios',
+            value: totalGlobal,
+            trendText: 'Base registrada',
+            icon: Users,
+            accent: 'emerald',
+          },
+          {
+            label: 'Cuentas Activas (pág.)',
+            value: activosCount,
+            trendText: `${Math.round((activosCount / Math.max(1, usuariosBase.length)) * 100)}% habilitadas`,
+            icon: UserCheck,
+            accent: 'sky',
+          },
+          {
+            label: 'Admins / Organizadores',
+            value: staffCount,
+            trendText: 'Roles con gestión',
+            icon: ShieldCheck,
+            accent: 'indigo',
+          },
+          {
+            label: 'Cuentas Inactivas',
+            value: inactivosCount,
+            trendText: 'Acceso restringido',
+            icon: UserX,
+            accent: 'rose',
+          },
+        ]}
+      />
 
       <DataTable
         columns={columns}
@@ -260,9 +335,12 @@ export function AdminUsuariosPage() {
         rowKey="usuarioId"
         page={data?.pagination?.page || 1}
         totalPages={data?.pagination?.totalPages || 1}
-        total={data?.pagination?.total || 0}
+        total={totalGlobal}
+        pageSize={15}
+        itemLabel="usuarios"
         onPageChange={setPage}
         emptyTitle="Sin usuarios encontrados"
+        emptyDescription="Prueba limpiando los filtros o modificando tu búsqueda."
       />
 
       <ConfirmModal
