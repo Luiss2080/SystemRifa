@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { RotateCcw } from 'lucide-react';
 import { getAuditoriaApi } from '../../features/panel/panelApi.js';
 import { formatearFecha } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
+import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
 import { Input } from '../../components/ui/Input.jsx';
+
+const ENTIDADES_RAPIDAS = ['', 'pago', 'rifa', 'solicitud', 'usuario', 'premio'];
 
 export function AdminAuditoriaPage() {
   const [entidad, setEntidad] = useState('');
@@ -52,11 +56,48 @@ export function AdminAuditoriaPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Auditoría del sistema</h1>
-        <p className="text-sm text-slate-500">
-          Bitácora inmutable de acciones críticas realizadas en la plataforma
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Auditoría del sistema</h1>
+          <p className="text-sm text-slate-500">
+            Bitácora inmutable de acciones críticas realizadas en la plataforma
+          </p>
+        </div>
+
+        {(entidad || accion) && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              setEntidad('');
+              setAccion('');
+              setPage(1);
+            }}
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Limpiar filtros
+          </Button>
+        )}
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {ENTIDADES_RAPIDAS.map((ent) => (
+          <button
+            key={ent || 'all'}
+            type="button"
+            onClick={() => {
+              setEntidad(ent);
+              setPage(1);
+            }}
+            className={`rounded-full px-3 py-1 text-xs font-semibold capitalize transition cursor-pointer ${
+              entidad.toLowerCase() === ent
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            {ent || 'Todas las entidades'}
+          </button>
+        ))}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:max-w-xl">
@@ -94,4 +135,3 @@ export function AdminAuditoriaPage() {
     </div>
   );
 }
-
