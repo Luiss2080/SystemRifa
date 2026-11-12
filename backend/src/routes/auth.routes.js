@@ -25,3 +25,4 @@ router.post('/logout', authenticate, validate(logoutSchema), postLogout);
 router.get('/me', authenticate, getMe);
 
 export default router;
+

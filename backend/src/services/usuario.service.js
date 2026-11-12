@@ -59,3 +59,4 @@ export async function cambiarMiPassword(usuarioId, { passwordActual, passwordNue
     message: 'Contraseña actualizada correctamente. Por seguridad se cerraron todas las sesiones activas.'
   };
 }
+

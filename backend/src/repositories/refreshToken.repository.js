@@ -71,3 +71,4 @@ export async function revokeByTokenHashAndUser(tokenHash, usuarioId, tx = prisma
     }
   });
 }
+

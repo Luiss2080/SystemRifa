@@ -47,3 +47,4 @@ export async function authenticate(req, _res, next) {
     next(err);
   }
 }
+

@@ -53,3 +53,4 @@ export function hashRefreshToken(rawToken) {
 export function getRefreshExpirationDate() {
   return new Date(Date.now() + parseDurationToMs(env.REFRESH_TTL));
 }
+

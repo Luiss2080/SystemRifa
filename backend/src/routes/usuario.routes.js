@@ -13,3 +13,4 @@ router.patch('/me', authenticate, validate(actualizarPerfilSchema), patchMiPerfi
 router.patch('/me/password', authenticate, validate(cambiarPasswordSchema), patchMiPassword);
 
 export default router;
+

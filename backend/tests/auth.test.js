@@ -284,3 +284,4 @@ describe('Módulo de Autenticación y Perfil (Paso 3)', () => {
     expect(loginNew.status).toBe(200);
   });
 });
+

@@ -17,3 +17,4 @@ export async function patchMiPassword(req, res, next) {
     next(err);
   }
 }
+

@@ -13,3 +13,4 @@ export function validate(schema, target = 'body') {
     return next();
   };
 }
+

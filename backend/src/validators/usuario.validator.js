@@ -38,3 +38,4 @@ export const cambiarPasswordSchema = z.object({
   passwordActual: z.string().min(1, 'La contraseña actual es obligatoria.'),
   passwordNueva: passwordSchema
 });
+

@@ -215,3 +215,4 @@ export async function obtenerPerfilAutenticado(usuarioId) {
     permisos
   };
 }
+

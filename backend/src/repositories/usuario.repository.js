@@ -194,3 +194,4 @@ export async function updatePasswordHash(usuarioId, passwordHash, tx = prisma) {
     select: { usuarioId: true }
   });
 }
+
