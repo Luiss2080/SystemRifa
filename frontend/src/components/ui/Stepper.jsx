@@ -42,3 +42,4 @@ export function StepIndicator({ steps = [], currentStep = 0 }) {
     </ol>
   );
 }
+
