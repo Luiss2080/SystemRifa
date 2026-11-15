@@ -38,6 +38,17 @@ export function logInfo(event, meta = {}) {
   );
 }
 
+export function logWarn(event, meta = {}) {
+  console.warn(
+    JSON.stringify({
+      level: 'warn',
+      event,
+      timestamp: new Date().toISOString(),
+      ...sanitizeForLog(meta)
+    })
+  );
+}
+
 export function logError(event, err, meta = {}) {
   console.error(
     JSON.stringify({
