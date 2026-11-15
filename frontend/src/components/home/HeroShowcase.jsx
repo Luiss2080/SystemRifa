@@ -248,7 +248,7 @@ export function HeroShowcase({
                       Próximas campañas solidarias
                     </p>
                     <p className="text-xs leading-relaxed text-slate-600">
-                      Explora nuestras causas verificadas o solicita organizar una nueva rifa.
+                      Explora nuestras causas verificadas y apoya campañas solidarias transparentes.
                     </p>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -260,10 +260,10 @@ export function HeroShowcase({
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                     <Link
-                      to="/solicitudes/nueva"
+                      to="/registro"
                       className="text-xs font-bold text-emerald-700 hover:underline"
                     >
-                      Organizar una rifa
+                      Crear cuenta gratis
                     </Link>
                   </div>
                 </div>
@@ -819,27 +819,30 @@ export function UltimosSorteosSection({ sorteos = [] }) {
   if (!sorteos.length) return null;
 
   return (
-    <section id="ultimos-sorteos" className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-1.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
-            <Trophy className="h-3.5 w-3.5 text-amber-600" />
-            Resultados reales verificados
-          </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-            Últimos sorteos auditados y ganadores
-          </h2>
-          <p className="text-sm text-slate-600">
-            Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
-          </p>
+    <section id="ultimos-sorteos" className="space-y-6 pt-2">
+      <div className="mx-auto max-w-2xl space-y-2.5 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
+          <Trophy className="h-3.5 w-3.5 text-amber-600" />
+          Resultados reales verificados
+        </span>
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          Últimos sorteos auditados y ganadores
+        </h2>
+        <p className="text-sm text-slate-600">
+          Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
+        </p>
+        <div className="pt-1">
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById('catalogo-activo')?.scrollIntoView({ behavior: 'smooth' })
+            }
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-emerald-300 hover:text-emerald-700 cursor-pointer"
+          >
+            Ver rifas activas
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </div>
-        <Link
-          to="/explorar"
-          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700"
-        >
-          Ver rifas activas
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -943,7 +946,7 @@ const FAQS = [
   },
   {
     q: '¿Qué necesito para organizar una rifa solidaria?',
-    a: 'Solo crea una cuenta gratuita, ingresa a "Organizar rifa" y completa el formulario indicando el nombre de la campaña, la causa solidaria, el precio por ticket, la cantidad de números y la fecha de cierre. Una vez aprobada por administración, podrás cargar los premios y publicarla.',
+    a: 'Solo crea una cuenta gratuita, ingresa a tu espacio personal y selecciona "Nueva solicitud" indicando el nombre de la campaña, la causa solidaria, el precio por ticket, la cantidad de números y la fecha de cierre. Una vez aprobada por administración, podrás cargar los premios y publicarla.',
   },
   {
     q: '¿Cómo se protege mi privacidad en los resultados públicos?',
@@ -1024,10 +1027,10 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
               </p>
             </div>
             <Link
-              to="/solicitudes/nueva"
+              to="/registro"
               className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800"
             >
-              Solicitar nueva rifa
+              Crear cuenta para organizar
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </article>
