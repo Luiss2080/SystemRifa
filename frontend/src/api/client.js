@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const envApiUrl = import.meta.env.VITE_API_URL;
+// En desarrollo, la ruta relativa '/api' permite que el proxy de Vite enrute dinámicamente
+// al puerto libre donde esté corriendo el backend (3000, 3001, etc.) sin colisiones.
+const API_URL =
+  import.meta.env.DEV && (!envApiUrl || envApiUrl.includes('localhost:3000/api'))
+    ? '/api'
+    : (envApiUrl || '/api');
 const REFRESH_STORAGE_KEY = 'rifas_refresh_token';
 
 /**
