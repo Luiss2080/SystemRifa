@@ -424,8 +424,7 @@ export function HeroShowcase({
                     </div>
                   </div>
                 );
-              })
-              )}
+              })}
             </div>
 
             {/* Controles e indicadores del showcase vertical */}
