@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 
 const procs = [
   { name: 'backend', cmd: 'npm --prefix backend run dev' },
@@ -34,8 +34,16 @@ const children = procs.map(({ name, cmd }) => {
 
 function shutdown() {
   for (const child of children) {
-    if (!child.killed) {
-      child.kill('SIGINT');
+    if (child.pid && !child.killed) {
+      if (process.platform === 'win32') {
+        try {
+          execSync(`taskkill /pid ${child.pid} /T /F`, { stdio: 'ignore' });
+        } catch {
+          // Si el proceso ya finalizó, ignorar
+        }
+      } else {
+        child.kill('SIGINT');
+      }
     }
   }
   process.exit(0);
