@@ -163,105 +163,102 @@ export function AppHeader({ variant = 'public' }) {
     window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
-  // Construcción de navegación completa con desplegables por perfil
-  let navItems = [];
-
-  if (!autenticado) {
-    navItems = [
-      {
-        id: 'explorar',
-        type: 'dropdown',
-        label: 'Explorar',
-        items: [
-          {
-            to: '/',
-            label: 'Catálogo de rifas',
-            desc: 'Rifas activas con tablero en tiempo real',
-            icon: Ticket,
-            color: 'bg-emerald-100 text-emerald-700',
-          },
-          {
-            to: '/?urgente=1',
-            label: 'Cierra pronto (≤ 48h)',
-            desc: 'Últimas oportunidades antes del sorteo',
-            icon: Clock,
-            color: 'bg-amber-100 text-amber-700',
-          },
-          {
-            to: '/causas',
-            label: 'Causas solidarias',
-            desc: 'Proyectos sociales verificados',
-            icon: HeartHandshake,
-            color: 'bg-rose-100 text-rose-700',
-          },
-          {
-            action: () => scrollToSection('como-funciona'),
-            label: 'Cómo funciona',
-            desc: 'Paso a paso para reservar y pagar',
-            icon: Sparkles,
-            color: 'bg-sky-100 text-sky-700',
-          },
-        ],
-      },
-      { to: '/causas', label: 'Causas', end: false },
-      {
-        id: 'organizar',
-        type: 'dropdown',
-        label: 'Organizar',
-        items: [
-          {
-            to: '/solicitudes/nueva',
-            label: 'Solicitar nueva rifa',
-            desc: 'Crea tu campaña y envíala a revisión',
-            icon: FilePlus2,
-            color: 'bg-emerald-100 text-emerald-700',
-          },
-          {
-            action: () => scrollToSection('garantias'),
-            label: 'Garantías del sistema',
-            desc: 'Reservas atómicas de 15 min sin colisiones',
-            icon: ShieldCheck,
-            color: 'bg-teal-100 text-teal-700',
-          },
-          {
-            action: () => scrollToSection('beneficios-plataforma'),
-            label: 'Beneficios para causas',
-            desc: 'Por qué elegir Rifas Solidarias',
-            icon: Trophy,
-            color: 'bg-amber-100 text-amber-700',
-          },
-        ],
-      },
-      {
-        id: 'soluciones',
-        type: 'dropdown',
-        label: 'Ayuda y Soluciones',
-        items: [
-          {
-            action: () => scrollToSection('preguntas-frecuentes'),
-            label: 'Preguntas frecuentes',
-            desc: 'Dudas sobre tickets, pagos y sorteos',
-            icon: HelpCircle,
-            color: 'bg-indigo-100 text-indigo-700',
-          },
-          {
-            action: openHelpWidget,
-            label: 'Asistente RifaBot 24/7',
-            desc: 'Guía interactiva al instante',
-            icon: MessageCircle,
-            color: 'bg-amber-100 text-amber-700',
-          },
-          {
-            action: () => scrollToSection('contacto-footer'),
-            label: 'Canales de contacto',
-            desc: 'WhatsApp, correo y horarios de atención',
-            icon: Mail,
-            color: 'bg-sky-100 text-sky-700',
-          },
-        ],
-      },
-      { action: () => scrollToSection('contacto-footer'), label: 'Contáctanos' },
-    ];
+  // Navegación pública unificada: pensada para explorar y adquirir rifas sin mezclar herramientas internas
+  const navItems = [
+    {
+      id: 'explorar',
+      type: 'dropdown',
+      label: 'Explorar',
+      items: [
+        {
+          to: '/',
+          label: 'Catálogo de rifas',
+          desc: 'Rifas activas con tablero en tiempo real',
+          icon: Ticket,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          to: '/?urgente=1',
+          label: 'Cierra pronto (≤ 48h)',
+          desc: 'Últimas oportunidades antes del sorteo',
+          icon: Clock,
+          color: 'bg-amber-100 text-amber-700',
+        },
+        {
+          to: '/causas',
+          label: 'Causas solidarias',
+          desc: 'Proyectos sociales verificados',
+          icon: HeartHandshake,
+          color: 'bg-rose-100 text-rose-700',
+        },
+        {
+          action: () => scrollToSection('como-funciona'),
+          label: 'Cómo funciona',
+          desc: 'Paso a paso para reservar y pagar',
+          icon: Sparkles,
+          color: 'bg-sky-100 text-sky-700',
+        },
+      ],
+    },
+    { to: '/causas', label: 'Causas', end: false },
+    {
+      id: 'garantias',
+      type: 'dropdown',
+      label: 'Garantías y Sorteos',
+      items: [
+        {
+          action: () => scrollToSection('garantias'),
+          label: 'Reservas de 15 minutos',
+          desc: 'Bloqueo transaccional sin colisiones',
+          icon: ShieldCheck,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          action: () => scrollToSection('ultimos-sorteos'),
+          label: 'Sorteos verificados',
+          desc: 'Ganadores y resultados auditados',
+          icon: Trophy,
+          color: 'bg-amber-100 text-amber-700',
+        },
+        {
+          action: () => scrollToSection('beneficios-plataforma'),
+          label: 'Beneficios y confianza',
+          desc: 'Por qué elegir Rifas Solidarias',
+          icon: CheckCheck,
+          color: 'bg-teal-100 text-teal-700',
+        },
+      ],
+    },
+    {
+      id: 'ayuda',
+      type: 'dropdown',
+      label: 'Ayuda y Contacto',
+      items: [
+        {
+          action: () => scrollToSection('preguntas-frecuentes'),
+          label: 'Preguntas frecuentes',
+          desc: 'Dudas sobre reservas, comprobantes y sorteos',
+          icon: HelpCircle,
+          color: 'bg-indigo-100 text-indigo-700',
+        },
+        {
+          action: openHelpWidget,
+          label: 'Asistente RifaBot 24/7',
+          desc: 'Guía interactiva y soporte al instante',
+          icon: MessageCircle,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          action: () => scrollToSection('contacto-footer'),
+          label: 'Canales de atención',
+          desc: 'WhatsApp, correo y ubicación',
+          icon: Mail,
+          color: 'bg-sky-100 text-sky-700',
+        },
+      ],
+    },
+    { action: () => scrollToSection('contacto-footer'), label: 'Contáctanos' },
+  ];
   } else if (tieneAdminPanel) {
     navItems = [
       {
