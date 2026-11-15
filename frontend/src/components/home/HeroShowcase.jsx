@@ -151,7 +151,7 @@ export function HeroShowcase({
   rifas = [],
   causas = [],
   resumenPublico = null,
-  loadingRifas = false,
+  _loadingRifas = false,
   onSelectCausa,
 }) {
   const navigate = useNavigate();
