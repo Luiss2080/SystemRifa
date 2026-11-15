@@ -33,6 +33,59 @@ const CARD_PALETTES = [
   'from-cyan-600 via-sky-600 to-emerald-700',
 ];
 
+const FALLBACK_SHOWCASE_RIFAS = [
+  {
+    rifaId: 1,
+    nombre: 'Gran Rifa Pro Albergue',
+    causa: { nombre: 'Albergue Esperanza Canina' },
+    premios: [{ nombre: 'Motocicleta 150cc 0km' }],
+    precioTicket: 25,
+    ticketsDisponibles: 120,
+    cantidadTickets: 200,
+    estado: 'ACTIVA',
+  },
+  {
+    rifaId: 2,
+    nombre: 'Rifa Tecnológica Esperanza',
+    causa: { nombre: 'Educación Digital Rural' },
+    premios: [{ nombre: 'Laptop Lenovo IdeaPad 15"' }],
+    precioTicket: 20,
+    ticketsDisponibles: 85,
+    cantidadTickets: 150,
+    estado: 'ACTIVA',
+  },
+  {
+    rifaId: 4,
+    nombre: 'Kit Médico y Hogar Pro-Salud',
+    causa: { nombre: 'Salud y Esperanza Infantil' },
+    premios: [{ nombre: 'Heladera No Frost + Kit Hogar' }],
+    precioTicket: 15,
+    ticketsDisponibles: 45,
+    cantidadTickets: 100,
+    estado: 'ACTIVA',
+  },
+  {
+    rifaId: 5,
+    nombre: 'Rifa Gamer y Robótica',
+    causa: { nombre: 'Robótica y Juventud' },
+    premios: [{ nombre: 'Kit Robótica + Consola Switch' }],
+    precioTicket: 30,
+    ticketsDisponibles: 60,
+    cantidadTickets: 100,
+    estado: 'ACTIVA',
+  },
+  {
+    rifaId: 7,
+    nombre: 'Eco-Rifa Chiquitanía Viva',
+    causa: { nombre: 'Reforestación Chiquitana' },
+    premios: [{ nombre: 'Bicicleta Montañera Rodado 29' }],
+    precioTicket: 10,
+    ticketsDisponibles: 210,
+    cantidadTickets: 300,
+    estado: 'ACTIVA',
+  },
+];
+
 export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = true }) {
   const items = useMemo(() => {
     if (!causas || causas.length === 0) return [];
@@ -115,8 +168,13 @@ export function HeroShowcase({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  const displayRifas = useMemo(() => {
+    if (Array.isArray(rifas) && rifas.length > 0) return rifas;
+    return FALLBACK_SHOWCASE_RIFAS;
+  }, [rifas]);
+
   const cards = useMemo(() => {
-    return rifas.slice(0, 5).map((r, idx) => ({
+    return displayRifas.slice(0, 5).map((r, idx) => ({
       id: r.rifaId,
       rifaId: r.rifaId,
       nombre: r.nombre,
@@ -129,7 +187,7 @@ export function HeroShowcase({
       fechaFin: r.fechaFin,
       palette: CARD_PALETTES[idx % CARD_PALETTES.length],
     }));
-  }, [rifas]);
+  }, [displayRifas]);
 
   const metricas = resumenPublico?.metricas;
   const activeIdx = cards.length > 0 ? Math.min(centerIndex, cards.length - 1) : 0;
@@ -226,49 +284,10 @@ export function HeroShowcase({
             </div>
           </div>
 
-          {/* Columna Derecha: Carteles / Rifas en Vertical */}
+          {/* Columna Derecha: Carteles / Rifas en Abanico Vertical */}
           <div className="lg:col-span-6">
             <div className="relative mx-auto flex h-[390px] max-w-[560px] items-center justify-center overflow-hidden sm:h-[430px] sm:overflow-visible">
-              {loadingRifas && cards.length === 0 ? (
-                <div className="flex h-[370px] w-[264px] flex-col justify-between rounded-[24px] border border-emerald-200 bg-white/90 p-5 shadow-xl">
-                  <div className="h-32 animate-pulse rounded-2xl bg-emerald-100/70" />
-                  <div className="space-y-2.5">
-                    <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
-                    <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100" />
-                  </div>
-                  <div className="h-10 animate-pulse rounded-xl bg-emerald-100/60" />
-                </div>
-              ) : cards.length === 0 ? (
-                <div className="flex h-[370px] w-[280px] flex-col items-center justify-center gap-4 rounded-[24px] border border-emerald-200 bg-white/95 p-6 text-center shadow-xl">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
-                    <HeartHandshake className="h-6 w-6" />
-                  </span>
-                  <div className="space-y-1">
-                    <p className="text-sm font-extrabold text-slate-900">
-                      Próximas campañas solidarias
-                    </p>
-                    <p className="text-xs leading-relaxed text-slate-600">
-                      Explora nuestras causas verificadas y apoya campañas solidarias transparentes.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Link
-                      to="/causas"
-                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700"
-                    >
-                      Ver causas activas
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                    <Link
-                      to="/registro"
-                      className="text-xs font-bold text-emerald-700 hover:underline"
-                    >
-                      Crear cuenta gratis
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                cards.map((card, idx) => {
+              {cards.map((card, idx) => {
                 const offset = idx - activeIdx;
                 const isCenter = offset === 0;
                 const absOffset = Math.abs(offset);
