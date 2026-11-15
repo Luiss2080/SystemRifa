@@ -1,14 +1,81 @@
 import { spawn, execSync } from 'node:child_process';
+import net from 'node:net';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, '..');
+const portFilePath = path.resolve(rootDir, '.backend-port.json');
+
+function isPortAvailable(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.once('error', () => resolve(false));
+    server.once('listening', () => {
+      server.close(() => resolve(true));
+    });
+    server.listen(port, '0.0.0.0');
+  });
+}
+
+async function findAvailablePort(startPort, maxAttempts = 50) {
+  for (let port = startPort; port < startPort + maxAttempts; port++) {
+    if (await isPortAvailable(port)) {
+      return port;
+    }
+  }
+  throw new Error(`No se encontró un puerto disponible a partir de ${startPort}`);
+}
+
+const backendPort = await findAvailablePort(3000);
+const frontendPort = await findAvailablePort(5173);
+
+try {
+  fs.writeFileSync(
+    portFilePath,
+    JSON.stringify(
+      {
+        port: backendPort,
+        url: `http://localhost:${backendPort}`,
+        api: `http://localhost:${backendPort}/api`,
+        frontendPort,
+        updatedAt: new Date().toISOString()
+      },
+      null,
+      2
+    ),
+    'utf8'
+  );
+} catch {
+  // Ignorar si falla la escritura previa
+}
+
+console.log(`[dev] 🚀 Backend asignado dinámicamente al puerto: ${backendPort}`);
+console.log(`[dev] 🌐 Frontend asignado dinámicamente al puerto: ${frontendPort}`);
 
 const procs = [
-  { name: 'backend', cmd: 'npm --prefix backend run dev' },
-  { name: 'frontend', cmd: 'npm --prefix frontend run dev' }
+  {
+    name: 'backend',
+    cmd: 'npm --prefix backend run dev',
+    env: { ...process.env, PORT: String(backendPort) }
+  },
+  {
+    name: 'frontend',
+    cmd: 'npm --prefix frontend run dev',
+    env: {
+      ...process.env,
+      VITE_BACKEND_PORT: String(backendPort),
+      PORT: String(frontendPort)
+    }
+  }
 ];
 
-const children = procs.map(({ name, cmd }) => {
+const children = procs.map(({ name, cmd, env }) => {
   const child = spawn(cmd, {
     stdio: ['inherit', 'pipe', 'pipe'],
-    shell: true
+    shell: true,
+    env
   });
 
   child.stdout.on('data', (chunk) => {
@@ -33,6 +100,14 @@ const children = procs.map(({ name, cmd }) => {
 });
 
 function shutdown() {
+  try {
+    if (fs.existsSync(portFilePath)) {
+      fs.unlinkSync(portFilePath);
+    }
+  } catch {
+    // Ignorar
+  }
+
   for (const child of children) {
     if (child.pid && !child.killed) {
       if (process.platform === 'win32') {
