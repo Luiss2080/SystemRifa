@@ -105,7 +105,7 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = tru
   return (
     <section
       aria-label="Causas verificadas en plataforma"
-      className={`marquee-wrapper overflow-hidden border-y border-emerald-950/30 bg-gradient-to-r from-emerald-900 via-teal-800 to-emerald-900 py-4 shadow-md ${
+      className={`marquee-wrapper overflow-hidden border-y border-emerald-100 bg-gradient-to-r from-emerald-50/80 via-white to-teal-50/80 py-3.5 shadow-2xs ${
         fullBleed
           ? 'relative left-1/2 w-screen -translate-x-1/2'
           : '-mx-4 sm:-mx-6 lg:-mx-8'
@@ -122,7 +122,7 @@ export function CauseMarqueeTicker({ causas = [], onSelectCausa, fullBleed = tru
                 document.getElementById('catalogo-activo')?.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="flex min-w-[245px] shrink-0 items-center gap-3 rounded-2xl border border-white/80 bg-white px-4 py-2.5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
+            className="flex min-w-[245px] shrink-0 items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-4 py-2.5 text-left shadow-2xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md cursor-pointer"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
               <HeartHandshake className="h-5 w-5" />

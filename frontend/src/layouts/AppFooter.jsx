@@ -398,6 +398,15 @@ export function AppFooter() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-medium">
+            {autenticado && (
+              <Link
+                to={homeDestino}
+                className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:text-emerald-800"
+              >
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                <span>Panel de Control ({rolPrincipal})</span>
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => setModalActivo('privacidad')}
