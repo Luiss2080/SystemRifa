@@ -255,7 +255,7 @@ export function FloatingWidgets() {
   );
 
   const botCard = (
-    <div className="animate-modal-in flex h-[480px] max-h-[calc(100vh-5.5rem)] w-[calc(100vw-2rem)] max-w-[340px] sm:max-w-[350px] flex-col overflow-hidden rounded-[26px] border border-emerald-200/90 bg-white shadow-2xl ring-1 ring-emerald-950/5">
+    <div className="animate-modal-in flex h-[550px] sm:h-[580px] max-h-[calc(100vh-4rem)] w-[calc(100vw-2rem)] max-w-[350px] sm:max-w-[360px] flex-col overflow-hidden rounded-[26px] border border-emerald-200/90 bg-white shadow-2xl ring-1 ring-emerald-950/5">
       {/* Cabecera esmeralda compacta e institucional */}
       <div className="relative shrink-0 bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 px-3.5 py-2.5 text-white">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300" />
