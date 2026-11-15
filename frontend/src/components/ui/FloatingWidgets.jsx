@@ -388,7 +388,7 @@ export function FloatingWidgets() {
   );
 
   const waCard = (
-    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[360px] overflow-hidden rounded-3xl border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
+    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[340px] sm:max-w-[350px] overflow-hidden rounded-[26px] border border-emerald-200/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
       {/* Cabecera mejorada de WhatsApp acorde al diseño del chat */}
       <div className="relative bg-gradient-to-r from-[#075E54] via-[#0d7468] to-[#128C7E] px-3.5 py-3 text-white">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#25D366] via-emerald-300 to-teal-300" />
