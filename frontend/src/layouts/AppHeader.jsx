@@ -513,13 +513,29 @@ export function AppHeader({ variant = 'public' }) {
         <div className="hidden shrink-0 items-center gap-2 lg:flex">
           {autenticado ? (
             <>
-              {tienePermiso('solicitudes', 'crear') && (
+              {tieneAdminPanel ? (
                 <Link
-                  to="/solicitudes/nueva"
-                  className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-100 xl:inline-flex"
+                  to={primerAdminDestino}
+                  className="hidden items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs transition hover:bg-emerald-700 hover:shadow-sm xl:inline-flex"
                 >
-                  <FilePlus2 className="h-3.5 w-3.5 text-emerald-600" />
-                  Nueva rifa
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  Panel Admin
+                </Link>
+              ) : tieneOrganizadorPanel ? (
+                <Link
+                  to="/organizador/rifas"
+                  className="hidden items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs transition hover:bg-emerald-700 hover:shadow-sm xl:inline-flex"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Panel Organizador
+                </Link>
+              ) : (
+                <Link
+                  to="/mis-tickets"
+                  className="hidden items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-emerald-800 transition hover:bg-emerald-100 hover:border-emerald-400 xl:inline-flex"
+                >
+                  <Ticket className="h-3.5 w-3.5 text-emerald-600" />
+                  Mis tickets
                 </Link>
               )}
 
