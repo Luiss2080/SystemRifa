@@ -267,6 +267,48 @@ export async function runSeed(prismaClient) {
       rolId: adminRole.rolId
     }
   });
+
+  const DEFAULT_CAUSAS = [
+    {
+      nombre: 'Albergue Esperanza Canina',
+      descripcion:
+        'Rescate, alimentación diaria y atención veterinaria para más de 120 perritos en Santa Cruz.',
+      meta: 35000.0
+    },
+    {
+      nombre: 'Educación Digital Rural',
+      descripcion:
+        'Salas de computación con internet satelital para escuelas comunitarias en valles interandinos.',
+      meta: 28000.0
+    },
+    {
+      nombre: 'Salud y Esperanza Infantil',
+      descripcion:
+        'Tratamiento oncológico, medicamentos e insumos médicos para niños de familias de escasos recursos.',
+      meta: 50000.0
+    },
+    {
+      nombre: 'Comedor Comunitario San José',
+      descripcion:
+        'Raciones nutritivas diarias y refuerzo escolar para familias en situación de vulnerabilidad.',
+      meta: 18000.0
+    },
+    {
+      nombre: 'Reforestación Chiquitanía Viva',
+      descripcion:
+        'Viveros comunitarios y recuperación de bosques nativos y fuentes de agua en la Chiquitanía.',
+      meta: 42000.0
+    }
+  ];
+
+  for (const c of DEFAULT_CAUSAS) {
+    const existe = await prismaClient.causaSolidaria.findFirst({
+      where: { nombre: c.nombre }
+    });
+    if (!existe) {
+      await prismaClient.causaSolidaria.create({ data: c });
+    }
+  }
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
