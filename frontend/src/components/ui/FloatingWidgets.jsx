@@ -244,37 +244,37 @@ export function FloatingWidgets() {
       }}
       aria-label="Abrir asistente virtual de ayuda"
       title="Asistente RifaBot 24/7"
-      className="group relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:brightness-105 hover:shadow-xl cursor-pointer"
+      className="group relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-lg shadow-emerald-950/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:brightness-105 hover:shadow-xl cursor-pointer"
     >
-      <Bot className="h-7 w-7 transition-transform duration-200 group-hover:scale-110" />
+      <Bot className="h-7 w-7 transition-transform duration-200 group-hover:scale-110 text-white" />
       <span className="absolute -top-1 -right-1 flex h-4 w-4">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-300 opacity-80" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
         <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
       </span>
     </button>
   );
 
   const botCard = (
-    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[360px] overflow-hidden rounded-3xl border border-amber-300/80 bg-white shadow-2xl ring-1 ring-slate-900/5">
-      {/* Cabecera naranja-amarilla acorde al botón Crear cuenta */}
-      <div className="relative bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-3.5 py-3 text-slate-950">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-yellow-200 via-amber-200 to-orange-300" />
+    <div className="animate-modal-in w-[calc(100vw-2rem)] max-w-[360px] overflow-hidden rounded-3xl border border-emerald-200/90 bg-white shadow-2xl ring-1 ring-emerald-950/5">
+      {/* Cabecera esmeralda institucional acorde a la identidad de Rifas Solidarias */}
+      <div className="relative bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 px-3.5 py-3 text-white">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300" />
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950/10 text-slate-950 ring-1 ring-slate-950/15 backdrop-blur-xs">
-              <Bot className="h-5 w-5" />
-              <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-amber-400 bg-emerald-500" />
+            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-xs">
+              <Bot className="h-5 w-5 text-emerald-200" />
+              <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-800 bg-emerald-400" />
             </span>
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-sm font-extrabold leading-tight tracking-tight">RifaBot</p>
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-slate-950/10 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-900">
-                  <Sparkles className="h-2.5 w-2.5" />
+                <p className="text-sm font-extrabold leading-tight tracking-tight text-white">RifaBot</p>
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-white/15 border border-white/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-100">
+                  <Sparkles className="h-2.5 w-2.5 text-amber-300" />
                   En línea
                 </span>
               </div>
-              <p className="text-[11px] font-semibold text-slate-800/90">
-                Asistente Solidario
+              <p className="text-[11px] font-medium text-emerald-100/90">
+                Asistente Virtual Solidario
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function FloatingWidgets() {
               onClick={handleResetChat}
               title="Reiniciar conversación"
               aria-label="Reiniciar conversación"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-950/10 text-slate-900 transition hover:bg-slate-950/20 cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 cursor-pointer"
             >
               <RotateCcw className="h-3.5 w-3.5" />
             </button>
@@ -294,7 +294,7 @@ export function FloatingWidgets() {
               onClick={() => setBotOpen(false)}
               title="Cerrar asistente"
               aria-label="Cerrar asistente"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-950/15 text-slate-950 transition hover:bg-slate-950/25 cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -305,7 +305,7 @@ export function FloatingWidgets() {
       {/* Historial limpio con patrón sutil */}
       <div className="bg-dot-matrix h-[280px] space-y-2.5 overflow-y-auto bg-slate-50/90 px-3.5 py-3.5 sm:h-[300px]">
         <div className="flex justify-center">
-          <span className="rounded-full border border-amber-200/80 bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 shadow-2xs">
+          <span className="rounded-full border border-emerald-200/80 bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-800 shadow-2xs">
             Hoy · Soporte 24/7
           </span>
         </div>
@@ -313,14 +313,14 @@ export function FloatingWidgets() {
         {messages.map((msg) =>
           msg.role === 'user' ? (
             <div key={msg.id} className="flex flex-col items-end gap-0.5">
-              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 px-3 py-2 text-xs font-medium leading-relaxed text-slate-950 shadow-xs">
+              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2 text-xs font-medium leading-relaxed text-white shadow-xs">
                 {msg.texto}
               </div>
               <span className="px-1 text-[10px] text-slate-400">{msg.hora}</span>
             </div>
           ) : (
             <div key={msg.id} className="flex items-start gap-2">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-xs">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xs">
                 <Bot className="h-3.5 w-3.5" />
               </span>
               <div className="min-w-0 flex-1 space-y-0.5">
@@ -335,7 +335,7 @@ export function FloatingWidgets() {
                           msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
                         navigate(destino);
                       }}
-                      className="mt-2 inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 px-2.5 py-1 text-[11px] font-bold text-amber-950 ring-1 ring-amber-300/80 transition hover:from-amber-200 hover:to-orange-200 cursor-pointer"
+                      className="mt-2 inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-100 cursor-pointer"
                     >
                       {msg.ctaLabel}
                       <ArrowRight className="h-3 w-3" />
@@ -350,20 +350,34 @@ export function FloatingWidgets() {
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input directo sin chips */}
-      <div className="border-t border-slate-100 bg-white px-3.5 py-3">
+      {/* Sugerencias rápidas tipo chips */}
+      <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto border-t border-slate-100 bg-white px-3.5 pt-2.5 pb-1">
+        {FAQ_TOPICS.map((topic) => (
+          <button
+            key={topic.id}
+            type="button"
+            onClick={() => enviarConsulta(topic.pregunta, topic)}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200/90 bg-emerald-50/70 px-2.5 py-1 text-[10px] font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 cursor-pointer"
+          >
+            <span>{topic.chip}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Input de consulta */}
+      <div className="bg-white px-3.5 pt-1.5 pb-3">
         <form onSubmit={handleAskSubmit} className="flex items-center gap-2">
           <input
             type="text"
             value={consulta}
             onChange={(e) => setConsulta(e.target.value)}
             placeholder="Escribe tu consulta aquí..."
-            className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200 focus:outline-none"
+            className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-200 focus:outline-none"
           />
           <button
             type="submit"
             disabled={!consulta.trim()}
-            className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 text-slate-950 shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
+            className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
             aria-label="Consultar asistente"
           >
             <Send className="h-3.5 w-3.5" />
