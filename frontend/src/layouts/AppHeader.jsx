@@ -166,98 +166,56 @@ export function AppHeader({ variant = 'public' }) {
   // Navegación pública unificada: pensada para explorar y adquirir rifas sin mezclar herramientas internas
   const navItems = [
     {
-      id: 'explorar',
-      type: 'dropdown',
-      label: 'Explorar',
-      items: [
-        {
-          to: '/',
-          label: 'Catálogo de rifas',
-          desc: 'Rifas activas con tablero en tiempo real',
-          icon: Ticket,
-          color: 'bg-emerald-100 text-emerald-700',
-        },
-        {
-          to: '/?urgente=1',
-          label: 'Cierra pronto (≤ 48h)',
-          desc: 'Últimas oportunidades antes del sorteo',
-          icon: Clock,
-          color: 'bg-amber-100 text-amber-700',
-        },
-        {
-          to: '/causas',
-          label: 'Causas solidarias',
-          desc: 'Proyectos sociales verificados',
-          icon: HeartHandshake,
-          color: 'bg-rose-100 text-rose-700',
-        },
-        {
-          action: () => scrollToSection('como-funciona'),
-          label: 'Cómo funciona',
-          desc: 'Paso a paso para reservar y pagar',
-          icon: Sparkles,
-          color: 'bg-sky-100 text-sky-700',
-        },
-      ],
-    },
-    { to: '/causas', label: 'Causas', end: false },
-    {
-      id: 'garantias',
-      type: 'dropdown',
-      label: 'Garantías y Sorteos',
-      items: [
-        {
-          action: () => scrollToSection('garantias'),
-          label: 'Reservas de 15 minutos',
-          desc: 'Bloqueo transaccional sin colisiones',
-          icon: ShieldCheck,
-          color: 'bg-emerald-100 text-emerald-700',
-        },
-        {
-          action: () => scrollToSection('ultimos-sorteos'),
-          label: 'Sorteos verificados',
-          desc: 'Ganadores y resultados auditados',
-          icon: Trophy,
-          color: 'bg-amber-100 text-amber-700',
-        },
-        {
-          action: () => scrollToSection('beneficios-plataforma'),
-          label: 'Beneficios y confianza',
-          desc: 'Por qué elegir Rifas Solidarias',
-          icon: CheckCheck,
-          color: 'bg-teal-100 text-teal-700',
-        },
-      ],
+      to: autenticado ? '/explorar' : '/',
+      label: 'Catálogo',
+      icon: Ticket,
+      end: true,
     },
     {
-      id: 'ayuda',
-      type: 'dropdown',
-      label: 'Ayuda y Contacto',
-      items: [
-        {
-          action: () => scrollToSection('preguntas-frecuentes'),
-          label: 'Preguntas frecuentes',
-          desc: 'Dudas sobre reservas, comprobantes y sorteos',
-          icon: HelpCircle,
-          color: 'bg-indigo-100 text-indigo-700',
-        },
-        {
-          action: openHelpWidget,
-          label: 'Asistente RifaBot 24/7',
-          desc: 'Guía interactiva y soporte al instante',
-          icon: MessageCircle,
-          color: 'bg-emerald-100 text-emerald-700',
-        },
-        {
-          action: () => scrollToSection('contacto-footer'),
-          label: 'Canales de atención',
-          desc: 'WhatsApp, correo y ubicación',
-          icon: Mail,
-          color: 'bg-sky-100 text-sky-700',
-        },
-      ],
+      to: '/causas',
+      label: 'Causas',
+      icon: HeartHandshake,
+      end: false,
     },
-    { action: () => scrollToSection('contacto-footer'), label: 'Contáctanos' },
+    {
+      to: '/sorteos',
+      label: 'Sorteos & Ganadores',
+      shortLabel: 'Sorteos',
+      icon: Trophy,
+      end: false,
+    },
+    {
+      to: '/como-funciona',
+      label: 'Cómo Funciona',
+      icon: Sparkles,
+      end: false,
+    },
+    {
+      to: '/garantias',
+      label: 'Garantías',
+      icon: ShieldCheck,
+      end: false,
+    },
+    {
+      to: '/preguntas-frecuentes',
+      label: 'Preguntas Frecuentes',
+      shortLabel: 'Ayuda & FAQ',
+      icon: HelpCircle,
+      end: false,
+    },
+    {
+      to: '/contacto',
+      label: 'Contacto',
+      icon: Mail,
+      end: false,
+    },
+    {
+      to: '/organizar',
+      label: 'Organizar una Rifa',
+      icon: FilePlus2,
+      soloMobile: true,
+      end: false,
+    },
   ];
 
 
@@ -405,108 +363,20 @@ export function AppHeader({ variant = 'public' }) {
           )}
         </div>
 
-        {/* Barra Central Ordenada con Desplegables Centrados */}
+        {/* Barra Central Ordenada con Píldoras Directas */}
         <nav
           ref={navRef}
           aria-label="Navegación principal"
           className="hidden items-center gap-0.5 rounded-full border border-slate-200/90 bg-slate-50/75 px-1.5 py-1 shadow-2xs lg:flex xl:gap-1 xl:px-2 xl:py-1.5"
         >
           {navItems
-            .filter((item) => item.type !== 'dropdown' || (item.items && item.items.length > 0))
-            .map((item) => {
-            if (item.type === 'dropdown') {
-              const isOpen = dropdownAbierto === item.id;
-              return (
-                <div key={item.id} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setDropdownAbierto((cur) => (cur === item.id ? null : item.id))}
-                    aria-expanded={isOpen}
-                    className={`${pillPlainClass} ${
-                      isOpen ? 'bg-emerald-700 text-white hover:bg-emerald-700 hover:text-white' : ''
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown
-                      className={`h-3.5 w-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-
-                  {isOpen && (
-                    <div className="absolute top-full left-1/2 z-40 mt-3 w-72 max-w-[calc(100vw-2rem)] -translate-x-1/2">
-                      <div className="animate-modal-in overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl ring-1 ring-slate-900/5">
-                        {item.items.map((sub) => {
-                          const SubIcon = sub.icon;
-                          const inner = (
-                            <>
-                              <span
-                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${sub.color}`}
-                              >
-                                <SubIcon className="h-4 w-4" />
-                              </span>
-                              <span className="min-w-0">
-                                <span className="block text-xs font-bold text-slate-900">
-                                  {sub.label}
-                                </span>
-                                {sub.desc && (
-                                  <span className="block text-[11px] leading-snug text-slate-500">
-                                    {sub.desc}
-                                  </span>
-                                )}
-                              </span>
-                            </>
-                          );
-
-                          if (sub.action) {
-                            return (
-                              <button
-                                key={sub.label}
-                                type="button"
-                                onClick={sub.action}
-                                className="flex w-full items-start gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-emerald-50/70 cursor-pointer"
-                              >
-                                {inner}
-                              </button>
-                            );
-                          }
-
-                          return (
-                            <Link
-                              key={sub.to}
-                              to={sub.to}
-                              onClick={() => setDropdownAbierto(null)}
-                              className="flex items-start gap-2.5 rounded-xl px-3 py-2 transition hover:bg-emerald-50/70"
-                            >
-                              {inner}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            if (item.action) {
-              return (
-                <button
-                  key={item.label}
-                  type="button"
-                  onClick={item.action}
-                  className={pillPlainClass}
-                >
-                  {item.label}
-                </button>
-              );
-            }
-
-            return (
+            .filter((item) => !item.soloMobile)
+            .map((item) => (
               <NavLink key={item.to} to={item.to} className={pillItemClass} end={Boolean(item.end)}>
-                {item.label}
+                <span className="hidden xl:inline">{item.label}</span>
+                <span className="xl:hidden">{item.shortLabel || item.label}</span>
               </NavLink>
-            );
-          })}
+            ))}
         </nav>
 
         {/* Acciones Derecha */}
