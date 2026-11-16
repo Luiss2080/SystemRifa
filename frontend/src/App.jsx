@@ -16,6 +16,12 @@ import { ForbiddenPage } from './pages/ForbiddenPage.jsx';
 import { NotFoundPage } from './pages/NotFoundPage.jsx';
 import { CatalogoPage } from './pages/CatalogoPage.jsx';
 import { CausasPublicPage } from './pages/CausasPublicPage.jsx';
+import { SorteosPublicPage } from './pages/SorteosPublicPage.jsx';
+import { ComoFuncionaPage } from './pages/ComoFuncionaPage.jsx';
+import { GarantiasPublicPage } from './pages/GarantiasPublicPage.jsx';
+import { PreguntasFrecuentesPage } from './pages/PreguntasFrecuentesPage.jsx';
+import { ContactoPage } from './pages/ContactoPage.jsx';
+import { OrganizarPublicPage } from './pages/OrganizarPublicPage.jsx';
 import { RifaDetallePage } from './pages/RifaDetallePage.jsx';
 import { ResultadoPublicoPage } from './pages/ResultadoPublicoPage.jsx';
 import { MisTicketsPage } from './pages/MisTicketsPage.jsx';
@@ -87,7 +93,14 @@ export function App() {
 
               {/* Rutas compartidas: Landing si es visitante, Sistema si está autenticado */}
               <Route element={<AdaptiveLayout />}>
+                <Route path="/explorar" element={<CatalogoPage mode="app" />} />
                 <Route path="/causas" element={<CausasPublicPage />} />
+                <Route path="/sorteos" element={<SorteosPublicPage />} />
+                <Route path="/como-funciona" element={<ComoFuncionaPage />} />
+                <Route path="/garantias" element={<GarantiasPublicPage />} />
+                <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
+                <Route path="/contacto" element={<ContactoPage />} />
+                <Route path="/organizar" element={<OrganizarPublicPage />} />
                 <Route path="/rifas/:id" element={<RifaDetallePage />} />
                 <Route path="/rifas/:id/resultado" element={<ResultadoPublicoPage />} />
               </Route>
@@ -103,7 +116,6 @@ export function App() {
               <Route element={<RequireAuth />}>
                 {/* Espacio del rol (Participante en UserLayout; Organizador/Admin en PanelLayout) */}
                 <Route element={<AdaptiveLayout />}>
-                  <Route path="/explorar" element={<CatalogoPage mode="app" />} />
                   <Route path="/perfil" element={<PerfilPage />} />
                   <Route path="/mis-tickets" element={<MisTicketsPage />} />
                   <Route path="/mis-pagos" element={<MisPagosPage />} />
