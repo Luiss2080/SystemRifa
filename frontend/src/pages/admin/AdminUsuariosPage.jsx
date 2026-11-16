@@ -36,6 +36,49 @@ import {
   RowActionButton,
 } from '../../components/panel/PanelKit.jsx';
 
+const FALLBACK_ADMIN_USUARIOS = [
+  {
+    usuarioId: 1,
+    alias: 'admin_master',
+    email: 'admin@rifasolidarias.bo',
+    nombres: 'Carlos',
+    apellidos: 'Mamani',
+    telefono: '+591 70011223',
+    activo: true,
+    roles: ['ADMINISTRADOR'],
+  },
+  {
+    usuarioId: 2,
+    alias: 'ong_esperanza',
+    email: 'contacto@esperanzacanina.org',
+    nombres: 'Valeria',
+    apellidos: 'Suárez',
+    telefono: '+591 71122334',
+    activo: true,
+    roles: ['ORGANIZADOR'],
+  },
+  {
+    usuarioId: 3,
+    alias: 'carlos_bo',
+    email: 'carlos.bo@gmail.com',
+    nombres: 'Carlos',
+    apellidos: 'Benítez',
+    telefono: '+591 72233445',
+    activo: true,
+    roles: ['PARTICIPANTE'],
+  },
+  {
+    usuarioId: 4,
+    alias: 'mariana_scz',
+    email: 'mariana.scz@gmail.com',
+    nombres: 'Mariana',
+    apellidos: 'Roca',
+    telefono: '+591 73344556',
+    activo: true,
+    roles: ['PARTICIPANTE'],
+  },
+];
+
 export function AdminUsuariosPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -125,7 +168,11 @@ export function AdminUsuariosPage() {
     }
   }
 
-  const usuariosBase = useMemo(() => data?.items || [], [data]);
+  const usuariosBase = useMemo(() => {
+    const raw = data?.items || [];
+    if (raw.length > 0) return raw;
+    return FALLBACK_ADMIN_USUARIOS;
+  }, [data]);
 
   const usuariosVisibles = useMemo(() => {
     let lista = usuariosBase;
