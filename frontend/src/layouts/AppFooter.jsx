@@ -158,19 +158,31 @@ export function AppFooter() {
   }
 
   const servicios = [
-    { label: 'Catálogo de Rifas', to: '/', icon: Ticket, highlight: true },
+    { label: 'Catálogo de Rifas', to: '/explorar', icon: Ticket, highlight: true },
     { label: 'Causas Solidarias', to: '/causas', icon: HeartHandshake, highlight: true },
-    { label: 'Sorteos y Ganadores', to: '/#ultimos-sorteos', icon: CheckCircle2, highlight: false },
-    { label: 'Cómo Participar', to: '/#como-funciona', icon: Lightbulb, highlight: false },
-    { label: 'Soporte Técnico 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
+    { label: 'Sorteos y Ganadores', to: '/sorteos', icon: CheckCircle2, highlight: false },
+    { label: 'Cómo Funciona', to: '/como-funciona', icon: Lightbulb, highlight: false },
+    { label: 'Organizar una Rifa', to: '/organizar', icon: FilePlus2, highlight: false },
   ];
 
   const guias = [
     {
-      label: 'Garantías y Auditoría',
-      action: () => setModalActivo('auditoria'),
+      label: 'Garantías del Sistema',
+      to: '/garantias',
       icon: ShieldCheck,
       highlight: true,
+    },
+    {
+      label: 'Preguntas Frecuentes',
+      to: '/preguntas-frecuentes',
+      icon: HelpCircle,
+      highlight: false,
+    },
+    {
+      label: 'Canales de Contacto',
+      to: '/contacto',
+      icon: Mail,
+      highlight: false,
     },
     {
       label: 'Términos de Servicio',
@@ -182,18 +194,6 @@ export function AppFooter() {
       label: 'Política de Privacidad',
       action: () => setModalActivo('privacidad'),
       icon: ShieldCheck,
-      highlight: false,
-    },
-    {
-      label: 'Uso de Cookies',
-      action: () => setModalActivo('cookies'),
-      icon: CheckCircle2,
-      highlight: false,
-    },
-    {
-      label: 'Preguntas Frecuentes',
-      action: openHelpWidget,
-      icon: HelpCircle,
       highlight: false,
     },
   ];
