@@ -1,6 +1,19 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { BellRing, CheckCircle2, Code2, Edit2, Eye, Mail, PauseCircle, PlusCircle } from 'lucide-react';
+import {
+  BellRing,
+  CheckCircle2,
+  Code2,
+  Edit2,
+  Eye,
+  LayoutGrid,
+  List,
+  Mail,
+  PauseCircle,
+  PlusCircle,
+  SlidersHorizontal,
+  Variable,
+} from 'lucide-react';
 import {
   actualizarTipoNotificacionApi,
   getTiposNotificacionApi,
@@ -8,11 +21,17 @@ import {
 import { extraerErrorApi } from '../../utils/apiError.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
+import { DataTable, PaginationCard } from '../../components/ui/DataTable.jsx';
 import { FullPageSpinner } from '../../components/ui/Feedback.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
-import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../../components/panel/PanelKit.jsx';
+import {
+  PanelFilterBar,
+  PanelKpiGrid,
+  PanelSectionHeader,
+  RowActionButton,
+} from '../../components/panel/PanelKit.jsx';
 
 const EJEMPLOS_VARIABLES = {
   alias: 'AnaSolidaria',
@@ -45,6 +64,10 @@ export function AdminPlantillasPage() {
 
   const [filtroEstado, setFiltroEstado] = useState('TODAS');
   const [busqueda, setBusqueda] = useState('');
+  const [vista, setVista] = useState('tabla'); // 'tabla' | 'tarjetas'
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
+
   const [editando, setEditando] = useState(null);
   const [form, setForm] = useState({
     plantillaTitulo: '',
@@ -92,31 +115,114 @@ export function AdminPlantillasPage() {
     );
   }, [data, filtroEstado, busqueda]);
 
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const itemsPaginados = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return items.slice(start, start + pageSize);
+  }, [items, safePage, pageSize]);
+
   async function handleGuardar(e) {
     e.preventDefault();
     if (!editando) return;
     setSaving(true);
     try {
       await actualizarTipoNotificacionApi(editando.tipoNotificacionId, {
-        plantillaTitulo: form.plantillaTitulo,
-        plantillaMensaje: form.plantillaMensaje,
+        plantillaTitulo: form.plantillaTitulo.trim(),
+        plantillaMensaje: form.plantillaMensaje.trim(),
         estaActivo: form.estaActivo,
       });
-      setEditando(null);
       queryClient.invalidateQueries({ queryKey: ['admin-plantillas'] });
-      toast.success('Plantilla actualizada');
+      toast.success('Plantilla guardada', 'El formato del mensaje se actualizó correctamente.');
+      setEditando(null);
     } catch (err) {
-      toast.error('Error al actualizar plantilla', extraerErrorApi(err).message);
+      toast.error('Error al guardar', extraerErrorApi(err).message);
     } finally {
       setSaving(false);
     }
   }
 
-  if (isLoading) return <FullPageSpinner message="Cargando plantillas de notificación..." />;
+  if (isLoading) return <FullPageSpinner message="Cargando plantillas del sistema..." />;
 
   const totalBase = data?.items || [];
   const activasCount = totalBase.filter((i) => i.estaActivo).length;
   const inactivasCount = totalBase.filter((i) => !i.estaActivo).length;
+
+  const columns = [
+    {
+      key: 'codigo',
+      label: 'Código de Evento',
+      icon: Code2,
+      render: (tipo) => (
+        <div className="flex items-center gap-2">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+            <Mail className="h-4 w-4 text-emerald-600" />
+          </span>
+          <div>
+            <span className="font-mono text-xs font-black tracking-tight text-slate-900">
+              {tipo.codigo}
+            </span>
+            <p className="text-[10px] text-slate-400">ID #{tipo.tipoNotificacionId}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'plantilla',
+      label: 'Título y Mensaje Predeterminado',
+      icon: BellRing,
+      render: (tipo) => (
+        <div className="max-w-md space-y-0.5">
+          <p className="font-bold text-slate-900 text-xs">{tipo.plantillaTitulo}</p>
+          <p className="line-clamp-2 text-[11px] leading-relaxed text-slate-500">
+            {tipo.plantillaMensaje}
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: 'variables',
+      label: 'Variables Admitidas',
+      icon: Variable,
+      render: (tipo) => (
+        <div className="flex max-w-xs flex-wrap gap-1">
+          {(tipo.variables || []).map((v) => (
+            <span
+              key={v}
+              className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[10px] font-medium text-slate-700"
+            >
+              {`{${v}}`}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      key: 'estado',
+      label: 'Estado',
+      icon: CheckCircle2,
+      render: (tipo) => (
+        <Badge color={tipo.estaActivo ? 'emerald' : 'slate'}>
+          {tipo.estaActivo ? 'Activa' : 'Inactiva'}
+        </Badge>
+      ),
+    },
+    {
+      key: 'acciones',
+      label: 'Acciones',
+      icon: SlidersHorizontal,
+      render: (tipo) => (
+        <div className="flex items-center gap-1.5">
+          <RowActionButton
+            icon={Edit2}
+            title="Editar y previsualizar plantilla"
+            tone="edit"
+            onClick={() => abrirEditar(tipo)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-5">
@@ -124,18 +230,25 @@ export function AdminPlantillasPage() {
         title="Plantillas de Notificación del Sistema"
         subtitle="Personaliza títulos y mensajes respetando únicamente las variables admitidas por evento."
         searchValue={busqueda}
-        onSearchChange={setBusqueda}
+        onSearchChange={(val) => {
+          setBusqueda(val);
+          setPage(1);
+        }}
         searchPlaceholder="Buscar por código de evento, título o mensaje..."
         hasActiveFilters={Boolean(busqueda || filtroEstado !== 'TODAS')}
         onResetFilters={() => {
           setBusqueda('');
           setFiltroEstado('TODAS');
+          setPage(1);
         }}
         selects={[
           {
             label: 'Estado',
             value: filtroEstado,
-            onChange: setFiltroEstado,
+            onChange: (val) => {
+              setFiltroEstado(val);
+              setPage(1);
+            },
             options: [
               { value: 'TODAS', label: 'Todas' },
               { value: 'ACTIVAS', label: 'Activas' },
@@ -143,13 +256,43 @@ export function AdminPlantillasPage() {
             ],
           },
         ]}
+        rightActions={
+          <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+            <button
+              type="button"
+              onClick={() => setVista('tabla')}
+              className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
+                vista === 'tabla'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Vista de tabla"
+            >
+              <List className="h-4 w-4" />
+              <span>Tabla</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setVista('tarjetas')}
+              className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
+                vista === 'tarjetas'
+                  ? 'bg-white text-slate-900 shadow-2xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Vista de tarjetas"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span>Tarjetas</span>
+            </button>
+          </div>
+        }
       />
 
       <PanelSectionHeader
         icon={Mail}
         title="Catálogo de Eventos & Mensajería"
         subtitle="Renderizado seguro con previsualización de variables"
-        badgeText={`${items.length} Plantillas visibles`}
+        badgeText={`${items.length} Plantillas configuradas`}
         accent="emerald"
       />
 
@@ -179,45 +322,80 @@ export function AdminPlantillasPage() {
         ]}
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {items.map((tipo) => (
-          <div
-            key={tipo.tipoNotificacionId}
-            className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
-          >
-            <div className="space-y-2.5 p-5">
-              <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs font-bold text-slate-900">
-                  <Code2 className="h-3.5 w-3.5 text-emerald-600" />
-                  {tipo.codigo}
-                </span>
-                <Badge color={tipo.estaActivo ? 'emerald' : 'slate'}>
-                  {tipo.estaActivo ? 'Activa' : 'Inactiva'}
-                </Badge>
-              </div>
-              <p className="text-sm font-extrabold text-slate-900">{tipo.plantillaTitulo}</p>
-              <p className="text-xs leading-relaxed text-slate-600">{tipo.plantillaMensaje}</p>
-              <div className="flex flex-wrap gap-1 pt-1">
-                {(tipo.variables || []).map((v) => (
-                  <span
-                    key={v}
-                    className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-700"
-                  >
-                    {`{${v}}`}
-                  </span>
-                ))}
-              </div>
-            </div>
+      {vista === 'tabla' ? (
+        <>
+          <DataTable
+            columns={columns}
+            data={itemsPaginados}
+            keyField="tipoNotificacionId"
+            emptyMessage="No se encontraron plantillas con los criterios aplicados."
+          />
+          {totalPages > 1 && (
+            <PaginationCard
+              page={safePage}
+              totalPages={totalPages}
+              total={items.length}
+              showingFrom={(safePage - 1) * pageSize + 1}
+              showingTo={Math.min(safePage * pageSize, items.length)}
+              onPageChange={setPage}
+              itemLabel="plantillas"
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            {itemsPaginados.map((tipo) => (
+              <div
+                key={tipo.tipoNotificacionId}
+                className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/85 bg-white shadow-xs transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+              >
+                <div className="space-y-2.5 p-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 font-mono text-xs font-bold text-slate-900">
+                      <Code2 className="h-3.5 w-3.5 text-emerald-600" />
+                      {tipo.codigo}
+                    </span>
+                    <Badge color={tipo.estaActivo ? 'emerald' : 'slate'}>
+                      {tipo.estaActivo ? 'Activa' : 'Inactiva'}
+                    </Badge>
+                  </div>
+                  <p className="text-sm font-extrabold text-slate-900">{tipo.plantillaTitulo}</p>
+                  <p className="text-xs leading-relaxed text-slate-600">{tipo.plantillaMensaje}</p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {(tipo.variables || []).map((v) => (
+                      <span
+                        key={v}
+                        className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-700"
+                      >
+                        {`{${v}}`}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-3">
-              <Button variant="secondary" size="sm" onClick={() => abrirEditar(tipo)}>
-                <Edit2 className="h-3.5 w-3.5" />
-                Editar y previsualizar
-              </Button>
-            </div>
+                <div className="border-t border-slate-100 bg-slate-50/60 px-5 py-3">
+                  <Button variant="secondary" size="sm" onClick={() => abrirEditar(tipo)}>
+                    <Edit2 className="h-3.5 w-3.5" />
+                    Editar y previsualizar
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          {totalPages > 1 && (
+            <PaginationCard
+              page={safePage}
+              totalPages={totalPages}
+              total={items.length}
+              showingFrom={(safePage - 1) * pageSize + 1}
+              showingTo={Math.min(safePage * pageSize, items.length)}
+              onPageChange={setPage}
+              itemLabel="plantillas"
+            />
+          )}
+        </>
+      )}
 
       <Modal
         open={Boolean(editando)}
