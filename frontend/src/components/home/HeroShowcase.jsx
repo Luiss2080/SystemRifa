@@ -589,16 +589,15 @@ export function HeroShowcase({
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             Cómo participar de forma segura
           </h2>
-          <button
-            type="button"
-            onClick={() =>
-              document.getElementById('garantias')?.scrollIntoView({ behavior: 'smooth' })
-            }
-            className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 cursor-pointer"
-          >
-            Ver garantías del sistema
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <Link
+              to="/como-funciona"
+              className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800"
+            >
+              Ver guía interactiva paso a paso
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
