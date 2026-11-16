@@ -5,7 +5,7 @@ import { resolverAccesoRol } from './features/auth/roleAccess.js';
 import { ToastProvider } from './components/ui/Toast.jsx';
 import { InteractiveBackground } from './components/ui/InteractiveBackground.jsx';
 import { FloatingWidgets } from './components/ui/FloatingWidgets.jsx';
-import { FullPageSpinner, SplashOverlay } from './components/ui/Feedback.jsx';
+import { SplashOverlay } from './components/ui/Feedback.jsx';
 import { AdaptiveLayout, AuthLayout, PanelLayout, PublicLayout } from './layouts/Layouts.jsx';
 import { RequireAuth } from './routes/RequireAuth.jsx';
 import { RequirePermiso } from './routes/RequirePermiso.jsx';
