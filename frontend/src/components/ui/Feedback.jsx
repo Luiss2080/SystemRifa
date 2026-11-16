@@ -128,7 +128,6 @@ export function SplashOverlay({ cargando = false }) {
     </div>
   );
 }
-}
 
 export function EmptyState({ icon, title = 'Sin resultados', description, action }) {
   const IconComp = icon;
