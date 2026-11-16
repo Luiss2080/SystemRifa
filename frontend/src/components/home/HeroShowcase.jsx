@@ -36,9 +36,9 @@ const CARD_PALETTES = [
 const FALLBACK_SHOWCASE_RIFAS = [
   {
     rifaId: 1,
-    nombre: 'Gran Rifa Pro Albergue',
+    nombre: 'Gran Rifa Pro Albergue Animal',
     causa: { nombre: 'Albergue Esperanza Canina' },
-    premios: [{ nombre: 'Motocicleta 150cc 0km' }],
+    premios: [{ nombre: 'Motocicleta 150cc 0km Modelo 2026' }],
     precioTicket: 25,
     ticketsDisponibles: 120,
     cantidadTickets: 200,
@@ -46,9 +46,9 @@ const FALLBACK_SHOWCASE_RIFAS = [
   },
   {
     rifaId: 2,
-    nombre: 'Rifa Tecnológica Esperanza',
+    nombre: 'Rifa Tecnológica Semillas del Saber',
     causa: { nombre: 'Educación Digital Rural' },
-    premios: [{ nombre: 'Laptop Lenovo IdeaPad 15"' }],
+    premios: [{ nombre: 'Laptop Lenovo IdeaPad 15" Core i5' }],
     precioTicket: 20,
     ticketsDisponibles: 85,
     cantidadTickets: 150,
@@ -58,7 +58,7 @@ const FALLBACK_SHOWCASE_RIFAS = [
     rifaId: 4,
     nombre: 'Kit Médico y Hogar Pro-Salud',
     causa: { nombre: 'Salud y Esperanza Infantil' },
-    premios: [{ nombre: 'Heladera No Frost + Kit Hogar' }],
+    premios: [{ nombre: 'Heladera No Frost 380L + Kit Hogar' }],
     precioTicket: 15,
     ticketsDisponibles: 45,
     cantidadTickets: 100,
@@ -66,9 +66,9 @@ const FALLBACK_SHOWCASE_RIFAS = [
   },
   {
     rifaId: 5,
-    nombre: 'Rifa Gamer y Robótica',
+    nombre: 'Rifa Gamer y Robótica Educativa',
     causa: { nombre: 'Robótica y Juventud' },
-    premios: [{ nombre: 'Kit Robótica + Consola Switch' }],
+    premios: [{ nombre: 'Consola Nintendo Switch OLED + Juego' }],
     precioTicket: 30,
     ticketsDisponibles: 60,
     cantidadTickets: 100,
@@ -83,6 +83,116 @@ const FALLBACK_SHOWCASE_RIFAS = [
     ticketsDisponibles: 210,
     cantidadTickets: 300,
     estado: 'ACTIVA',
+  },
+];
+
+const FALLBACK_DESTACADAS_CAUSAS = [
+  {
+    causaId: 1,
+    nombre: 'Albergue Esperanza Canina',
+    categoria: 'Albergues y Rescate Animal',
+    descripcion:
+      'Rescate, alimentación diaria, atención veterinaria y esterilizaciones para más de 120 perritos rescatados de situaciones de maltrato y abandono.',
+    meta: '35000.00',
+    recaudado: '24500.00',
+    rifasCount: 2,
+    beneficiarios: '120 animales protegidos',
+    colorStripe: 'from-emerald-600 to-teal-700',
+  },
+  {
+    causaId: 3,
+    nombre: 'Salud y Esperanza Infantil',
+    categoria: 'Salud y Bienestar',
+    descripcion:
+      'Financiamiento directo de medicamentos oncológicos, quimioterapias y soporte integral para niños de familias de escasos recursos.',
+    meta: '50000.00',
+    recaudado: '39200.00',
+    rifasCount: 3,
+    beneficiarios: '45 niños y sus familias',
+    colorStripe: 'from-rose-600 to-pink-700',
+  },
+  {
+    causaId: 2,
+    nombre: 'Educación Digital Rural',
+    categoria: 'Educación y Niñez',
+    descripcion:
+      'Equipamiento de aulas de computación con internet satelital y capacitación informática para escuelas comunitarias en valles interandinos.',
+    meta: '28000.00',
+    recaudado: '18400.00',
+    rifasCount: 1,
+    beneficiarios: '320 estudiantes rurales',
+    colorStripe: 'from-sky-600 to-indigo-700',
+  },
+];
+
+const FALLBACK_SORTEOS_PUBLICOS = [
+  {
+    sorteoId: 101,
+    rifaId: 1,
+    nombreRifa: 'Gran Rifa Pro Albergue Animal',
+    fechaSorteo: '2026-11-12T20:00:00.000Z',
+    numeroGanadorPrincipal: 142,
+    causa: { nombre: 'Albergue Esperanza Canina' },
+    premioPrincipal: {
+      nombre: 'Motocicleta 150cc 0km Modelo 2026',
+      reclamado: true,
+    },
+    premiosCount: 2,
+    ganador: {
+      alias: 'carlos_bo',
+      iniciales: 'C.B.',
+    },
+  },
+  {
+    sorteoId: 102,
+    rifaId: 2,
+    nombreRifa: 'Rifa Tecnológica Semillas del Saber',
+    fechaSorteo: '2026-11-08T19:30:00.000Z',
+    numeroGanadorPrincipal: 87,
+    causa: { nombre: 'Educación Digital Rural' },
+    premioPrincipal: {
+      nombre: 'Laptop Lenovo IdeaPad 15" Core i5',
+      reclamado: true,
+    },
+    premiosCount: 1,
+    ganador: {
+      alias: 'lucia_lp',
+      iniciales: 'L.M.',
+    },
+  },
+  {
+    sorteoId: 103,
+    rifaId: 4,
+    nombreRifa: 'Rifa Kit Médico y Hogar Pro-Salud',
+    fechaSorteo: '2026-11-02T21:00:00.000Z',
+    numeroGanadorPrincipal: 45,
+    causa: { nombre: 'Salud y Esperanza Infantil' },
+    premioPrincipal: {
+      nombre: 'Heladera No Frost 380L + Kit Hogar',
+      reclamado: true,
+    },
+    premiosCount: 2,
+    ganador: {
+      alias: 'roberto_scz',
+      iniciales: 'R.P.',
+    },
+  },
+  {
+    sorteoId: 104,
+    rifaId: 7,
+    nombreRifa: 'Eco-Rifa Chiquitanía Viva',
+    fechaSorteo: '2026-10-25T18:00:00.000Z',
+    numeroGanadorPrincipal: 210,
+    causa: { nombre: 'Reforestación Chiquitana' },
+    premioPrincipal: {
+      nombre: 'Bicicleta Montañera Rodado 29 de Aluminio',
+      reclamado: true,
+    },
+    premiosCount: 1,
+    ganador: {
+      alias: 'mariana_cbba',
+      iniciales: 'M.R.',
+    },
   },
 ];
 
@@ -566,7 +676,8 @@ export function HeroShowcase({
 }
 
 export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
-  const destacadas = causas.slice(0, 3);
+  const listaCausas = causas && causas.length > 0 ? causas : FALLBACK_DESTACADAS_CAUSAS;
+  const destacadas = listaCausas.slice(0, 3);
 
   return (
     <section id="causas-destacadas" className="space-y-6 pt-4">
@@ -592,66 +703,77 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
         </div>
       </div>
 
-      {destacadas.length === 0 ? (
-        <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-slate-200 bg-white/80 p-6 text-center sm:flex-row sm:text-left">
-          <div className="space-y-1">
-            <p className="text-sm font-bold text-slate-900">
-              Explora el directorio completo de causas solidarias
-            </p>
-            <p className="text-xs text-slate-600">
-              Consulta las metas, campañas activas y propuestas comunitarias disponibles en la plataforma.
-            </p>
-          </div>
-          <Link
-            to="/causas"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-800"
-          >
-            Ir al directorio
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-      ) : (
-        <div className="grid gap-5 md:grid-cols-3">
-          {destacadas.map((causa) => {
-            const cantRifas = causa.rifasCount ?? 0;
-            return (
-              <article
-                key={causa.causaId}
-                className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-xs backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+      <div className="grid gap-6 md:grid-cols-3">
+        {destacadas.map((causa) => {
+          const cantRifas = causa.rifasCount ?? 1;
+          const metaNum = Number(causa.meta) || 1;
+          const recaudadoNum = Number(causa.recaudado) || Math.round(metaNum * 0.65);
+          const porcentaje = Math.min(100, Math.round((recaudadoNum / metaNum) * 100));
+
+          return (
+            <article
+              key={causa.causaId}
+              className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xs transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
+            >
+              {/* Cabecera visual con franja de color */}
+              <div
+                className={`bg-gradient-to-r ${causa.colorStripe || 'from-emerald-600 to-teal-700'} p-4 text-white`}
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800">
-                      <ShieldCheck className="h-3 w-3" />
-                      Verificada
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-900">
+                    <ShieldCheck className="h-3 w-3 text-emerald-600" />
+                    Verificada
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-bold text-white">
+                    <Ticket className="h-3 w-3" />
+                    {cantRifas} rifa(s)
+                  </span>
+                </div>
+                <h3 className="mt-2.5 text-base font-black leading-snug tracking-tight text-white group-hover:underline">
+                  {causa.nombre}
+                </h3>
+                {causa.categoria && (
+                  <p className="mt-0.5 text-[11px] font-semibold text-white/80">
+                    {causa.categoria}
+                  </p>
+                )}
+              </div>
+
+              {/* Contenido de la causa y barra de progreso */}
+              <div className="flex flex-1 flex-col justify-between p-5 space-y-4">
+                <p className="line-clamp-3 text-xs leading-relaxed text-slate-600">
+                  {causa.descripcion || 'Iniciativa solidaria respaldada por sorteos auditados.'}
+                </p>
+
+                <div className="space-y-2 border-t border-slate-100 pt-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-900">
+                      {formatearBs(recaudadoNum)}
+                      <span className="ml-1 text-[11px] font-medium text-slate-500">
+                        de {formatearBs(metaNum)}
+                      </span>
                     </span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-0.5 text-[11px] font-bold text-slate-700 ring-1 ring-slate-200">
-                      <Ticket className="h-3 w-3 text-emerald-600" />
-                      {cantRifas} rifa(s)
+                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-700">
+                      {porcentaje}%
                     </span>
                   </div>
 
-                  <div>
-                    <h3 className="text-base font-extrabold text-slate-900 group-hover:text-emerald-700">
-                      {causa.nombre}
-                    </h3>
-                    <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-slate-600">
-                      {causa.descripcion || 'Iniciativa solidaria respaldada por sorteos auditados.'}
-                    </p>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500"
+                      style={{ width: `${porcentaje}%` }}
+                    />
                   </div>
+
+                  {causa.beneficiarios && (
+                    <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                      <Users className="h-3 w-3 text-slate-400" />
+                      Beneficiarios: <strong className="text-slate-700">{causa.beneficiarios}</strong>
+                    </p>
+                  )}
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-200/70 pt-3.5">
-                  <div>
-                    <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                      <Target className="h-3 w-3 text-emerald-600" />
-                      Meta
-                    </p>
-                    <p className="text-sm font-extrabold text-emerald-700">
-                      {formatearBs(causa.meta)}
-                    </p>
-                  </div>
-
+                <div className="border-t border-slate-100 pt-3">
                   <button
                     type="button"
                     onClick={() => {
@@ -662,17 +784,20 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
                           ?.scrollIntoView({ behavior: 'smooth' });
                       }
                     }}
-                    className="inline-flex items-center gap-1 rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-slate-800 ring-1 ring-slate-200 transition hover:bg-emerald-600 hover:text-white hover:ring-emerald-600 cursor-pointer"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-white py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer"
                   >
-                    Filtrar rifas
+                    <span>Ver rifas de esta causa</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
-              </article>
-            );
-          })}
-        </div>
-      )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
     </section>
   );
 }
@@ -834,7 +959,7 @@ export function LandingFinalCta() {
 }
 
 export function UltimosSorteosSection({ sorteos = [] }) {
-  if (!sorteos.length) return null;
+  const listaSorteos = sorteos && sorteos.length > 0 ? sorteos : FALLBACK_SORTEOS_PUBLICOS;
 
   return (
     <section id="ultimos-sorteos" className="space-y-6 pt-2">
@@ -864,7 +989,7 @@ export function UltimosSorteosSection({ sorteos = [] }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {sorteos.map((sorteo) => (
+        {listaSorteos.map((sorteo) => (
           <article
             key={sorteo.sorteoId}
             className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-xs transition hover:border-emerald-300 hover:shadow-md"

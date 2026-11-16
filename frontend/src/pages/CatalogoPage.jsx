@@ -43,6 +43,108 @@ import {
 
 const HORAS_URGENCIA = 48;
 
+const FALLBACK_CAUSAS_FILTRO = [
+  { causaId: 1, nombre: 'Albergue Esperanza Canina' },
+  { causaId: 2, nombre: 'Educación Digital Rural' },
+  { causaId: 3, nombre: 'Salud y Esperanza Infantil' },
+  { causaId: 4, nombre: 'Comedor Comunitario San José' },
+  { causaId: 5, nombre: 'Reforestación Chiquitanía' },
+];
+
+const FALLBACK_CATALOGO_RIFAS = [
+  {
+    rifaId: 1,
+    nombre: 'Gran Rifa Pro Albergue Animal',
+    descripcion:
+      'Apoya el rescate y alimentación de más de 120 perritos. ¡Gana una motocicleta 0km lista para rodar!',
+    causa: { causaId: 1, nombre: 'Albergue Esperanza Canina' },
+    precioTicket: '25.00',
+    cantidadTickets: 200,
+    ticketsDisponibles: 120,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 42 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 1, nombre: 'Motocicleta 150cc 0km Modelo 2026', valor: '14500.00' },
+      { premioId: 2, nombre: 'Casco Certificado DOT + Guantes', valor: '800.00' },
+    ],
+  },
+  {
+    rifaId: 2,
+    nombre: 'Rifa Tecnológica Semillas del Saber',
+    descripcion:
+      'Equipamiento de aulas de computación con internet satelital para escuelas comunitarias rurales.',
+    causa: { causaId: 2, nombre: 'Educación Digital Rural' },
+    precioTicket: '20.00',
+    cantidadTickets: 150,
+    ticketsDisponibles: 85,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 68 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 3, nombre: 'Laptop Lenovo IdeaPad 15" Core i5', valor: '5200.00' },
+    ],
+  },
+  {
+    rifaId: 4,
+    nombre: 'Kit Médico y Hogar Pro-Salud',
+    descripcion:
+      'Financiamiento directo de medicamentos oncológicos e insumos médicos para niños de escasos recursos.',
+    causa: { causaId: 3, nombre: 'Salud y Esperanza Infantil' },
+    precioTicket: '15.00',
+    cantidadTickets: 100,
+    ticketsDisponibles: 45,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 28 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 4, nombre: 'Heladera No Frost 380L + Kit Hogar', valor: '4800.00' },
+    ],
+  },
+  {
+    rifaId: 5,
+    nombre: 'Rifa Gamer y Robótica Educativa',
+    descripcion:
+      'Kits de electrónica y robótica para jóvenes talentos de colegios fiscales en competencias nacionales.',
+    causa: { causaId: 2, nombre: 'Educación Digital Rural' },
+    precioTicket: '30.00',
+    cantidadTickets: 100,
+    ticketsDisponibles: 60,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 92 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 5, nombre: 'Consola Nintendo Switch OLED + Juego', valor: '3800.00' },
+    ],
+  },
+  {
+    rifaId: 7,
+    nombre: 'Eco-Rifa Chiquitanía Viva',
+    descripcion:
+      'Reforestación de especies nativas y protección de cuencas de agua afectadas por quemas forestales.',
+    causa: { causaId: 5, nombre: 'Reforestación Chiquitanía' },
+    precioTicket: '10.00',
+    cantidadTickets: 300,
+    ticketsDisponibles: 210,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 115 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 6, nombre: 'Bicicleta Montañera Rodado 29 de Aluminio', valor: '2400.00' },
+    ],
+  },
+  {
+    rifaId: 8,
+    nombre: 'Canasta Familiar y Nutrición San José',
+    descripcion:
+      'Provisión de víveres esenciales y raciones calientes diarias para 180 familias del Plan 3000.',
+    causa: { causaId: 4, nombre: 'Comedor Comunitario San José' },
+    precioTicket: '10.00',
+    cantidadTickets: 250,
+    ticketsDisponibles: 165,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 35 * 60 * 60 * 1000).toISOString(),
+    premios: [
+      { premioId: 7, nombre: 'Smart TV Samsung 55" Crystal UHD 4K', valor: '3600.00' },
+    ],
+  },
+];
+
 function horasRestantes(fechaFin) {
   return (new Date(fechaFin).getTime() - Date.now()) / (1000 * 60 * 60);
 }
@@ -105,8 +207,17 @@ export function CatalogoPage({ mode = 'landing' }) {
       }),
   });
 
-  const causas = causasData?.items || [];
-  const rifasBase = useMemo(() => data?.items || [], [data]);
+  const causas = useMemo(() => {
+    const raw = causasData?.items;
+    if (Array.isArray(raw) && raw.length > 0) return raw;
+    return FALLBACK_CAUSAS_FILTRO;
+  }, [causasData]);
+
+  const rifasBase = useMemo(() => {
+    const raw = data?.items;
+    if (Array.isArray(raw) && raw.length > 0) return raw;
+    return FALLBACK_CATALOGO_RIFAS;
+  }, [data]);
   const pagination = data?.pagination || { page: 1, totalPages: 1 };
 
   const rifasFiltradas = useMemo(() => {
