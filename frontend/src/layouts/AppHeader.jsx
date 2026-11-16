@@ -378,7 +378,7 @@ export function AppHeader({ variant = 'public' }) {
       }`}
     >
       <div
-        className={`mx-auto flex h-18 w-full items-center justify-between gap-2 px-4 sm:px-6 lg:gap-3 lg:px-8 ${
+        className={`mx-auto flex h-18 w-full items-center justify-between gap-2 px-3 sm:px-4 md:px-6 lg:gap-2.5 lg:px-6 xl:gap-3 xl:px-8 ${
           esPanel ? 'max-w-[1440px]' : 'max-w-7xl'
         }`}
       >
@@ -744,17 +744,17 @@ export function AppHeader({ variant = 'public' }) {
             <>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm shadow-emerald-700/25 transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-teal-800 hover:shadow-md"
+                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-white shadow-xs transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-teal-800 hover:shadow-sm xl:gap-2 xl:px-4 xl:py-2 xl:text-xs"
               >
                 <Users className="h-3.5 w-3.5" />
-                Iniciar sesión
+                <span>Iniciar sesión</span>
               </Link>
               <Link
                 to="/registro"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 hover:shadow-md"
+                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-slate-950 shadow-xs transition hover:-translate-y-0.5 hover:brightness-105 hover:shadow-sm xl:gap-2 xl:px-4 xl:py-2 xl:text-xs"
               >
                 <UserPlus className="h-3.5 w-3.5" />
-                Crear cuenta
+                <span>Crear cuenta</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </>
@@ -805,8 +805,74 @@ export function AppHeader({ variant = 'public' }) {
               </span>
             </div>
           )}
-          <nav className="flex flex-col gap-1.5">
+          <nav className="flex flex-col gap-2">
             {navItems.map((item) => {
+              if (item.type === 'dropdown') {
+                const isGroupOpen = mobileGroupAbierto === item.id;
+                return (
+                  <div key={item.id} className="overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50/60">
+                    <button
+                      type="button"
+                      onClick={() => setMobileGroupAbierto((cur) => (cur === item.id ? null : item.id))}
+                      className="flex w-full items-center justify-between px-3.5 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-100/70 cursor-pointer"
+                    >
+                      <span>{item.label}</span>
+                      <ChevronDown
+                        className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
+                          isGroupOpen ? 'rotate-180 text-emerald-700' : ''
+                        }`}
+                      />
+                    </button>
+                    {isGroupOpen && (
+                      <div className="space-y-1 border-t border-slate-200/70 bg-white px-2 py-2">
+                        {item.items.map((sub) => {
+                          const SubIcon = sub.icon;
+                          if (sub.action) {
+                            return (
+                              <button
+                                key={sub.label}
+                                type="button"
+                                onClick={() => {
+                                  setMenuAbierto(false);
+                                  sub.action();
+                                }}
+                                className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-emerald-50 cursor-pointer"
+                              >
+                                <span
+                                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                                    sub.color || 'bg-emerald-50 text-emerald-700'
+                                  }`}
+                                >
+                                  <SubIcon className="h-3.5 w-3.5" />
+                                </span>
+                                <span>{sub.label}</span>
+                              </button>
+                            );
+                          }
+                          return (
+                            <Link
+                              key={sub.to}
+                              to={sub.to}
+                              onClick={() => setMenuAbierto(false)}
+                              className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50"
+                            >
+                              <span
+                                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                                  sub.color || 'bg-emerald-50 text-emerald-700'
+                                }`}
+                              >
+                                <SubIcon className="h-3.5 w-3.5" />
+                              </span>
+                              <span>{sub.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               const ItemIcon = item.icon;
               return (
                 <NavLink
