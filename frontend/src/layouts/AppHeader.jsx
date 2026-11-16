@@ -405,20 +405,123 @@ export function AppHeader({ variant = 'public' }) {
           )}
         </div>
 
-        {/* Barra Central Ordenada con Píldoras Directas */}
+        {/* Barra Central con Desplegables */}
         <nav
           ref={navRef}
           aria-label="Navegación principal"
-          className="hidden items-center gap-0.5 rounded-full border border-slate-200/90 bg-slate-50/75 px-1.5 py-1 shadow-2xs lg:flex xl:gap-1 xl:px-2 xl:py-1.5"
+          className="hidden items-center gap-0.5 rounded-full border border-slate-200/90 bg-slate-50/75 px-1.5 py-1 shadow-2xs lg:flex xl:gap-1 xl:px-2.5 xl:py-1.5"
         >
-          {navItems
-            .filter((item) => !item.soloMobile)
-            .map((item) => (
-              <NavLink key={item.to} to={item.to} className={pillItemClass} end={Boolean(item.end)}>
+          {navItems.map((item) => {
+            if (item.type === 'dropdown') {
+              const isOpen = dropdownAbierto === item.id;
+              const isSubActive = item.items?.some((sub) => {
+                if (!sub.to) return false;
+                const [path] = sub.to.split('?');
+                return location.pathname === path;
+              });
+
+              return (
+                <div key={item.id} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setDropdownAbierto((cur) => (cur === item.id ? null : item.id))}
+                    aria-expanded={isOpen}
+                    className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition cursor-pointer xl:gap-1.5 xl:px-3.5 xl:text-[12px] ${
+                      isOpen
+                        ? 'bg-emerald-700 text-white shadow-xs'
+                        : isSubActive
+                          ? 'bg-emerald-100/90 text-emerald-900 font-extrabold ring-1 ring-emerald-300/60'
+                          : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
+                    }`}
+                  >
+                    <span className="hidden xl:inline">{item.label}</span>
+                    <span className="xl:hidden">{item.shortLabel || item.label}</span>
+                    <ChevronDown
+                      className={`h-3 w-3 shrink-0 transition-transform duration-200 xl:h-3.5 xl:w-3.5 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div className="animate-modal-in absolute top-full left-1/2 z-50 mt-2.5 w-72 max-w-[calc(100vw-2rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-2 text-slate-800 shadow-xl ring-1 ring-slate-900/5 sm:w-80">
+                      <div className="space-y-1">
+                        {item.items.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const inner = (
+                            <>
+                              <span
+                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+                                  sub.color || 'bg-emerald-50 text-emerald-700'
+                                }`}
+                              >
+                                <SubIcon className="h-4 w-4" />
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block text-xs font-bold text-slate-900">
+                                  {sub.label}
+                                </span>
+                                {sub.desc && (
+                                  <span className="block text-[11px] leading-snug text-slate-500">
+                                    {sub.desc}
+                                  </span>
+                                )}
+                              </span>
+                            </>
+                          );
+
+                          if (sub.action) {
+                            return (
+                              <button
+                                key={sub.label}
+                                type="button"
+                                onClick={() => {
+                                  setDropdownAbierto(null);
+                                  sub.action();
+                                }}
+                                className="flex w-full items-start gap-2.5 rounded-xl px-3 py-2 text-left transition hover:bg-emerald-50/70 cursor-pointer"
+                              >
+                                {inner}
+                              </button>
+                            );
+                          }
+
+                          return (
+                            <Link
+                              key={sub.to}
+                              to={sub.to}
+                              onClick={() => setDropdownAbierto(null)}
+                              className="flex items-start gap-2.5 rounded-xl px-3 py-2 transition hover:bg-emerald-50/70"
+                            >
+                              {inner}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition xl:gap-1.5 xl:px-3.5 xl:text-[12px] ${
+                    isActive
+                      ? 'bg-emerald-700 text-white shadow-xs'
+                      : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
+                  }`
+                }
+                end={Boolean(item.end)}
+              >
                 <span className="hidden xl:inline">{item.label}</span>
                 <span className="xl:hidden">{item.shortLabel || item.label}</span>
               </NavLink>
-            ))}
+            );
+          })}
         </nav>
 
         {/* Acciones Derecha */}
