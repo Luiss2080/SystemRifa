@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { resolverAccesoRol } from '../features/auth/roleAccess.js';
-import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { AppHeader } from './AppHeader.jsx';
 import { AppFooter } from './AppFooter.jsx';
 import { RoleShell } from './RoleShell.jsx';
@@ -64,7 +63,7 @@ export function AdaptiveLayout() {
     useAuth();
 
   if (cargando) {
-    return <FullPageSpinner message="Cargando plataforma..." />;
+    return null;
   }
 
   if (!autenticado) {

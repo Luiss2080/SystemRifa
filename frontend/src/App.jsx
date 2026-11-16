@@ -54,7 +54,7 @@ function LandingORedireccion() {
     useAuth();
 
   if (cargando) {
-    return <FullPageSpinner message="Verificando sesión..." />;
+    return null;
   }
 
   if (autenticado) {

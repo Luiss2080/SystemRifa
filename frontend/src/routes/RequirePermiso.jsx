@@ -1,12 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext.jsx';
-import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 
 export function RequirePermiso({ recurso, accion, anyOf, children }) {
   const { autenticado, cargando, tienePermiso, tieneAlgunPermiso } = useAuth();
 
   if (cargando) {
-    return <FullPageSpinner message="Verificando permisos..." />;
+    return null;
   }
 
   if (!autenticado) {
