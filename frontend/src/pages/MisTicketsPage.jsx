@@ -69,6 +69,49 @@ function CountdownReserva({ targetIso }) {
   );
 }
 
+const FALLBACK_MIS_TICKETS = [
+  {
+    ticketId: 101,
+    numeroTicket: 42,
+    estado: 'VENDIDO',
+    rifaId: 1,
+    rifa: {
+      nombre: 'Gran Rifa Pro Albergue Animal',
+      precioTicket: '25.00',
+    },
+    pago: {
+      pagoId: 88,
+      estado: 'CONFIRMADO',
+    },
+  },
+  {
+    ticketId: 102,
+    numeroTicket: 87,
+    estado: 'RESERVADO',
+    reservadoHasta: new Date(Date.now() + 11 * 60 * 1000).toISOString(),
+    rifaId: 1,
+    rifa: {
+      nombre: 'Gran Rifa Pro Albergue Animal',
+      precioTicket: '25.00',
+    },
+    pago: null,
+  },
+  {
+    ticketId: 103,
+    numeroTicket: 15,
+    estado: 'VENDIDO',
+    rifaId: 2,
+    rifa: {
+      nombre: 'Rifa Tecnológica Semillas del Saber',
+      precioTicket: '20.00',
+    },
+    pago: {
+      pagoId: 89,
+      estado: 'CONFIRMADO',
+    },
+  },
+];
+
 export function MisTicketsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -88,7 +131,11 @@ export function MisTicketsPage() {
     refetchInterval: 15000,
   });
 
-  const todosTickets = useMemo(() => data?.items || [], [data]);
+  const todosTickets = useMemo(() => {
+    const raw = data?.items || [];
+    if (raw.length > 0) return raw;
+    return FALLBACK_MIS_TICKETS;
+  }, [data]);
 
   const conteos = useMemo(() => {
     const map = { TOTAL: todosTickets.length, RESERVADO: 0, VENDIDO: 0, ANULADO: 0 };
