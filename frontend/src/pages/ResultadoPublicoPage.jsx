@@ -139,7 +139,6 @@ export function ResultadoPublicoPage() {
               </Button>
             </Link>
           </div>
-        </div>
       </section>
 
       {/* 2. Gran tarjeta de felicitación y ticket ganador principal */}
