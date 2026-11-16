@@ -1,23 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ShieldCheck, Sparkles, Ticket } from 'lucide-react';
-import { BrandMark } from './BrandLogo.jsx';
-
-const MIN_SPLASH_MS = 2000;
-const COMPLETE_HOLD_MS = 180;
-const FADE_OUT_MS = 420;
-
-const SPLASH_STEPS = [
-  { threshold: 0, label: 'Conexión segura', icon: ShieldCheck },
-  { threshold: 35, label: 'Tablero en vivo', icon: Ticket },
-  { threshold: 70, label: 'Sorteos auditables', icon: Sparkles },
-];
-
-function getSplashMessage(progress) {
-  if (progress >= 100) return '¡Plataforma lista para ti!';
-  if (progress >= 72) return 'Preparando causas y sorteos verificados...';
-  if (progress >= 36) return 'Sincronizando tablero en tiempo real...';
-  return 'Iniciando plataforma transparente...';
-}
+import { Sparkles, Ticket } from 'lucide-react';
 
 export function Spinner({ size = 'md', className = '' }) {
   const sizes = {
