@@ -195,6 +195,25 @@ export function CatalogoPage({ mode = 'landing' }) {
   const [soloCierraPronto, setSoloCierraPronto] = useState(urgenteInicial);
   const [orden, setOrden] = useState('cierre');
   const [page, setPage] = useState(1);
+  const [modalFiltrosAbierto, setModalFiltrosAbierto] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        setModalFiltrosAbierto(false);
+      }
+    }
+    if (modalFiltrosAbierto) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [modalFiltrosAbierto]);
 
   useEffect(() => {
     setSoloCierraPronto(searchParams.get('urgente') === '1');
