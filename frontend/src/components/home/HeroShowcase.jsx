@@ -304,7 +304,7 @@ export function HeroShowcase({
   const fanStepX = isCompactScreen ? 56 : 86;
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16 sm:space-y-24 lg:space-y-28">
       {/* Hero abierto sin caja envolvente innecesaria + Tarjetas verticales de rifas */}
       <section className="relative py-2 sm:py-6">
         <div className="grid items-center gap-10 lg:grid-cols-12">
@@ -580,8 +580,8 @@ export function HeroShowcase({
       {/* Banner Marquee Deslizante en Pantalla Completa */}
       <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} fullBleed />
 
-      {/* Cómo funciona: 4 pasos simples con cabecera centrada */}
-      <section id="como-funciona" className="space-y-6">
+      {/* Cómo funciona: 4 pasos simples con cabecera centrada y separación generosa */}
+      <section id="como-funciona" className="space-y-8 pt-4 pb-6 sm:pt-6 sm:pb-8">
         <div className="mx-auto max-w-2xl space-y-2 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
             Proceso simple en 4 pasos
