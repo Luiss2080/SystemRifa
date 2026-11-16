@@ -55,7 +55,6 @@ export function AppHeader({ variant = 'public' }) {
   const [notifAbierto, setNotifAbierto] = useState(false);
   const [cuentaAbierta, setCuentaAbierta] = useState(false);
   const [dropdownAbierto, setDropdownAbierto] = useState(null);
-  const [mobileGroupAbierto, setMobileGroupAbierto] = useState(null);
 
   const popoverRef = useRef(null);
   const cuentaRef = useRef(null);
@@ -146,22 +145,7 @@ export function AppHeader({ variant = 'public' }) {
     tieneAlgunPermiso,
   });
 
-  function scrollToSection(id) {
-    setDropdownAbierto(null);
-    setMenuAbierto(false);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      navigate(`/#${id}`);
-    }
-  }
 
-  function openHelpWidget() {
-    setDropdownAbierto(null);
-    setMenuAbierto(false);
-    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
-  }
 
   // Navegación pública unificada: pensada para explorar y adquirir rifas sin mezclar herramientas internas
   const navItems = [

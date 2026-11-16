@@ -163,6 +163,7 @@ export function AppFooter() {
     { label: 'Sorteos y Ganadores', to: '/sorteos', icon: CheckCircle2, highlight: false },
     { label: 'Cómo Funciona', to: '/como-funciona', icon: Lightbulb, highlight: false },
     { label: 'Organizar una Rifa', to: '/organizar', icon: FilePlus2, highlight: false },
+    { label: 'Asistente RifaBot 24/7', action: openHelpWidget, icon: Headphones, highlight: false },
   ];
 
   const guias = [
