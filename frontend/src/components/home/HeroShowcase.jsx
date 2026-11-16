@@ -839,6 +839,15 @@ export function GarantiasSection() {
         <p className="text-sm leading-relaxed text-slate-600">
           Nuestra arquitectura protege a participantes y organizadores, asegurando equidad real desde la reserva hasta la entrega del premio.
         </p>
+        <div className="pt-1">
+          <Link
+            to="/garantias"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+          >
+            Conocer todas las garantías técnicas
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
 
       <div className="grid items-stretch gap-6 lg:grid-cols-12">
@@ -970,7 +979,14 @@ export function UltimosSorteosSection({ sorteos = [] }) {
         <p className="text-sm text-slate-600">
           Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
         </p>
-        <div className="pt-1">
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+          <Link
+            to="/sorteos"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+          >
+            Ver todos los sorteos y ganadores
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
           <button
             type="button"
             onClick={() =>
@@ -1166,10 +1182,10 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
               </p>
             </div>
             <Link
-              to="/registro"
+              to="/organizar"
               className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800"
             >
-              Crear cuenta para organizar
+              Cómo organizar una rifa
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </article>
@@ -1209,11 +1225,18 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
           <p className="text-sm leading-relaxed text-slate-600">
             Resolvemos las consultas más habituales sobre reservas, pagos, sorteos y creación de campañas solidarias.
           </p>
-          <div className="pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+            <Link
+              to="/preguntas-frecuentes"
+              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-bold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+            >
+              Ver centro de ayuda completo
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new window.CustomEvent('open-help-widget'))}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-5 py-2.5 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-5 py-2 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-sm shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
             >
               <MessageCircle className="h-4 w-4" />
               Chatear con RifaBot
