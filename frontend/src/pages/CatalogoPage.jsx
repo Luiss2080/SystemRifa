@@ -727,29 +727,19 @@ export function CatalogoPage({ mode = 'landing' }) {
               return (
                 <article
                   key={rifa.rifaId}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/85 bg-white/95 p-4 shadow-2xs backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md"
+                  className="group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md"
                 >
-                  {/* Línea superior con gradiente dinámico */}
-                  <div
-                    className={`absolute inset-x-0 top-0 h-1 ${
-                      porCerrar
-                        ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500'
-                        : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600'
-                    }`}
-                  />
-
-                  <div className="flex flex-1 flex-col justify-between space-y-3 pt-1">
-                    {/* Fila superior compacta: Causa + Estado/Urgencia */}
-                    <div className="flex items-center justify-between gap-1.5">
-                      <span className="inline-flex max-w-[175px] items-center gap-1 truncate rounded-full bg-emerald-50/90 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200/70 sm:max-w-[210px]">
-                        <HeartHandshake className="h-3 w-3 shrink-0 text-emerald-600" />
+                  <div className="space-y-2.5">
+                    {/* Fila superior: Causa + Estado/Urgencia */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 truncate max-w-[200px]">
+                        <HeartHandshake className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                         <span className="truncate">{rifa.causa?.nombre || 'Causa solidaria'}</span>
                       </span>
-
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {porCerrar && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-extrabold text-amber-900">
-                            <Clock className="h-2.5 w-2.5" />
+                            <Clock className="h-2.5 w-2.5 text-amber-700" />
                             {Math.max(1, Math.ceil(hrs))}h
                           </span>
                         )}
@@ -757,57 +747,44 @@ export function CatalogoPage({ mode = 'landing' }) {
                       </div>
                     </div>
 
-                    {/* Título y descripción compactos */}
+                    {/* Título de la rifa */}
                     <div>
-                      <h3 className="line-clamp-1 text-base font-extrabold text-slate-900 transition-colors group-hover:text-emerald-700">
+                      <h3 className="text-[15px] font-extrabold text-slate-900 line-clamp-1 transition-colors group-hover:text-emerald-700">
                         {rifa.nombre}
                       </h3>
-                      {rifa.descripcion && (
-                        <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-500">
-                          {rifa.descripcion}
-                        </p>
-                      )}
                     </div>
 
-                    {/* Ficha de premio destacada compacta */}
+                    {/* Premio principal en una sola línea limpia (sin caja pesada) */}
                     {primerPremio && (
-                      <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-200/60 bg-amber-50/70 px-2.5 py-1.5 text-xs">
-                        <div className="flex min-w-0 items-center gap-1.5">
-                          <Award className="h-3.5 w-3.5 shrink-0 text-amber-600" />
-                          <p className="truncate text-[11.5px] font-bold text-slate-800">
+                      <div className="flex items-center justify-between gap-1 text-xs text-slate-600">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Trophy className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                          <span className="truncate font-semibold text-slate-800 text-[11.5px]">
                             {primerPremio.nombre}
                             {premios.length > 1 ? ` (+${premios.length - 1})` : ''}
-                          </p>
+                          </span>
                         </div>
                         {Number(valorPremios) > 0 && (
-                          <span className="shrink-0 whitespace-nowrap text-[11px] font-extrabold text-amber-800">
+                          <span className="shrink-0 text-[11px] font-extrabold text-amber-700 whitespace-nowrap">
                             {formatearBs(valorPremios)}
                           </span>
                         )}
                       </div>
                     )}
 
-                    {/* Métricas clave: Precio y Disponibilidad en 2 columnas limpias */}
-                    <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2 text-xs">
+                    {/* Fila de números: Precio y Disponibilidad directos (sin caja gris saturada) */}
+                    <div className="flex items-baseline justify-between pt-1">
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          Precio ticket
-                        </p>
-                        <p className="text-base font-black text-emerald-700">
-                          {formatearBs(rifa.precioTicket)}
-                        </p>
+                        <span className="text-lg font-black text-emerald-700">{formatearBs(rifa.precioTicket)}</span>
+                        <span className="ml-1 text-[11px] font-medium text-slate-400">/ ticket</span>
                       </div>
-                      <div className="border-l border-slate-200/80 pl-2.5">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                          Disponibles
-                        </p>
-                        <p className="text-sm font-extrabold text-slate-800">
-                          <span className="text-emerald-700">{disponibles}</span> / {rifa.cantidadTickets}
-                        </p>
+                      <div className="text-right text-xs">
+                        <span className="font-extrabold text-slate-800">{disponibles}</span>
+                        <span className="text-slate-400 font-medium"> / {rifa.cantidadTickets} disp.</span>
                       </div>
                     </div>
 
-                    {/* Barra de progreso y fecha de cierre */}
+                    {/* Barra de progreso limpia */}
                     <div className="space-y-1">
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                         <div
@@ -815,27 +792,27 @@ export function CatalogoPage({ mode = 'landing' }) {
                           style={{ width: `${pctAvance}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500">
+                      <div className="flex items-center justify-between text-[11px] text-slate-400">
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3 text-slate-400" />
                           {formatearFechaCorta(rifa.fechaFin)}
                         </span>
-                        <span className="font-bold text-slate-700">{pctAvance}% vendido</span>
+                        <span className="font-bold text-slate-600">{pctAvance}% vendido</span>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Botón de acción directo */}
-                    <div className="pt-1">
-                      <Link to={`/rifas/${rifa.rifaId}`} className="block">
-                        <button
-                          type="button"
-                          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs transition hover:bg-emerald-700 active:scale-[0.99] cursor-pointer"
-                        >
-                          {rifa.estado === 'FINALIZADA' ? 'Ver detalle' : 'Elegir mis números'}
-                          <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-                        </button>
-                      </Link>
-                    </div>
+                  {/* Botón de acción */}
+                  <div className="pt-3">
+                    <Link to={`/rifas/${rifa.rifaId}`} className="block">
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs transition hover:bg-emerald-700 active:scale-[0.99] cursor-pointer"
+                      >
+                        {rifa.estado === 'FINALIZADA' ? 'Ver detalle' : 'Elegir mis números'}
+                        <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                      </button>
+                    </Link>
                   </div>
                 </article>
               );
