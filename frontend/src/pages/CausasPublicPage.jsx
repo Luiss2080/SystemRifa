@@ -220,39 +220,37 @@ export function CausasPublicPage() {
 
   return (
     <div className="space-y-10 py-2 sm:py-4">
-      {/* 1. HERO COMERCIAL DE LA PÁGINA PÚBLICA */}
-      <section className="relative overflow-hidden rounded-3xl border border-emerald-200/90 bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/50 p-6 shadow-sm sm:p-10">
-        <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/95 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            Directorio de Causas Solidarias Verificadas
+      {/* 1. HERO COMERCIAL ABIERTO (SIN CONTENEDOR BLANCO INNECESARIO) */}
+      <section className="mx-auto max-w-3xl space-y-4 text-center py-2 sm:py-6">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
+          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+          Directorio de Causas Solidarias Verificadas
+        </span>
+
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+          Causas que transforman vidas con{' '}
+          <span className="text-emerald-700">transparencia total</span>
+        </h1>
+
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          Cada causa cuenta con personería jurídica, convenio directo y sorteos auditados con
+          trazabilidad pública. Al adquirir boletos, apoyas directamente a estas iniciativas.
+        </p>
+
+        {/* Insignias de confianza pública */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3 py-1 text-xs font-semibold text-emerald-800 shadow-2xs">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+            {causasBase.length} causas verificadas
           </span>
-
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Causas que transforman vidas con{' '}
-            <span className="text-emerald-700">transparencia total</span>
-          </h1>
-
-          <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-            Cada causa cuenta con personería jurídica, convenio directo y sorteos auditados con
-            trazabilidad pública. Al adquirir boletos, apoyas directamente a estas iniciativas.
-          </p>
-
-          {/* Insignias de confianza pública */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold text-emerald-800 shadow-2xs">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-              {causasBase.length} causas verificadas
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-white px-3 py-1 text-xs font-semibold text-teal-800 shadow-2xs">
-              <Ticket className="h-3.5 w-3.5 text-teal-600" />
-              {totalRifas} rifas activas vinculadas
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white px-3 py-1 text-xs font-semibold text-amber-800 shadow-2xs">
-              <Target className="h-3.5 w-3.5 text-amber-600" />
-              Meta global: {formatearBs(totalMeta)}
-            </span>
-          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-white/90 px-3 py-1 text-xs font-semibold text-teal-800 shadow-2xs">
+            <Ticket className="h-3.5 w-3.5 text-teal-600" />
+            {totalRifas} rifas activas vinculadas
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white/90 px-3 py-1 text-xs font-semibold text-amber-800 shadow-2xs">
+            <Target className="h-3.5 w-3.5 text-amber-600" />
+            Meta global: {formatearBs(totalMeta)}
+          </span>
         </div>
       </section>
 
