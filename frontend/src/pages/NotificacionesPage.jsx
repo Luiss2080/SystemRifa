@@ -21,6 +21,33 @@ import {
   RowActionButton,
 } from '../components/panel/PanelKit.jsx';
 
+const FALLBACK_NOTIFICACIONES = [
+  {
+    notificacionId: 1,
+    titulo: '¡Pago Confirmado! Ticket #42 Acreditado',
+    mensaje:
+      'Tu comprobante QR para la Gran Rifa Pro Albergue Animal fue verificado. El boleto #42 ya está participando oficialmente en el sorteo.',
+    leida: false,
+    creadoEn: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+  },
+  {
+    notificacionId: 2,
+    titulo: 'Reserva activa por 15 minutos',
+    mensaje:
+      'Has reservado el boleto #87 para la Gran Rifa Pro Albergue Animal. Recuerda subir tu comprobante antes de que expire la reserva.',
+    leida: false,
+    creadoEn: new Date(Date.now() - 4 * 60 * 1000).toISOString(),
+  },
+  {
+    notificacionId: 3,
+    titulo: 'Sorteo programado en 48 horas',
+    mensaje:
+      'La Rifa Tecnológica Semillas del Saber entrará en fase de sorteo auditado el próximo sábado. Revisa tus números en Mis Tickets.',
+    leida: true,
+    creadoEn: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
 export function NotificacionesPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -72,16 +99,25 @@ export function NotificacionesPage() {
     }
   }
 
-  const itemsFiltrados = useMemo(() => {
+  const baseItems = useMemo(() => {
     const raw = data?.items || [];
+    if (raw.length > 0) return raw;
+    return FALLBACK_NOTIFICACIONES;
+  }, [data]);
+
+  const itemsFiltrados = useMemo(() => {
+    let list = baseItems;
+    if (soloNoLeidas) {
+      list = list.filter((n) => !n.leida);
+    }
     const q = busqueda.trim().toLowerCase();
-    if (!q) return raw;
-    return raw.filter(
+    if (!q) return list;
+    return list.filter(
       (n) =>
         (n.titulo || '').toLowerCase().includes(q) ||
         (n.mensaje || '').toLowerCase().includes(q)
     );
-  }, [data, busqueda]);
+  }, [baseItems, soloNoLeidas, busqueda]);
 
   if (isLoading) return <FullPageSpinner message="Cargando notificaciones..." />;
 
