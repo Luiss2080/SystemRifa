@@ -11,6 +11,8 @@ export function PaginationCard({
   showingTo = 0,
   onPageChange,
   itemLabel = 'registros',
+  className = '',
+  centered = false,
 }) {
   if (!onPageChange || total === 0) return null;
 
@@ -21,8 +23,12 @@ export function PaginationCard({
     pages.push(p);
   }
 
+  const containerCls = centered
+    ? `mx-auto flex w-full max-w-lg flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-6 py-3 shadow-2xs backdrop-blur-md sm:flex-row ${className}`
+    : `flex flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 py-3.5 shadow-2xs backdrop-blur-md sm:flex-row ${className}`;
+
   return (
-    <div className="flex flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 py-3.5 shadow-2xs backdrop-blur-md sm:flex-row">
+    <div className={containerCls}>
       <p className="text-xs text-slate-600">
         Mostrando{' '}
         <strong className="font-extrabold text-slate-900">
