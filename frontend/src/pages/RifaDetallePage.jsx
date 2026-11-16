@@ -1023,19 +1023,17 @@ export function RifaDetallePage() {
         )}
       </Modal>
 
-      {/* Garantías y transparencia al pie de página */}
-      <section className="mt-12 rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-50/80 via-white to-teal-50/80 p-6 shadow-2xs sm:p-8">
-        <div className="mx-auto max-w-3xl space-y-3 text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 px-3 py-1 text-xs font-bold text-emerald-800">
-            Garantía de Transparencia
-          </span>
-          <h3 className="text-xl font-black text-slate-900 sm:text-2xl">
-            Sorteos auditados y fondos con destino 100% verificado
-          </h3>
-          <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
-            Tus aportes respaldan directamente a la causa comunitaria. Los sorteos se realizan con algoritmos matemáticos auditables y solo participan los boletos con pago confirmado.
-          </p>
-        </div>
+      {/* Garantías y transparencia al pie de página (abierto sin contenedor blanco) */}
+      <section className="mx-auto max-w-3xl space-y-3 text-center pt-8">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 px-3 py-1 text-xs font-bold text-emerald-800">
+          Garantía de Transparencia
+        </span>
+        <h3 className="text-xl font-black text-slate-900 sm:text-2xl">
+          Sorteos auditados y fondos con destino 100% verificado
+        </h3>
+        <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
+          Tus aportes respaldan directamente a la causa comunitaria. Los sorteos se realizan con algoritmos matemáticos auditables y solo participan los boletos con pago confirmado.
+        </p>
       </section>
     </div>
   );
