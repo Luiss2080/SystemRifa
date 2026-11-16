@@ -300,6 +300,8 @@ export function CatalogoPage({ mode = 'landing' }) {
   }, [rifasBase, busqueda, soloCierraPronto, orden]);
 
   const hayFiltrosLocales = Boolean(causaId || busqueda.trim() || soloCierraPronto);
+  const filtrosActivosCount = (causaId ? 1 : 0) + (soloCierraPronto ? 1 : 0) + (busqueda.trim() ? 1 : 0);
+  const causaActivaObj = causas.find((c) => String(c.causaId) === String(causaId));
 
   function limpiarFiltros() {
     seleccionarCausa('');
@@ -315,7 +317,7 @@ export function CatalogoPage({ mode = 'landing' }) {
   }).length;
 
   return (
-    <div className={esVistaLanding ? 'space-y-8' : 'space-y-5'}>
+    <div className={esVistaLanding ? 'space-y-20 sm:space-y-28 lg:space-y-36 pb-16' : 'space-y-8 pb-16'}>
       {esVistaLanding ? (
         <HeroShowcase
           rifas={rifasBase}
