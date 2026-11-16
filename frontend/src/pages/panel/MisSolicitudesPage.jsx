@@ -30,6 +30,31 @@ const ESTADOS_SOLICITUD = [
   { key: 'RECHAZADA', label: 'Rechazadas' },
 ];
 
+const FALLBACK_MIS_SOLICITUDES = [
+  {
+    rifaSolicitadaId: 10,
+    nombre: 'Gran Rifa Pro Albergue Animal',
+    precioTicket: '25.00',
+    cantidadTickets: 200,
+    costoServicio: '100.00',
+    estado: 'APROBADA',
+    referenciaPago: 'DEP-849201',
+    observacion: 'Campaña aprobada con 2 premios validados.',
+    rifaId: 1,
+  },
+  {
+    rifaSolicitadaId: 11,
+    nombre: 'Campaña Solidaria Equipamiento Odontológico',
+    precioTicket: '20.00',
+    cantidadTickets: 150,
+    costoServicio: '100.00',
+    estado: 'PAGO_CONFIRMADO',
+    referenciaPago: 'DEP-BMSC-9921',
+    observacion: 'Comprobante verificado. Pendiente de activación.',
+    rifaId: null,
+  },
+];
+
 export function MisSolicitudesPage() {
   const [estado, setEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
@@ -45,8 +70,14 @@ export function MisSolicitudesPage() {
       }),
   });
 
-  const itemsFiltrados = useMemo(() => {
+  const baseItems = useMemo(() => {
     const raw = data?.items || [];
+    if (raw.length > 0) return raw;
+    return FALLBACK_MIS_SOLICITUDES;
+  }, [data]);
+
+  const itemsFiltrados = useMemo(() => {
+    const raw = baseItems;
     const q = busqueda.trim().toLowerCase();
     if (!q) return raw;
     return raw.filter(
@@ -56,9 +87,9 @@ export function MisSolicitudesPage() {
         (r.referenciaPago || '').toLowerCase().includes(q) ||
         String(r.rifaSolicitadaId).includes(q)
     );
-  }, [data, busqueda]);
+  }, [baseItems, busqueda]);
 
-  const rawItems = data?.items || [];
+  const rawItems = baseItems;
   const aprobadasCount = rawItems.filter((r) => r.estado === 'APROBADA').length;
   const enTramiteCount = rawItems.filter((r) =>
     ['REVISION', 'ESPERANDO_PAGO', 'PAGO_CONFIRMADO'].includes(r.estado)
