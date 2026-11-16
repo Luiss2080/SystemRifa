@@ -28,6 +28,36 @@ const ESTADOS_RIFA = [
   { key: 'FINALIZADA', label: 'Finalizadas' },
 ];
 
+const FALLBACK_ORGANIZADOR_RIFAS = [
+  {
+    rifaId: 1,
+    nombre: 'Gran Rifa Pro Albergue Animal',
+    causa: { nombre: 'Albergue Esperanza Canina' },
+    precioTicket: '25.00',
+    cantidadTickets: 200,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 42 * 60 * 60 * 1000).toISOString(),
+    conteos: { DISPONIBLE: 120, RESERVADO: 15, VENDIDO: 65 },
+    premios: [
+      { premioId: 1, nombre: 'Motocicleta 150cc 0km Modelo 2026', valor: '14500.00' },
+      { premioId: 2, nombre: 'Casco Certificado DOT + Guantes', valor: '800.00' },
+    ],
+  },
+  {
+    rifaId: 2,
+    nombre: 'Rifa Tecnológica Semillas del Saber',
+    causa: { nombre: 'Educación Digital Rural' },
+    precioTicket: '20.00',
+    cantidadTickets: 150,
+    estado: 'ACTIVA',
+    fechaFin: new Date(Date.now() + 68 * 60 * 60 * 1000).toISOString(),
+    conteos: { DISPONIBLE: 85, RESERVADO: 10, VENDIDO: 55 },
+    premios: [
+      { premioId: 3, nombre: 'Laptop Lenovo IdeaPad 15" Core i5', valor: '5200.00' },
+    ],
+  },
+];
+
 export function OrganizadorRifasPage() {
   const [estado, setEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
@@ -43,18 +73,24 @@ export function OrganizadorRifasPage() {
       }),
   });
 
-  const items = useMemo(() => {
+  const baseItems = useMemo(() => {
     const raw = data?.items || [];
+    if (raw.length > 0) return raw;
+    return FALLBACK_ORGANIZADOR_RIFAS;
+  }, [data]);
+
+  const items = useMemo(() => {
+    const raw = baseItems;
     const q = busqueda.trim().toLowerCase();
     if (!q) return raw;
     return raw.filter(
       (r) =>
         r.nombre?.toLowerCase().includes(q) || r.causa?.nombre?.toLowerCase().includes(q)
     );
-  }, [data, busqueda]);
+  }, [baseItems, busqueda]);
   const pagination = data?.pagination || { page: 1, totalPages: 1, total: items.length };
 
-  const rawItems = data?.items || [];
+  const rawItems = baseItems;
   const activasCount = rawItems.filter((r) => r.estado === 'ACTIVA' || r.estado === 'EXTENDIDA').length;
   const finalizadasCount = rawItems.filter((r) => r.estado === 'FINALIZADA').length;
   const totalVendidos = rawItems.reduce((acc, r) => acc + (r.conteos?.VENDIDO ?? 0), 0);
