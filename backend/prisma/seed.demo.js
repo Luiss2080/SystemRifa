@@ -374,8 +374,8 @@ async function main() {
     causaId: causa4.causaId,
     precioTicket: '15.00',
     cantidadTickets: 100,
-    fechaInicio: new Date(ahora - 4 * DIA),
-    fechaFin: new Date(ahora + 36 * HORA),
+    fechaInicio: new Date(ahora - 2 * DIA),
+    fechaFin: new Date(ahora + 5 * DIA),
     estado: 'ACTIVA',
     premios: [
       {
