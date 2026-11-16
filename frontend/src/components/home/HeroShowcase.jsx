@@ -798,9 +798,6 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
     </section>
   );
 }
-    </section>
-  );
-}
 
 export function GarantiasSection() {
   const garantias = [
