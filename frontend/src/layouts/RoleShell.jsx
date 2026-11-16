@@ -648,7 +648,7 @@ export function RoleShell({ children }) {
 
       {/* Columna derecha: Top Header del Panel + Contenido + Footer */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
+        <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
           <div className="flex h-18 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
             {/* Izquierda: Menú móvil + Título del módulo actual */}
             <div className="flex min-w-0 items-center gap-3">

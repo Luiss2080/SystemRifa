@@ -396,7 +396,7 @@ export function HeroShowcase({
 
           {/* Columna Derecha: Carteles / Rifas en Abanico Vertical */}
           <div className="lg:col-span-6">
-            <div className="relative mx-auto flex h-[390px] max-w-[560px] items-center justify-center overflow-hidden sm:h-[430px] sm:overflow-visible">
+            <div className="relative isolate mx-auto flex h-[390px] max-w-[560px] items-center justify-center overflow-hidden sm:h-[430px] sm:overflow-visible">
               {cards.map((card, idx) => {
                 const offset = idx - activeIdx;
                 const isCenter = offset === 0;
@@ -405,7 +405,7 @@ export function HeroShowcase({
                 const translateX = offset * fanStepX;
                 const translateY = absOffset * 14;
                 const scale = isCenter ? 1 : Math.max(0.76, 1 - absOffset * 0.11);
-                const zIndex = 30 - absOffset * 5;
+                const zIndex = 15 - absOffset * 3;
                 const opacity = absOffset > 2 ? 0 : isCenter ? 1 : absOffset === 1 ? 0.92 : 0.72;
                 const premioPrincipal = card.premios?.[0]?.nombre;
 

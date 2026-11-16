@@ -540,13 +540,21 @@ export function FloatingWidgets() {
     <>
       {!dockBotRight && (
         /* Widget Inferior Izquierdo: Asistente Virtual RifaBot */
-        <div className="fixed bottom-4 left-4 z-40 flex flex-col items-start">
+        <div
+          className={`fixed bottom-4 left-4 flex flex-col items-start ${
+            botOpen ? 'z-50' : 'z-40'
+          }`}
+        >
           {botOpen ? botCard : botTrigger}
         </div>
       )}
 
       {/* Widget Inferior Derecho: RifaBot (cuando hay sidebar) + WhatsApp + Volver arriba */}
-      <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-2.5">
+      <div
+        className={`fixed right-4 bottom-4 flex flex-col items-end gap-2.5 ${
+          botOpen || waOpen ? 'z-50' : 'z-40'
+        }`}
+      >
         {dockBotRight && botOpen ? (
           botCard
         ) : waOpen ? (

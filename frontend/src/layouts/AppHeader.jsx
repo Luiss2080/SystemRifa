@@ -313,7 +313,7 @@ export function AppHeader({ variant = 'public' }) {
 
   return (
     <header
-      className={`sticky top-0 z-30 border-b border-slate-200/90 bg-white/95 text-slate-900 shadow-2xs backdrop-blur-md ${
+      className={`sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 text-slate-900 shadow-2xs backdrop-blur-md ${
         esPanel ? 'border-t-[3px] border-t-emerald-600' : ''
       }`}
     >
