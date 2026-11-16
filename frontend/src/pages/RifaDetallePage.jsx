@@ -275,7 +275,7 @@ export function RifaDetallePage() {
   const [enviandoPago, setEnviandoPago] = useState(false);
   const [liberando, setLiberando] = useState(false);
 
-  const { data: detalleData, isLoading: loadingDetalle, error: errorDetalle } = useQuery({
+  const { data: detalleData, isLoading: loadingDetalle } = useQuery({
     queryKey: ['rifa-detalle', id],
     queryFn: () => getDetalleRifa(id),
   });

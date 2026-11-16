@@ -150,7 +150,7 @@ function horasRestantes(fechaFin) {
 }
 
 export function CatalogoPage({ mode = 'landing' }) {
-  const { autenticado, esAdmin, esOrganizador, usuario } = useAuth();
+  const { autenticado } = useAuth();
   const esVistaLanding = mode === 'landing' && !autenticado;
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -277,7 +277,7 @@ export function CatalogoPage({ mode = 'landing' }) {
             <div className="space-y-1">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">
                 <Ticket className="h-3.5 w-3.5 text-emerald-600" />
-                Catálogo oficial en vivo · {rifasFiltradas.length} rifa(s) disponibles
+                Catálogo en vivo · {rifasFiltradas.length} rifas ({totalDisponiblesCatalogo} boletos disponibles{urgentesCount > 0 ? ` · ${urgentesCount} cierran pronto` : ''})
               </span>
               <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
                 Catálogo de Rifas Solidarias

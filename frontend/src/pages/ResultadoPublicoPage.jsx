@@ -17,11 +17,10 @@ import {
   Trophy,
 } from 'lucide-react';
 import { getResultadoRifa } from '../features/rifas/publicApi.js';
-import { extraerErrorApi } from '../utils/apiError.js';
 import { formatearBs, formatearFecha } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { EmptyState, FullPageSpinner } from '../components/ui/Feedback.jsx';
+import { FullPageSpinner } from '../components/ui/Feedback.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
 
 const FALLBACK_RESULTADO = {
