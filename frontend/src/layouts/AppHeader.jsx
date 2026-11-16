@@ -148,58 +148,117 @@ export function AppHeader({ variant = 'public' }) {
 
 
 
-  // Navegación pública unificada: pensada para explorar y adquirir rifas sin mezclar herramientas internas
+  function openHelpWidget() {
+    setDropdownAbierto(null);
+    setMenuAbierto(false);
+    window.dispatchEvent(new window.CustomEvent('open-help-widget'));
+  }
+
+  // Navegación pública unificada con desplegables compactos y alta legibilidad responsive
   const navItems = [
     {
-      to: autenticado ? '/explorar' : '/',
-      label: 'Catálogo',
-      icon: Ticket,
-      end: true,
+      id: 'explorar',
+      type: 'dropdown',
+      label: 'Explorar',
+      items: [
+        {
+          to: autenticado ? '/explorar' : '/',
+          label: 'Catálogo de rifas',
+          desc: 'Explora rifas activas y adquiere boletos',
+          icon: Ticket,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          to: autenticado ? '/explorar?urgente=1' : '/?urgente=1',
+          label: 'Cierra pronto (≤ 48h)',
+          desc: 'Últimas horas antes de los sorteos',
+          icon: Clock,
+          color: 'bg-amber-100 text-amber-700',
+        },
+        {
+          to: '/causas',
+          label: 'Causas solidarias',
+          desc: 'Iniciativas y fundaciones verificadas',
+          icon: HeartHandshake,
+          color: 'bg-rose-100 text-rose-700',
+        },
+        {
+          to: '/como-funciona',
+          label: 'Cómo funciona',
+          desc: 'Paso a paso para participar y ganar',
+          icon: Sparkles,
+          color: 'bg-sky-100 text-sky-700',
+        },
+      ],
     },
     {
       to: '/causas',
       label: 'Causas',
       icon: HeartHandshake,
-      end: false,
     },
     {
-      to: '/sorteos',
-      label: 'Sorteos & Ganadores',
-      shortLabel: 'Sorteos',
-      icon: Trophy,
-      end: false,
+      id: 'garantias',
+      type: 'dropdown',
+      label: 'Garantías y Sorteos',
+      shortLabel: 'Garantías & Sorteos',
+      items: [
+        {
+          to: '/sorteos',
+          label: 'Sorteos y ganadores',
+          desc: 'Historial en vivo, actas y certificados',
+          icon: Trophy,
+          color: 'bg-amber-100 text-amber-700',
+        },
+        {
+          to: '/garantias',
+          label: 'Garantías del sistema',
+          desc: 'Seguridad criptográfica y reservas atómicas',
+          icon: ShieldCheck,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          to: '/organizar',
+          label: 'Organizar una rifa',
+          desc: 'Postula tu iniciativa o campaña solidaria',
+          icon: FilePlus2,
+          color: 'bg-teal-100 text-teal-700',
+        },
+      ],
     },
     {
-      to: '/como-funciona',
-      label: 'Cómo Funciona',
-      icon: Sparkles,
-      end: false,
-    },
-    {
-      to: '/garantias',
-      label: 'Garantías',
-      icon: ShieldCheck,
-      end: false,
-    },
-    {
-      to: '/preguntas-frecuentes',
-      label: 'Preguntas Frecuentes',
-      shortLabel: 'Ayuda & FAQ',
-      icon: HelpCircle,
-      end: false,
+      id: 'ayuda',
+      type: 'dropdown',
+      label: 'Ayuda y Contacto',
+      shortLabel: 'Ayuda & Contacto',
+      items: [
+        {
+          to: '/preguntas-frecuentes',
+          label: 'Preguntas frecuentes',
+          desc: 'Respuestas a dudas sobre boletos y pagos',
+          icon: HelpCircle,
+          color: 'bg-indigo-100 text-indigo-700',
+        },
+        {
+          action: openHelpWidget,
+          label: 'Asistente RifaBot 24/7',
+          desc: 'Soporte inteligente y resolución rápida',
+          icon: MessageCircle,
+          color: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+          to: '/contacto',
+          label: 'Canales de atención',
+          desc: 'WhatsApp oficial, correo y soporte directo',
+          icon: Mail,
+          color: 'bg-sky-100 text-sky-700',
+        },
+      ],
     },
     {
       to: '/contacto',
-      label: 'Contacto',
+      label: 'Contáctanos',
+      shortLabel: 'Contacto',
       icon: Mail,
-      end: false,
-    },
-    {
-      to: '/organizar',
-      label: 'Organizar una Rifa',
-      icon: FilePlus2,
-      soloMobile: true,
-      end: false,
     },
   ];
 
