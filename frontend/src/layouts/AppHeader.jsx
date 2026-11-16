@@ -55,6 +55,7 @@ export function AppHeader({ variant = 'public' }) {
   const [notifAbierto, setNotifAbierto] = useState(false);
   const [cuentaAbierta, setCuentaAbierta] = useState(false);
   const [dropdownAbierto, setDropdownAbierto] = useState(null);
+  const [mobileGroupAbierto, setMobileGroupAbierto] = useState(null);
 
   const popoverRef = useRef(null);
   const cuentaRef = useRef(null);
