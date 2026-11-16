@@ -2,20 +2,32 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
+  Activity,
   ArrowRight,
   ArrowUpDown,
   Award,
   Calendar,
+  Check,
   CheckSquare,
   Clock,
+  Cpu,
   CreditCard,
+  Dog,
+  GraduationCap,
   HeartHandshake,
   LayoutDashboard,
+  LayoutGrid,
+  PawPrint,
   RotateCcw,
   Search,
+  ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   Ticket,
+  Trees,
   Trophy,
+  Users,
+  Utensils,
   X,
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
@@ -44,12 +56,34 @@ import {
 const HORAS_URGENCIA = 48;
 
 const FALLBACK_CAUSAS_FILTRO = [
-  { causaId: 1, nombre: 'Albergue Esperanza Canina' },
-  { causaId: 2, nombre: 'Educación Digital Rural' },
-  { causaId: 3, nombre: 'Salud y Esperanza Infantil' },
-  { causaId: 4, nombre: 'Comedor Comunitario San José' },
-  { causaId: 5, nombre: 'Reforestación Chiquitanía' },
+  { causaId: 1, nombre: 'Albergue Patitas Felices' },
+  { causaId: 2, nombre: 'Comedor Infantil Esperanza' },
+  { causaId: 3, nombre: 'Reforestación Chiquitanía Viva' },
+  { causaId: 4, nombre: 'Hogar Abuelos del Oriente' },
+  { causaId: 5, nombre: 'Salud Comunitaria Santa Cruz' },
+  { causaId: 6, nombre: 'Becas Tech y Robótica Juvenil' },
+  { causaId: 7, nombre: 'Albergue Esperanza Canina' },
+  { causaId: 8, nombre: 'Educación Digital Rural' },
+  { causaId: 9, nombre: 'Salud y Esperanza Infantil' },
+  { causaId: 10, nombre: 'Comedor Comunitario San José' },
 ];
+
+function getCausaIcon(nombre = '') {
+  const n = (nombre || '').toLowerCase();
+  if (n.includes('patitas')) return { icon: PawPrint, color: 'bg-rose-100 text-rose-700' };
+  if (n.includes('infantil') || (n.includes('esperanza') && !n.includes('canina') && !n.includes('salud'))) {
+    return { icon: Utensils, color: 'bg-amber-100 text-amber-700' };
+  }
+  if (n.includes('reforest') || n.includes('chiquitan')) return { icon: Trees, color: 'bg-emerald-100 text-emerald-700' };
+  if (n.includes('abuelos') || n.includes('oriente')) return { icon: Users, color: 'bg-indigo-100 text-indigo-700' };
+  if (n.includes('salud comunitaria') || n.includes('santa cruz')) return { icon: Activity, color: 'bg-sky-100 text-sky-700' };
+  if (n.includes('tech') || n.includes('robót')) return { icon: Cpu, color: 'bg-purple-100 text-purple-700' };
+  if (n.includes('canina')) return { icon: Dog, color: 'bg-teal-100 text-teal-700' };
+  if (n.includes('educación') || n.includes('rural')) return { icon: GraduationCap, color: 'bg-blue-100 text-blue-700' };
+  if (n.includes('salud y esperanza')) return { icon: ShieldCheck, color: 'bg-rose-100 text-rose-700' };
+  if (n.includes('san josé') || n.includes('comedor')) return { icon: HeartHandshake, color: 'bg-orange-100 text-orange-700' };
+  return { icon: HeartHandshake, color: 'bg-emerald-100 text-emerald-700' };
+}
 
 const FALLBACK_CATALOGO_RIFAS = [
   {
