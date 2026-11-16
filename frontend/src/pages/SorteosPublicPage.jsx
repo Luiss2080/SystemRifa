@@ -160,7 +160,7 @@ export function SorteosPublicPage() {
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
-  const { data: resumenPublico, isLoading } = useQuery({
+  const { data: resumenPublico } = useQuery({
     queryKey: ['resumen-publico-sorteos'],
     queryFn: getResumenPublico,
   });
