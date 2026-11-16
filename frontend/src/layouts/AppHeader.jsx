@@ -525,7 +525,7 @@ export function AppHeader({ variant = 'public' }) {
         </nav>
 
         {/* Acciones Derecha */}
-        <div className="hidden shrink-0 items-center gap-2 lg:flex">
+        <div className="hidden shrink-0 items-center gap-1.5 lg:flex xl:gap-2">
           {autenticado ? (
             <>
               {tieneAdminPanel ? (
