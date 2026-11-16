@@ -6,8 +6,6 @@ import {
   Award,
   Calendar,
   CheckCircle2,
-  Clock,
-  Filter,
   HeartHandshake,
   RotateCcw,
   Search,
@@ -19,7 +17,6 @@ import {
 import { getResumenPublico } from '../features/rifas/publicApi.js';
 import { formatearBs, formatearFechaCorta } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
-import { Badge } from '../components/ui/Badge.jsx';
 
 const FALLBACK_SORTEOS_EXPANDIDOS = [
   {
