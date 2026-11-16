@@ -272,155 +272,47 @@ export function CatalogoPage({ mode = 'landing' }) {
           onSelectCausa={seleccionarCausa}
         />
       ) : (
-        <>
-          <PanelFilterBar
-            title={`Catálogo en Vivo · Sesión @${usuario?.alias || 'usuario'}`}
-            subtitle="Explora rifas activas, filtra por causa solidaria y reserva tus números en tiempo real."
-            searchValue={busqueda}
-            onSearchChange={setBusqueda}
-            searchPlaceholder="Buscar rifa por título, descripción o causa..."
-            hasActiveFilters={hayFiltrosLocales}
-            onResetFilters={limpiarFiltros}
-            selects={[
-              {
-                label: 'Causa solidaria',
-                value: causaId,
-                onChange: seleccionarCausa,
-                options: [
-                  { value: '', label: 'Todas las causas' },
-                  ...causas.map((c) => ({ value: String(c.causaId), label: c.nombre })),
-                ],
-              },
-              {
-                label: 'Ordenar por',
-                value: orden,
-                onChange: setOrden,
-                options: [
-                  { value: 'cierre', label: 'Cierre más próximo' },
-                  { value: 'precio', label: 'Menor precio' },
-                  { value: 'disponibles', label: 'Más disponibles' },
-                ],
-              },
-            ]}
-            rightActions={
-              <div className="flex flex-wrap items-center gap-2">
-                {esAdmin ? (
-                  <>
-                    <Link to="/admin/reportes">
-                      <Button size="sm">
-                        <LayoutDashboard className="h-4 w-4" />
-                        Panel Admin
-                      </Button>
-                    </Link>
-                    <Link to="/admin/pagos">
-                      <Button variant="secondary" size="sm">
-                        <CheckSquare className="h-4 w-4 text-emerald-600" />
-                        Verificar pagos
-                      </Button>
-                    </Link>
-                  </>
-                ) : esOrganizador ? (
-                  <>
-                    <Link to="/organizador/rifas">
-                      <Button size="sm">
-                        <Sparkles className="h-4 w-4" />
-                        Mis rifas
-                      </Button>
-                    </Link>
-                    <Link to="/solicitudes/nueva">
-                      <Button variant="secondary" size="sm">
-                        Nueva solicitud
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/mis-tickets">
-                      <Button size="sm">
-                        <Ticket className="h-4 w-4" />
-                        Mis tickets
-                      </Button>
-                    </Link>
-                    <Link to="/mis-pagos">
-                      <Button variant="secondary" size="sm">
-                        <CreditCard className="h-4 w-4 text-emerald-600" />
-                        Mis pagos
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
-            }
-            extraContent={
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSoloCierraPronto((v) => !v)}
-                  className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
-                    soloCierraPronto
-                      ? 'border-amber-400 bg-amber-50 text-amber-800 shadow-2xs'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <Clock className="h-3.5 w-3.5 text-amber-600" />
-                  Cierra pronto (&le; 48h)
-                </button>
-                <Link
-                  to="/causas"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline"
-                >
-                  <HeartHandshake className="h-3.5 w-3.5" />
-                  Explorar directorio de causas
-                </Link>
-              </div>
-            }
-          />
+        <section className="space-y-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
+            <div className="space-y-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">
+                <Ticket className="h-3.5 w-3.5 text-emerald-600" />
+                Catálogo oficial en vivo · {rifasFiltradas.length} rifa(s) disponibles
+              </span>
+              <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                Catálogo de Rifas Solidarias
+              </h1>
+              <p className="text-xs text-slate-500 sm:text-sm">
+                Selecciona tus boletos favoritos con bloqueo seguro de 15 minutos y seguimiento transparente.
+              </p>
+            </div>
 
-          <PanelSectionHeader
-            icon={Ticket}
-            title="Rifas Solidarias Disponibles"
-            subtitle="Campañas activas con tablero de números sincronizado"
-            badgeText={`${rifasFiltradas.length} Campañas visibles`}
-            accent="emerald"
-          />
-
-          <PanelKpiGrid
-            items={[
-              {
-                label: 'Campañas en catálogo',
-                value: pagination.total ?? rifasBase.length,
-                trendText: 'Sorteos verificados',
-                icon: Ticket,
-                accent: 'emerald',
-              },
-              {
-                label: 'Números disponibles',
-                value: totalDisponiblesCatalogo,
-                trendText: 'Listos para reservar',
-                icon: Sparkles,
-                accent: 'sky',
-              },
-              {
-                label: 'Cierran en ≤ 48h',
-                value: urgentesCount,
-                trendText: 'Últimas oportunidades',
-                icon: Clock,
-                accent: 'amber',
-              },
-              {
-                label: 'Causas activas',
-                value: causas.length,
-                trendText: 'Iniciativas solidarias',
-                icon: HeartHandshake,
-                accent: 'indigo',
-              },
-            ]}
-          />
-        </>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link to="/mis-tickets">
+                <Button size="sm">
+                  <Ticket className="h-4 w-4" />
+                  Mis tickets
+                </Button>
+              </Link>
+              <Link to="/mis-pagos">
+                <Button variant="secondary" size="sm">
+                  <CreditCard className="h-4 w-4 text-emerald-600" />
+                  Mis pagos
+                </Button>
+              </Link>
+              <Link to="/causas">
+                <Button variant="secondary" size="sm">
+                  <HeartHandshake className="h-4 w-4 text-rose-600" />
+                  Causas
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
       )}
 
-      {esVistaLanding && (
-        <section id="catalogo-activo" className="space-y-5">
+      <section id="catalogo-activo" className="space-y-5">
+        {esVistaLanding && (
           <div className="mx-auto max-w-2xl space-y-2 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
               <Ticket className="h-3.5 w-3.5 text-emerald-600" />
@@ -430,6 +322,7 @@ export function CatalogoPage({ mode = 'landing' }) {
               Rifas solidarias disponibles para participar
             </h2>
           </div>
+        )}
 
           <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-xs backdrop-blur-md">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -534,7 +427,6 @@ export function CatalogoPage({ mode = 'landing' }) {
             )}
           </div>
         </section>
-      )}
 
       {isLoading ? (
         <CardGridSkeleton count={6} />
