@@ -363,12 +363,6 @@ export function AppHeader({ variant = 'public' }) {
     navigate('/');
   }
 
-  const pillItemClass = ({ isActive }) =>
-    `inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wide transition xl:gap-1.5 xl:px-3.5 xl:text-[12px] ${
-      isActive
-        ? 'bg-emerald-700 text-white shadow-xs'
-        : 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800'
-    }`;
 
 
   return (
