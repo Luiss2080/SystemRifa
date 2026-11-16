@@ -25,6 +25,7 @@ import { Button } from '../../components/ui/Button.jsx';
 import { Input, Textarea } from '../../components/ui/Input.jsx';
 import { Select } from '../../components/ui/Select.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
+import { PanelSectionHeader } from '../../components/panel/PanelKit.jsx';
 
 export function NuevaSolicitudPage() {
   const navigate = useNavigate();
@@ -50,6 +51,12 @@ export function NuevaSolicitudPage() {
     value: String(c.causaId),
     label: c.nombre,
   }));
+
+  const nombreCausaSeleccionada = useMemo(() => {
+    if (!form.causaId) return 'Sin causa asignada (General)';
+    const encontrada = (causasData?.items || []).find((c) => String(c.causaId) === form.causaId);
+    return encontrada?.nombre || 'Causa seleccionada';
+  }, [form.causaId, causasData]);
 
   const resumenEstimado = useMemo(() => {
     const cantidad = Math.max(0, parseInt(form.cantidadTickets || '0', 10) || 0);
@@ -95,17 +102,14 @@ export function NuevaSolicitudPage() {
         fechaFin: finIso,
         causaId: form.causaId ? Number(form.causaId) : null,
       });
-      toast.success('Solicitud enviada', 'Tu solicitud pasó a revisión administrativa.');
+      toast.success('Solicitud enviada', 'Tu propuesta pasó a revisión administrativa.');
       navigate('/solicitudes/mias');
     } catch (err) {
-      toast.error('No se pudo enviar', extraerErrorApi(err).message);
+      toast.error('Error al enviar propuesta', extraerErrorApi(err).message);
     } finally {
       setSaving(false);
     }
   }
-
-  const nombreCausaSeleccionada =
-    causasOpciones.find((c) => c.value === form.causaId)?.label || 'Causa solidaria abierta';
 
   const listoParaEnviar =
     form.nombre.trim().length >= 3 &&
@@ -116,36 +120,23 @@ export function NuevaSolicitudPage() {
 
   return (
     <div className="space-y-6">
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-slate-200/80 bg-white/95 px-6 py-5 shadow-sm backdrop-blur-md">
-        <div className="flex items-center gap-3.5">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-sm">
-            <FilePlus2 className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-                Crear nueva campaña
-              </h1>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200/80">
-                <Sparkles className="h-3 w-3" />
-                Propuesta de rifa
-              </span>
-            </div>
-            <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
-              Define los detalles de tu rifa solidaria y previsualiza su alcance antes de enviarla a revisión.
-            </p>
-          </div>
-        </div>
-
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => navigate('/solicitudes/mias')}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Mis solicitudes
-        </Button>
-      </section>
+      <PanelSectionHeader
+        icon={FilePlus2}
+        title="Creación de Campaña Solidaria"
+        subtitle="Define los parámetros de la rifa y previsualiza la emisión antes de someterla a revisión."
+        badgeText="Nueva Solicitud"
+        accent="emerald"
+        actions={
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate('/solicitudes/mias')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Mis solicitudes
+          </Button>
+        }
+      />
 
       <div className="grid gap-6 lg:grid-cols-12">
         <form
@@ -167,7 +158,7 @@ export function NuevaSolicitudPage() {
               icon={Ticket}
               required
               minLength={3}
-              placeholder="Ej. Rifa Solidaria Pro Salud"
+              placeholder="Ej. Rifa Solidaria Pro Salud Infantil"
               value={form.nombre}
               onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
             />
@@ -175,15 +166,15 @@ export function NuevaSolicitudPage() {
             <Textarea
               label="Descripción pública"
               rows={3}
-              placeholder="Describe el objetivo de la rifa, condiciones de entrega, etc."
-              helperText="Este resumen orientará a los participantes y revisores sobre el fin solidario."
+              placeholder="Describe el objetivo benéfico, cómo se entregarán los premios, etc."
+              helperText="Este resumen orientará a los participantes y a la administración en la auditoría."
               value={form.descripcion}
               onChange={(e) => setForm((f) => ({ ...f, descripcion: e.target.value }))}
             />
 
             <Select
               label="Causa solidaria asociada"
-              placeholder="Sin causa específica (o elige una)"
+              placeholder="Sin causa específica (o elige una del catálogo)"
               options={causasOpciones}
               value={form.causaId}
               onChange={(e) => setForm((f) => ({ ...f, causaId: e.target.value }))}
@@ -261,13 +252,13 @@ export function NuevaSolicitudPage() {
                 Cancelar
               </Button>
               <Button type="submit" loading={saving} className="flex-1 sm:flex-initial">
-                Enviar solicitud a revisión
+                Enviar propuesta a revisión
               </Button>
             </div>
           </div>
         </form>
 
-        {/* Vista previa en tiempo real */}
+        {/* Vista previa interactiva en tiempo real */}
         <aside className="space-y-4 lg:col-span-5">
           <div className="overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/95 shadow-md shadow-slate-900/5 backdrop-blur-md lg:sticky lg:top-24">
             <div className="relative bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 px-6 py-5 text-white">
@@ -292,7 +283,7 @@ export function NuevaSolicitudPage() {
             <div className="space-y-4 p-6">
               <p className="text-xs leading-relaxed text-slate-600">
                 {form.descripcion.trim() ||
-                  'Aquí aparecerá la descripción pública de tu campaña junto a las condiciones y premios que cargues tras la aprobación.'}
+                  'Aquí aparecerá la descripción pública de tu campaña junto a las condiciones y premios que agregues tras su aprobación.'}
               </p>
 
               <div className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-100 bg-slate-50/90 p-4 text-xs">
@@ -333,7 +324,7 @@ export function NuevaSolicitudPage() {
                     <CalendarClock className="h-4.5 w-4.5" />
                   </span>
                   <div>
-                    <p className="font-medium text-emerald-800">Duración de campaña</p>
+                    <p className="font-medium text-emerald-800">Duración estimada</p>
                     <p
                       className={`text-sm font-bold ${
                         resumenEstimado.fechasInvalidas ? 'text-rose-700' : 'text-slate-900'
