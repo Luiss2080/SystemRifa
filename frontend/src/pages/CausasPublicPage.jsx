@@ -481,14 +481,14 @@ export function CausasPublicPage() {
         </div>
       )}
 
-      {/* 5. SECCIÓN DE CONFIANZA Y GARANTÍA LEGAL DE CAUSAS */}
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
+      {/* 5. SECCIÓN DE CONFIANZA Y GARANTÍA LEGAL DE CAUSAS (ABIERTA SIN CONTENEDOR BLANCO) */}
+      <section className="space-y-6 pt-6">
         <div className="mx-auto max-w-2xl text-center space-y-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
             <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
             Transparencia en Cada Paso
           </span>
-          <h2 className="text-xl font-black text-slate-900 sm:text-2xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             ¿Cómo se garantiza que tu ayuda llegue a su destino?
           </h2>
           <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
@@ -496,8 +496,8 @@ export function CausasPublicPage() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-5 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-2">
+        <div className="grid gap-5 sm:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200/90 bg-white/90 p-5 space-y-2 shadow-2xs backdrop-blur-sm transition hover:border-emerald-300 hover:shadow-sm">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
               <ShieldCheck className="h-5 w-5" />
             </span>
@@ -507,7 +507,7 @@ export function CausasPublicPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-2">
+          <div className="rounded-2xl border border-slate-200/90 bg-white/90 p-5 space-y-2 shadow-2xs backdrop-blur-sm transition hover:border-teal-300 hover:shadow-sm">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
               <Ticket className="h-5 w-5" />
             </span>
@@ -517,7 +517,7 @@ export function CausasPublicPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-2">
+          <div className="rounded-2xl border border-slate-200/90 bg-white/90 p-5 space-y-2 shadow-2xs backdrop-blur-sm transition hover:border-amber-300 hover:shadow-sm">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
               <Target className="h-5 w-5" />
             </span>

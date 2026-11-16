@@ -102,10 +102,9 @@ export function ResultadoPublicoPage() {
 
   return (
     <div className="space-y-8 py-2 sm:py-4">
-      {/* 1. Cabecera comercial de la rifa */}
-      <section className="overflow-hidden rounded-3xl border border-emerald-200/90 bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-4">
+      {/* 1. Cabecera comercial abierta (sin contenedor blanco innecesario) */}
+      <section className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between py-2 sm:py-4">
+        <div className="flex items-start gap-4">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20 ring-4 ring-amber-100">
               <Trophy className="h-7 w-7" />
             </span>
