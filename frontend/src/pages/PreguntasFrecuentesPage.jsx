@@ -16,6 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import { PaginationCard } from '../components/ui/DataTable.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 
 const FAQS_DATA = [
   // 1. Participantes y Boletos
