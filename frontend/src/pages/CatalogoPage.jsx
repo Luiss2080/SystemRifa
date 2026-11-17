@@ -318,7 +318,7 @@ export function CatalogoPage({ mode = 'landing' }) {
   }).length;
 
   return (
-    <div className={esVistaLanding ? 'space-y-10 sm:space-y-12 lg:space-y-14 pb-12' : 'space-y-6 pb-12'}>
+    <div className={esVistaLanding ? 'space-y-6 sm:space-y-8 lg:space-y-10 pb-8' : 'space-y-4 pb-8'}>
       {esVistaLanding ? (
         <HeroShowcase
           rifas={rifasBase}
@@ -328,8 +328,8 @@ export function CatalogoPage({ mode = 'landing' }) {
           onSelectCausa={seleccionarCausa}
         />
       ) : (
-        <section className="space-y-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
+        <section className="space-y-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-3">
             <div className="space-y-1">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">
                 <Ticket className="h-3.5 w-3.5 text-emerald-600" />
@@ -367,9 +367,9 @@ export function CatalogoPage({ mode = 'landing' }) {
         </section>
       )}
 
-      <section id="catalogo-activo" className="space-y-4">
-        {/* Miga de pan de navegación */}
-        <div className="flex items-center justify-start">
+      <section id="catalogo-activo" className="scroll-mt-24 space-y-3 sm:space-y-3.5">
+        {/* Fila superior: Miga de pan interactiva + Indicador de rifas en vivo */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/60 pb-2">
           <Breadcrumbs
             items={[
               { label: 'Inicio', href: '/' },
@@ -381,17 +381,21 @@ export function CatalogoPage({ mode = 'landing' }) {
               ...(causaActivaObj ? [{ label: causaActivaObj.nombre }] : []),
             ]}
           />
+
+          <span className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80 shadow-2xs">
+            <Ticket className="h-3.5 w-3.5 text-emerald-600" />
+            Catálogo en vivo · {rifasFiltradas.length} disponible(s)
+          </span>
         </div>
 
         {esVistaLanding && (
-          <div className="mx-auto max-w-2xl space-y-2 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
-              <Ticket className="h-3.5 w-3.5 text-emerald-600" />
-              Catálogo en vivo · {rifasFiltradas.length} disponible(s)
-            </span>
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          <div className="space-y-0.5 text-center sm:text-left">
+            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
               Rifas solidarias disponibles para participar
             </h2>
+            <p className="text-xs text-slate-500">
+              Selecciona tus boletos favoritos con bloqueo seguro de 15 minutos y seguimiento transparente.
+            </p>
           </div>
         )}
 
