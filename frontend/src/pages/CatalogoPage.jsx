@@ -524,7 +524,6 @@ export function CatalogoPage({ mode = 'landing' }) {
               </div>
             )}
           </div>
-        </section>
 
         {/* Modal de Filtros con Opciones e Iconos para despejar la pantalla */}
         {modalFiltrosAbierto && (
@@ -839,7 +838,7 @@ export function CatalogoPage({ mode = 'landing' }) {
             })}
           </div>
 
-          <div className="flex justify-center pt-3">
+          <div className="flex justify-center pt-1.5">
             <PaginationCard
               page={pagination.page || 1}
               totalPages={pagination.totalPages || 1}
@@ -856,6 +855,7 @@ export function CatalogoPage({ mode = 'landing' }) {
           </div>
         </>
       )}
+      </section>
 
       {esVistaLanding && (
         <>
