@@ -679,22 +679,22 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
   const destacadas = listaCausas.slice(0, 3);
 
   return (
-    <section id="causas-destacadas" className="space-y-5">
-      <div className="mx-auto max-w-2xl space-y-2.5 text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
+    <section id="causas-destacadas" className="space-y-3.5">
+      <div className="mx-auto max-w-2xl space-y-1.5 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-0.5 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
           <HeartHandshake className="h-3.5 w-3.5" />
           Impacto social verificado
         </span>
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
           Causas que transforman realidades
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-xs text-slate-600">
           Cada ticket vendido respalda una causa aprobada con metas claras y trazabilidad pública.
         </p>
-        <div className="pt-1">
+        <div className="pt-0.5">
           <Link
             to="/causas"
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
           >
             Ver todas las causas
             <ArrowRight className="h-3.5 w-3.5" />
@@ -702,7 +702,7 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         {destacadas.map((causa) => {
           const cantRifas = causa.rifasCount ?? 1;
           const metaNum = Number(causa.meta) || 1;
