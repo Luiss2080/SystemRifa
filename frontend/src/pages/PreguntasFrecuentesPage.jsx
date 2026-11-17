@@ -6,15 +6,15 @@ import {
   CreditCard,
   HeartHandshake,
   HelpCircle,
+  LayoutGrid,
   MessageCircle,
   RotateCcw,
   Search,
-  ShieldCheck,
   Sparkles,
   Ticket,
   Trophy,
+  X,
 } from 'lucide-react';
-import { Button } from '../components/ui/Button.jsx';
 
 const FAQS_DATA = [
   // 1. Participantes y Boletos
@@ -87,7 +87,7 @@ const FAQS_DATA = [
   {
     cat: 'organizadores',
     q: '¿Quiénes pueden organizar una rifa en la plataforma?',
-    a: 'Fundaciones, asociaciones benéficas, albergues de rescate animal, comités de salud para tratamientos médicos de emergencia y proyectos comunitarios debidamente avalados.',
+    a: 'Fundaciones, asociaciones benéficas, albergues de rescate animal, comités de salud para tratamientos médicos de emergencia y proyectos comunitarios debidamente avalados con personería jurídica o convenios comprobables.',
   },
   {
     cat: 'organizadores',
@@ -102,17 +102,65 @@ const FAQS_DATA = [
 ];
 
 const CATEGORIAS = [
-  { id: 'todas', label: 'Todas las preguntas' },
-  { id: 'participantes', label: 'Participantes & Boletos' },
-  { id: 'pagos', label: 'Pagos, QR & Comprobantes' },
-  { id: 'sorteos', label: 'Sorteos & Ganadores' },
-  { id: 'organizadores', label: 'Organizadores & Causas' },
+  {
+    id: 'todas',
+    label: 'Todas las preguntas',
+    icon: LayoutGrid,
+    desc: 'Visión general del sistema',
+  },
+  {
+    id: 'participantes',
+    label: 'Participantes y Boletos',
+    icon: Ticket,
+    desc: 'Reservas, 15 min y selección',
+  },
+  {
+    id: 'pagos',
+    label: 'Pagos, QR y Comprobantes',
+    icon: CreditCard,
+    desc: 'Simple QR y aprobación rápida',
+  },
+  {
+    id: 'sorteos',
+    label: 'Sorteos y Ganadores',
+    icon: Trophy,
+    desc: 'Bolillero digital y actas SHA-256',
+  },
+  {
+    id: 'organizadores',
+    label: 'Organizadores y Causas',
+    icon: HeartHandshake,
+    desc: 'Requisitos y tarifa fija Bs 100',
+  },
 ];
+
+const CAT_INFO = {
+  participantes: {
+    label: 'Participantes & Boletos',
+    icon: Ticket,
+    iconBg: 'bg-emerald-100 text-emerald-800',
+  },
+  pagos: {
+    label: 'Pagos & Comprobantes',
+    icon: CreditCard,
+    iconBg: 'bg-amber-100 text-amber-800',
+  },
+  sorteos: {
+    label: 'Sorteos & Ganadores',
+    icon: Trophy,
+    iconBg: 'bg-indigo-100 text-indigo-800',
+  },
+  organizadores: {
+    label: 'Organizadores & Causas',
+    icon: HeartHandshake,
+    iconBg: 'bg-sky-100 text-sky-800',
+  },
+};
 
 export function PreguntasFrecuentesPage() {
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('todas');
-  const [abiertoIdx, setAbiertoIdx] = useState(0);
+  const [abiertos, setAbiertos] = useState(new Set([0]));
 
   const faqsFiltradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -123,163 +171,302 @@ export function PreguntasFrecuentesPage() {
     });
   }, [busqueda, categoria]);
 
+  function toggleItem(idx) {
+    setAbiertos((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  }
+
+  function expandirTodos() {
+    setAbiertos(new Set(faqsFiltradas.map((_, i) => i)));
+  }
+
+  function contraerTodos() {
+    setAbiertos(new Set());
+  }
+
   function triggerRifaBot() {
     window.dispatchEvent(new window.CustomEvent('open-help-widget'));
   }
 
+  const categoriaActualObj = CATEGORIAS.find((c) => c.id === categoria);
+
   return (
-    <div className="space-y-10 py-2 sm:py-4">
-      {/* 1. HERO COMERCIAL ABIERTO (SIN CONTENEDOR BLANCO INNECESARIO) */}
-      <section className="mx-auto max-w-3xl space-y-4 text-center py-2 sm:py-6">
+    <div className="space-y-8 sm:space-y-10 py-1 sm:py-2">
+      {/* 1. HERO COMERCIAL ABIERTO */}
+      <section className="mx-auto max-w-3xl space-y-3.5 text-center py-1 sm:py-3">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-amber-900 shadow-2xs">
           <HelpCircle className="h-4 w-4 text-amber-600" />
-          Centro de Ayuda y Soporte
+          Centro de Ayuda y Preguntas Frecuentes
         </span>
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
           Preguntas <span className="text-emerald-700">frecuentes</span>
         </h1>
 
-        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-          Resolvemos tus dudas sobre cómo comprar números, métodos de pago, reservas de 15 minutos,
-          bolillero digital y organización de campañas.
+        <p className="mx-auto max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-600">
+          Encuentra respuestas transparentes sobre reservas atómicas de 15 minutos, pagos Simple QR,
+          bolillero digital auditado y organización de rifas benéficas.
         </p>
 
-        {/* Buscador en vivo integrado */}
-        <div className="mx-auto max-w-xl pt-2">
+        {/* Buscador inteligente */}
+        <div className="mx-auto max-w-xl pt-1">
           <div className="relative">
             <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
-              type="text"
+              type="search"
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar por palabra clave: QR, 15 minutos, premio, comisión..."
-              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-xs font-medium text-slate-800 placeholder-slate-400 shadow-xs transition focus:border-emerald-500 focus:bg-white focus:outline-none sm:text-sm"
+              aria-label="Buscar preguntas frecuentes"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pr-10 pl-10 text-xs sm:text-sm font-medium text-slate-800 placeholder-slate-400 shadow-2xs transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
             />
             {busqueda && (
               <button
                 type="button"
                 onClick={() => setBusqueda('')}
-                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:text-slate-600"
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                aria-label="Limpiar búsqueda"
               >
-                <RotateCcw className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </div>
         </div>
       </section>
 
-      {/* 2. CHIPS DE CATEGORÍAS */}
-      <section className="space-y-4">
-        <div className="no-scrollbar flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-1">
-          {CATEGORIAS.map((cat) => {
-            const activa = categoria === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setCategoria(cat.id)}
-                className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition cursor-pointer ${
-                  activa
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50'
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-      </section>
+      {/* 2. LAYOUT MASTER-DETAIL CON ANCHO COMPLETO ALINEADO */}
+      <section className="w-full grid gap-6 lg:grid-cols-12 items-start">
+        {/* Columna Izquierda: Temas con Iconos y Tarjeta de Ayuda Directa */}
+        <aside className="space-y-4 lg:col-span-4 lg:sticky lg:top-24">
+          {/* Navegación por Categorías */}
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-1.5">
+            <div className="px-2 py-1">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                Temas de consulta
+              </span>
+            </div>
 
-      {/* 3. LISTA ACORDEÓN DE PREGUNTAS */}
-      <section className="mx-auto max-w-3xl space-y-3">
-        {faqsFiltradas.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-200 bg-white/70 py-12 text-center">
-            <HelpCircle className="mx-auto h-10 w-10 text-slate-300" />
-            <h3 className="mt-2 text-sm font-bold text-slate-800">No encontramos coincidencias</h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Prueba con otras palabras o consulta directamente con nuestro asistente virtual RifaBot.
+            {CATEGORIAS.map((cat) => {
+              const Icon = cat.icon;
+              const activo = categoria === cat.id;
+              const count =
+                cat.id === 'todas'
+                  ? FAQS_DATA.length
+                  : FAQS_DATA.filter((f) => f.cat === cat.id).length;
+
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoria(cat.id)}
+                  className={`flex w-full items-center justify-between gap-3 rounded-2xl p-2.5 text-left transition cursor-pointer ${
+                    activo
+                      ? 'border border-emerald-300 bg-emerald-50/90 text-emerald-950 font-bold shadow-2xs'
+                      : 'border border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition ${
+                        activo
+                          ? 'bg-emerald-600 text-white shadow-2xs'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-xs font-bold leading-snug">{cat.label}</p>
+                      <p className="truncate text-[10px] font-medium text-slate-400">{cat.desc}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-[10px] font-extrabold ${
+                      activo ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tarjeta de Soporte Directo / Ayuda personalizada */}
+          <div className="rounded-3xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/80 p-5 shadow-2xs space-y-3">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                <MessageCircle className="h-4.5 w-4.5" />
+              </span>
+              <div>
+                <h4 className="text-sm font-extrabold text-slate-900">¿No encuentras respuesta?</h4>
+                <p className="text-[11px] text-slate-500">Estamos en vivo para asistirte</p>
+              </div>
+            </div>
+
+            <p className="text-xs leading-relaxed text-slate-600">
+              Conversa al instante con nuestro asistente virtual RifaBot o contacta por WhatsApp para soporte con pagos.
             </p>
-            <div className="mt-4">
-              <Button size="sm" onClick={triggerRifaBot}>
-                <MessageCircle className="h-4 w-4" />
-                Preguntar a RifaBot
-              </Button>
+
+            <div className="space-y-2 pt-1">
+              <button
+                type="button"
+                onClick={triggerRifaBot}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 py-2.5 text-xs font-extrabold text-slate-950 transition hover:brightness-105 cursor-pointer shadow-xs"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-slate-900" />
+                <span>Abrir RifaBot 24/7</span>
+              </button>
+
+              <Link
+                to="/contacto"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-white py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-50"
+              >
+                <span>Ver Canales de Contacto</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </div>
-        ) : (
-          faqsFiltradas.map((item, idx) => {
-            const isOpen = abiertoIdx === idx;
-            return (
-              <div
-                key={item.q}
-                className={`overflow-hidden rounded-2xl border transition ${
-                  isOpen
-                    ? 'border-emerald-300 bg-white shadow-sm'
-                    : 'border-slate-200/90 bg-white/90 hover:border-slate-300'
-                }`}
-              >
+        </aside>
+
+        {/* Columna Derecha: Acordeón Moderno con Iconos de Categoría */}
+        <div className="space-y-3 lg:col-span-8">
+          {/* Barra superior de control */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/60 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold text-slate-900">
+                {categoriaActualObj?.label || 'Preguntas frecuentes'}
+              </span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
+                {faqsFiltradas.length} {faqsFiltradas.length === 1 ? 'pregunta' : 'preguntas'}
+              </span>
+            </div>
+
+            {faqsFiltradas.length > 0 && (
+              <div className="flex items-center gap-2 text-xs">
                 <button
                   type="button"
-                  onClick={() => setAbiertoIdx(isOpen ? -1 : idx)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-bold text-slate-900 cursor-pointer"
+                  onClick={expandirTodos}
+                  className="font-bold text-emerald-700 hover:text-emerald-900 cursor-pointer"
                 >
-                  <span className="flex items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-[11px] font-extrabold text-emerald-800">
-                      ?
-                    </span>
-                    <span>{item.q}</span>
-                  </span>
-                  <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-emerald-600 transition-transform ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
+                  Expandir todas
                 </button>
-                {isOpen && (
-                  <div className="border-t border-emerald-100 bg-slate-50/40 px-5 pt-3.5 pb-4 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                    {item.a}
-                  </div>
-                )}
+                <span className="text-slate-300">•</span>
+                <button
+                  type="button"
+                  onClick={contraerTodos}
+                  className="font-medium text-slate-500 hover:text-slate-700 cursor-pointer"
+                >
+                  Contraer todas
+                </button>
               </div>
-            );
-          })
-        )}
-      </section>
+            )}
+          </div>
 
-      {/* 4. BANNER DE SOPORTE DIRECTO (RIFABOT & WHATSAPP) */}
-      <section className="mx-auto max-w-4xl rounded-3xl border border-emerald-200/90 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/80 p-8 sm:p-10 text-center space-y-4 shadow-sm">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-bold text-emerald-800">
-          <Sparkles className="h-4 w-4 text-emerald-600" />
-          Atención Inmediata 24/7
-        </span>
+          {/* Lista de Preguntas */}
+          {faqsFiltradas.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-8 sm:p-12 text-center space-y-3">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                <HelpCircle className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-800">No encontramos coincidencias</h3>
+              <p className="text-xs text-slate-500 max-w-md mx-auto">
+                No hay preguntas que coincidan con &ldquo;{busqueda}&rdquo;. Prueba con términos como QR, 15 minutos, sorteo o consulta a nuestro asistente.
+              </p>
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBusqueda('');
+                    setCategoria('todas');
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Restablecer filtros
+                </button>
+                <button
+                  type="button"
+                  onClick={triggerRifaBot}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-extrabold text-white hover:bg-emerald-700 cursor-pointer"
+                >
+                  <MessageCircle className="h-3.5 w-3.5" />
+                  Preguntar a RifaBot
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {faqsFiltradas.map((item, idx) => {
+                const isOpen = abiertos.has(idx);
+                const catInfo = CAT_INFO[item.cat] || CAT_INFO.participantes;
+                const CatIcon = catInfo.icon;
 
-        <h3 className="text-2xl font-black text-slate-900 sm:text-3xl">
-          ¿Tienes una consulta específica?
-        </h3>
+                return (
+                  <article
+                    key={item.q}
+                    className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
+                      isOpen
+                        ? 'border-emerald-300 bg-white shadow-xs ring-1 ring-emerald-200/50'
+                        : 'border-slate-200/90 bg-white hover:border-emerald-200 hover:shadow-2xs'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleItem(idx)}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center justify-between gap-3 p-3.5 sm:p-4 text-left cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition ${
+                            isOpen
+                              ? 'bg-emerald-600 text-white shadow-2xs'
+                              : `${catInfo.iconBg} ring-1 ring-emerald-200/50 group-hover:scale-105`
+                          }`}
+                        >
+                          <CatIcon className="h-4.5 w-4.5" />
+                        </span>
+                        <div className="min-w-0">
+                          <span className="block text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+                            {catInfo.label}
+                          </span>
+                          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                            {item.q}
+                          </h3>
+                        </div>
+                      </div>
 
-        <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-600">
-          Puedes conversar al instante con nuestro asistente virtual RifaBot o contactar al equipo
-          de validación de pagos por WhatsApp.
-        </p>
+                      <span
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition ${
+                          isOpen
+                            ? 'border-emerald-300 bg-emerald-50 text-emerald-800 rotate-180'
+                            : 'border-slate-200 bg-slate-50 text-slate-400 group-hover:border-emerald-300 group-hover:text-emerald-700'
+                        }`}
+                      >
+                        <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
+                      </span>
+                    </button>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <button
-            type="button"
-            onClick={triggerRifaBot}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 px-6 py-3 text-xs font-extrabold uppercase tracking-wide text-slate-950 shadow-md shadow-amber-500/20 transition hover:-translate-y-0.5 hover:brightness-105 cursor-pointer"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Abrir RifaBot 24/7
-          </button>
-          <Link to="/contacto">
-            <Button variant="secondary" size="lg">
-              Ver Canales de Contacto
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+                    {isOpen && (
+                      <div className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-[13px] leading-relaxed text-slate-700">
+                        <div className="border-l-2 border-emerald-500 pl-3.5 py-0.5">
+                          {item.a}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
     </div>
