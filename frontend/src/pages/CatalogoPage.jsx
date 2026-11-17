@@ -336,8 +336,8 @@ export function CatalogoPage({ mode = 'landing' }) {
                 <Ticket className="h-3.5 w-3.5 text-emerald-600" />
                 Catálogo en vivo · {rifasFiltradas.length} rifas ({totalDisponiblesCatalogo} boletos disponibles{urgentesCount > 0 ? ` · ${urgentesCount} cierran pronto` : ''})
               </span>
-              <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
-                Catálogo de Rifas Solidarias
+              <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+                Catálogo de Rifas <UnderlineHighlight>Solidarias</UnderlineHighlight>
               </h1>
               <p className="text-xs text-slate-500 sm:text-sm">
                 Selecciona tus boletos favoritos con bloqueo seguro de 15 minutos y seguimiento transparente.
@@ -390,11 +390,11 @@ export function CatalogoPage({ mode = 'landing' }) {
         </div>
 
         {esVistaLanding && (
-          <div className="space-y-0.5 text-center sm:text-left">
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
-              Rifas solidarias disponibles para participar
+          <div className="space-y-1 text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+              Rifas <UnderlineHighlight>solidarias</UnderlineHighlight> disponibles para participar
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500">
               Selecciona tus boletos favoritos con bloqueo seguro de 15 minutos y seguimiento transparente.
             </p>
           </div>
@@ -839,7 +839,7 @@ export function CatalogoPage({ mode = 'landing' }) {
             })}
           </div>
 
-          <div className="flex justify-center pt-1.5">
+          <div className="w-full pt-1.5">
             <PaginationCard
               page={pagination.page || 1}
               totalPages={pagination.totalPages || 1}
@@ -851,7 +851,6 @@ export function CatalogoPage({ mode = 'landing' }) {
               )}
               onPageChange={setPage}
               itemLabel="rifas"
-              centered
             />
           </div>
         </>
