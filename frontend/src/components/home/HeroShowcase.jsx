@@ -1115,9 +1115,9 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
   const causasCount = metricas?.causasActivas ?? totalCausas;
 
   return (
-    <div className="space-y-12 pt-4">
+    <div className="space-y-8 pt-1">
       {/* Beneficios por perfil sin contenedor blanco externo redundante */}
-      <section id="beneficios-plataforma" className="space-y-6">
+      <section id="beneficios-plataforma" className="space-y-5">
         <div className="mx-auto max-w-2xl space-y-2.5 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
             <Sparkles className="h-3.5 w-3.5" />
