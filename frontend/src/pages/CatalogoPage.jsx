@@ -38,6 +38,7 @@ import {
 } from '../features/rifas/publicApi.js';
 import { formatearBs, formatearFechaCorta, sumarMontosBs } from '../utils/format.js';
 import { Badge } from '../components/ui/Badge.jsx';
+import { Breadcrumbs } from '../components/ui/Breadcrumbs.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { PaginationCard } from '../components/ui/DataTable.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
