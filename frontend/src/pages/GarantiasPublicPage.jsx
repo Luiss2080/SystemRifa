@@ -90,7 +90,7 @@ export function GarantiasPublicPage() {
         </span>
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-          Garantías y respaldo <span className="text-emerald-700">técnico del sistema</span>
+          Garantías y respaldo <UnderlineHighlight>técnico del sistema</UnderlineHighlight>
         </h1>
 
         <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
