@@ -201,9 +201,9 @@ export function SorteosPublicPage() {
   }, [sorteosBase]);
 
   return (
-    <div className="space-y-10 py-2 sm:py-4">
+    <div className="space-y-6 sm:space-y-8 py-1 sm:py-2">
       {/* 1. HERO COMERCIAL ABIERTO (SIN CONTENEDOR BLANCO INNECESARIO) */}
-      <section className="mx-auto max-w-3xl space-y-4 text-center py-2 sm:py-6">
+      <section className="mx-auto max-w-3xl space-y-3.5 text-center py-1 sm:py-3">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white/90 px-3.5 py-1 text-xs font-bold text-amber-900 shadow-2xs">
           <Trophy className="h-4 w-4 text-amber-600" />
           Actas Oficiales y Resultados Públicos
