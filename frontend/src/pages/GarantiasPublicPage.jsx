@@ -20,6 +20,7 @@ import {
   Users,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 
 export function GarantiasPublicPage() {
   const pilares = [

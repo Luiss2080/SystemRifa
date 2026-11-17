@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 import {
   ArrowRight,
   Award,
@@ -118,7 +119,7 @@ export function ComoFuncionaPage() {
         </span>
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-          ¿Cómo funciona <span className="text-emerald-700">Rifas Solidarias</span>?
+          ¿Cómo funciona <UnderlineHighlight>Rifas Solidarias</UnderlineHighlight>?
         </h1>
 
         <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -201,8 +202,8 @@ export function ComoFuncionaPage() {
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
             Seguridad y Modernidad
           </span>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
-            Rifas tradicionales vs Rifas Solidarias
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            Rifas tradicionales vs <UnderlineHighlight>Rifas Solidarias</UnderlineHighlight>
           </h2>
           <p className="text-sm text-slate-600">
             Comparamos el método tradicional en papel con nuestra infraestructura tecnológica.

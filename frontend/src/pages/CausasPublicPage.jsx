@@ -20,6 +20,7 @@ import { useAuth } from '../features/auth/AuthContext.jsx';
 import { formatearBs, sumarMontosBs } from '../utils/format.js';
 import { Button } from '../components/ui/Button.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 
 const CATEGORIAS_CAUSAS = [
   'Todas las causas',
@@ -229,7 +230,7 @@ export function CausasPublicPage() {
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
           Causas que transforman vidas con{' '}
-          <span className="text-emerald-700">transparencia total</span>
+          <UnderlineHighlight>transparencia total</UnderlineHighlight>
         </h1>
 
         <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -488,8 +489,8 @@ export function CausasPublicPage() {
             <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
             Transparencia en Cada Paso
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            ¿Cómo se garantiza que tu ayuda llegue a su destino?
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            ¿Cómo se garantiza que tu ayuda llegue a su <UnderlineHighlight>destino</UnderlineHighlight>?
           </h2>
           <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
             Diseñamos un flujo auditado con trazabilidad punto a punto entre compradores, organizadores y causas.
