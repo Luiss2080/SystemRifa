@@ -74,13 +74,6 @@ export function ContactoPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function aplicarSugerencia(texto) {
-    setForm((prev) => ({
-      ...prev,
-      mensaje: prev.mensaje ? `${prev.mensaje}\n${texto}` : texto,
-    }));
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     if (!form.nombre.trim() || !form.email.trim() || !form.mensaje.trim()) {
