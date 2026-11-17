@@ -41,6 +41,7 @@ import { Badge } from '../components/ui/Badge.jsx';
 import { Breadcrumbs } from '../components/ui/Breadcrumbs.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { PaginationCard } from '../components/ui/DataTable.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 import { EmptyState } from '../components/ui/Feedback.jsx';
 import { CardGridSkeleton } from '../components/ui/Skeleton.jsx';
 import { PanelFilterBar, PanelKpiGrid, PanelSectionHeader } from '../components/panel/PanelKit.jsx';
