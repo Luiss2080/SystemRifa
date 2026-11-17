@@ -354,18 +354,53 @@ export function PreguntasFrecuentesPage() {
 
         {/* Columna Derecha: Acordeón Moderno con Iconos de Categoría */}
         <div className="space-y-3 lg:col-span-8">
+          {/* Pastillas de filtro directo por tema */}
+          <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto pb-1">
+            {CATEGORIAS.map((cat) => {
+              const Icon = cat.icon;
+              const activo = categoria === cat.id;
+              const count =
+                cat.id === 'todas'
+                  ? FAQS_DATA.length
+                  : FAQS_DATA.filter((f) => f.cat === cat.id).length;
+
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoria(cat.id)}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition cursor-pointer shadow-2xs ${
+                    activo
+                      ? 'bg-emerald-700 text-white shadow-xs ring-1 ring-emerald-700'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50'
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{cat.label}</span>
+                  <span
+                    className={`rounded-full px-1.5 text-[10px] font-extrabold ${
+                      activo ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Barra superior de control */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/60 pb-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-extrabold text-slate-900">
                 {categoriaActualObj?.label || 'Preguntas frecuentes'}
               </span>
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
-                {faqsFiltradas.length} {faqsFiltradas.length === 1 ? 'pregunta' : 'preguntas'}
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200/70">
+                Mostrando {faqsPaginadas.length} de {faqsFiltradas.length} {faqsFiltradas.length === 1 ? 'pregunta' : 'preguntas'} (máx. 5 por vista)
               </span>
             </div>
 
-            {faqsFiltradas.length > 0 && (
+            {faqsPaginadas.length > 0 && (
               <div className="flex items-center gap-2 text-xs">
                 <button
                   type="button"
@@ -386,7 +421,7 @@ export function PreguntasFrecuentesPage() {
             )}
           </div>
 
-          {/* Lista de Preguntas */}
+          {/* Lista de Preguntas (máximo 5 por página) */}
           {faqsFiltradas.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-8 sm:p-12 text-center space-y-3">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
@@ -419,69 +454,87 @@ export function PreguntasFrecuentesPage() {
               </div>
             </div>
           ) : (
-            <div className="space-y-2.5">
-              {faqsFiltradas.map((item, idx) => {
-                const isOpen = abiertos.has(idx);
-                const catInfo = CAT_INFO[item.cat] || CAT_INFO.participantes;
-                const CatIcon = catInfo.icon;
+            <>
+              <div className="space-y-2.5">
+                {faqsPaginadas.map((item, idx) => {
+                  const isOpen = abiertos.has(idx);
+                  const catInfo = CAT_INFO[item.cat] || CAT_INFO.participantes;
+                  const CatIcon = catInfo.icon;
 
-                return (
-                  <article
-                    key={item.q}
-                    className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
-                      isOpen
-                        ? 'border-emerald-300 bg-white shadow-xs ring-1 ring-emerald-200/50'
-                        : 'border-slate-200/90 bg-white hover:border-emerald-200 hover:shadow-2xs'
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => toggleItem(idx)}
-                      aria-expanded={isOpen}
-                      className="flex w-full items-center justify-between gap-3 p-3.5 sm:p-4 text-left cursor-pointer group"
+                  return (
+                    <article
+                      key={item.q}
+                      className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
+                        isOpen
+                          ? 'border-emerald-300 bg-white shadow-xs ring-1 ring-emerald-200/50'
+                          : 'border-slate-200/90 bg-white hover:border-emerald-200 hover:shadow-2xs'
+                      }`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => toggleItem(idx)}
+                        aria-expanded={isOpen}
+                        className="flex w-full items-center justify-between gap-3 p-3.5 sm:p-4 text-left cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span
+                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition ${
+                              isOpen
+                                ? 'bg-emerald-600 text-white shadow-2xs'
+                                : `${catInfo.iconBg} ring-1 ring-emerald-200/50 group-hover:scale-105`
+                            }`}
+                          >
+                            <CatIcon className="h-4.5 w-4.5" />
+                          </span>
+                          <div className="min-w-0">
+                            <span className="block text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+                              {catInfo.label}
+                            </span>
+                            <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                              {item.q}
+                            </h3>
+                          </div>
+                        </div>
+
                         <span
-                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition ${
+                          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition ${
                             isOpen
-                              ? 'bg-emerald-600 text-white shadow-2xs'
-                              : `${catInfo.iconBg} ring-1 ring-emerald-200/50 group-hover:scale-105`
+                              ? 'border-emerald-300 bg-emerald-50 text-emerald-800 rotate-180'
+                              : 'border-slate-200 bg-slate-50 text-slate-400 group-hover:border-emerald-300 group-hover:text-emerald-700'
                           }`}
                         >
-                          <CatIcon className="h-4.5 w-4.5" />
+                          <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
                         </span>
-                        <div className="min-w-0">
-                          <span className="block text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
-                            {catInfo.label}
-                          </span>
-                          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-emerald-800 transition-colors">
-                            {item.q}
-                          </h3>
-                        </div>
-                      </div>
+                      </button>
 
-                      <span
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition ${
-                          isOpen
-                            ? 'border-emerald-300 bg-emerald-50 text-emerald-800 rotate-180'
-                            : 'border-slate-200 bg-slate-50 text-slate-400 group-hover:border-emerald-300 group-hover:text-emerald-700'
-                        }`}
-                      >
-                        <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
-                      </span>
-                    </button>
-
-                    {isOpen && (
-                      <div className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-[13px] leading-relaxed text-slate-700">
-                        <div className="border-l-2 border-emerald-500 pl-3.5 py-0.5">
-                          {item.a}
+                      {isOpen && (
+                        <div className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-[13px] leading-relaxed text-slate-700">
+                          <div className="border-l-2 border-emerald-500 pl-3.5 py-0.5">
+                            {item.a}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+
+              {/* Paginación centrada a 5 por página */}
+              {totalPages > 1 && (
+                <div className="pt-2 flex justify-center">
+                  <PaginationCard
+                    page={page}
+                    totalPages={totalPages}
+                    total={faqsFiltradas.length}
+                    showingFrom={(page - 1) * PAGE_SIZE + 1}
+                    showingTo={Math.min(page * PAGE_SIZE, faqsFiltradas.length)}
+                    onPageChange={setPage}
+                    itemLabel="preguntas"
+                    centered
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
