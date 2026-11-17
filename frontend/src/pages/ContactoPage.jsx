@@ -56,12 +56,6 @@ const MOTIVOS_CONTACTO = [
   },
 ];
 
-const SUGERENCIAS_MENSAJE = [
-  'Tengo dudas sobre la validación de mi comprobante de pago.',
-  'Quiero saber los requisitos para postular mi causa solidaria.',
-  '¿Cómo funciona el bolillero digital y la reserva de 15 minutos?',
-];
-
 export function ContactoPage() {
   const toast = useToast();
   const [enviando, setEnviando] = useState(false);
