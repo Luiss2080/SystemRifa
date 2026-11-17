@@ -223,7 +223,7 @@ export function PreguntasFrecuentesPage() {
         </span>
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-          Preguntas <span className="text-emerald-700">frecuentes</span>
+          Preguntas <UnderlineHighlight>frecuentes</UnderlineHighlight>
         </h1>
 
         <p className="mx-auto max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-600">
