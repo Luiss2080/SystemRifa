@@ -1220,8 +1220,8 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
             <HelpCircle className="h-3.5 w-3.5 text-amber-600" />
             Centro de dudas
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            Preguntas frecuentes
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            Preguntas <UnderlineHighlight>frecuentes</UnderlineHighlight>
           </h2>
           <p className="text-sm leading-relaxed text-slate-600">
             Resolvemos las consultas más habituales sobre reservas, pagos, sorteos y creación de campañas solidarias.
