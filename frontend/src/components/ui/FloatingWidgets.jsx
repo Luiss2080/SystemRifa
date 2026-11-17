@@ -244,36 +244,36 @@ export function FloatingWidgets() {
       }}
       aria-label="Abrir asistente virtual de ayuda"
       title="Asistente RifaBot 24/7"
-      className="group relative flex h-12 w-12 sm:h-13 sm:w-13 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-lg shadow-emerald-950/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:brightness-105 hover:shadow-xl cursor-pointer"
+      className="group relative flex h-12 w-12 sm:h-13 sm:w-13 items-center justify-center rounded-2xl bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-lg shadow-amber-950/25 ring-2 ring-white/95 transition duration-200 hover:-translate-y-0.5 hover:scale-105 hover:brightness-105 hover:shadow-xl cursor-pointer"
     >
-      <Bot className="h-6 w-6 transition-transform duration-200 group-hover:scale-110 text-white" />
+      <Bot className="h-6 w-6 transition-transform duration-200 group-hover:scale-110 text-slate-950" />
       <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
-        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-80" />
+        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-amber-500" />
       </span>
     </button>
   );
 
   const botCard = (
-    <div className="animate-modal-in flex h-[550px] sm:h-[580px] max-h-[calc(100vh-4rem)] w-[calc(100vw-2rem)] max-w-[350px] sm:max-w-[360px] flex-col overflow-hidden rounded-[26px] border border-emerald-200/90 bg-white shadow-2xl ring-1 ring-emerald-950/5">
-      {/* Cabecera esmeralda compacta e institucional */}
-      <div className="relative shrink-0 bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 px-3.5 py-2.5 text-white">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300" />
+    <div className="animate-modal-in flex h-[550px] sm:h-[580px] max-h-[calc(100vh-4rem)] w-[calc(100vw-2rem)] max-w-[350px] sm:max-w-[360px] flex-col overflow-hidden rounded-[26px] border border-amber-300/80 bg-white shadow-2xl ring-1 ring-amber-950/10">
+      {/* Cabecera amarilla amigable e institucional tipo botón Crear Cuenta */}
+      <div className="relative shrink-0 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-3.5 py-2.5 text-slate-950">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-200 via-yellow-200 to-orange-400" />
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-xs">
-              <Bot className="h-4.5 w-4.5 text-emerald-200" />
-              <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full border-2 border-emerald-800 bg-emerald-400" />
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-950/10 text-slate-950 ring-1 ring-slate-950/15 backdrop-blur-xs">
+              <Bot className="h-4.5 w-4.5 text-slate-950" />
+              <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full border-2 border-amber-400 bg-emerald-500" />
             </span>
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-xs font-black tracking-tight text-white">RifaBot</p>
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/25 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-emerald-100 ring-1 ring-emerald-300/30">
-                  <Sparkles className="h-2 w-2 text-amber-300" />
+                <p className="text-xs font-black tracking-tight text-slate-950">RifaBot</p>
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-slate-950/10 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-slate-950 ring-1 ring-slate-950/15">
+                  <Sparkles className="h-2 w-2 text-slate-950" />
                   Online
                 </span>
               </div>
-              <p className="text-[10px] font-medium text-emerald-100/80">
+              <p className="text-[10px] font-bold text-slate-950/80">
                 Asistente Virtual Solidario
               </p>
             </div>
@@ -285,7 +285,7 @@ export function FloatingWidgets() {
               onClick={handleResetChat}
               title="Reiniciar conversación"
               aria-label="Reiniciar conversación"
-              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white/10 text-white/90 transition hover:bg-white/20 hover:text-white cursor-pointer"
+              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
             </button>
@@ -294,7 +294,7 @@ export function FloatingWidgets() {
               onClick={() => setBotOpen(false)}
               title="Cerrar asistente"
               aria-label="Cerrar asistente"
-              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-white/10 text-white/90 transition hover:bg-white/20 hover:text-white cursor-pointer"
+              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -305,7 +305,7 @@ export function FloatingWidgets() {
       {/* Historial con scroll flexible */}
       <div className="bg-dot-matrix flex-1 space-y-2.5 overflow-y-auto bg-slate-50/70 p-3 sm:p-3.5">
         <div className="flex justify-center">
-          <span className="rounded-full border border-emerald-200/80 bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-800 shadow-2xs">
+          <span className="rounded-full border border-amber-200/80 bg-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-900 shadow-2xs">
             Hoy · Soporte 24/7
           </span>
         </div>
@@ -313,14 +313,14 @@ export function FloatingWidgets() {
         {messages.map((msg) =>
           msg.role === 'user' ? (
             <div key={msg.id} className="flex flex-col items-end gap-0.5">
-              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2 text-xs font-medium leading-relaxed text-white shadow-xs">
+              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 px-3 py-2 text-xs font-bold leading-relaxed text-slate-950 shadow-xs">
                 {msg.texto}
               </div>
               <span className="px-1 text-[9px] text-slate-400">{msg.hora}</span>
             </div>
           ) : (
             <div key={msg.id} className="flex items-start gap-2">
-              <span className="mt-0.5 flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xs">
+              <span className="mt-0.5 flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs">
                 <Bot className="h-3 w-3" />
               </span>
               <div className="min-w-0 flex-1 space-y-0.5">
@@ -335,7 +335,7 @@ export function FloatingWidgets() {
                           msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
                         navigate(destino);
                       }}
-                      className="mt-2 inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-100 cursor-pointer"
+                      className="mt-2 inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-900 ring-1 ring-amber-300 transition hover:bg-amber-100 cursor-pointer"
                     >
                       {msg.ctaLabel}
                       <ArrowRight className="h-2.5 w-2.5" />
@@ -357,7 +357,7 @@ export function FloatingWidgets() {
             key={topic.id}
             type="button"
             onClick={() => enviarConsulta(topic.pregunta, topic)}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200/90 bg-white px-2.5 py-0.5 text-[10px] font-semibold text-emerald-800 shadow-2xs transition hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-200/90 bg-white px-2.5 py-0.5 text-[10px] font-semibold text-amber-950 shadow-2xs transition hover:border-amber-400 hover:bg-amber-50 cursor-pointer"
           >
             <span>{topic.chip}</span>
           </button>
@@ -372,12 +372,12 @@ export function FloatingWidgets() {
             value={consulta}
             onChange={(e) => setConsulta(e.target.value)}
             placeholder="Escribe tu consulta..."
-            className="h-8.5 flex-1 rounded-full border border-slate-200 bg-slate-50/80 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-200/60 focus:outline-none"
+            className="h-8.5 flex-1 rounded-full border border-slate-200 bg-slate-50/80 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200/60 focus:outline-none"
           />
           <button
             type="submit"
             disabled={!consulta.trim()}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
             aria-label="Consultar asistente"
           >
             <Send className="h-3.5 w-3.5" />

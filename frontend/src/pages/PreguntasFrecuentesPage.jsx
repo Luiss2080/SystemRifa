@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -15,6 +15,7 @@ import {
   Trophy,
   X,
 } from 'lucide-react';
+import { PaginationCard } from '../components/ui/DataTable.jsx';
 
 const FAQS_DATA = [
   // 1. Participantes y Boletos
@@ -157,10 +158,18 @@ const CAT_INFO = {
   },
 };
 
+const PAGE_SIZE = 5;
+
 export function PreguntasFrecuentesPage() {
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('todas');
+  const [page, setPage] = useState(1);
   const [abiertos, setAbiertos] = useState(new Set([0]));
+
+  useEffect(() => {
+    setPage(1);
+    setAbiertos(new Set([0]));
+  }, [categoria, busqueda]);
 
   const faqsFiltradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -170,6 +179,12 @@ export function PreguntasFrecuentesPage() {
       return matchCat && matchText;
     });
   }, [busqueda, categoria]);
+
+  const totalPages = Math.max(1, Math.ceil(faqsFiltradas.length / PAGE_SIZE));
+  const faqsPaginadas = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return faqsFiltradas.slice(start, start + PAGE_SIZE);
+  }, [faqsFiltradas, page]);
 
   function toggleItem(idx) {
     setAbiertos((prev) => {
@@ -184,7 +199,7 @@ export function PreguntasFrecuentesPage() {
   }
 
   function expandirTodos() {
-    setAbiertos(new Set(faqsFiltradas.map((_, i) => i)));
+    setAbiertos(new Set(faqsPaginadas.map((_, i) => i)));
   }
 
   function contraerTodos() {
