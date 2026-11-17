@@ -23,6 +23,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 import { useToast } from '../components/ui/Toast.jsx';
 
 const MOTIVOS_CONTACTO = [
@@ -105,7 +106,7 @@ export function ContactoPage() {
         </span>
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-          Canales oficiales de <span className="text-emerald-700">atención y soporte</span>
+          Canales oficiales de <UnderlineHighlight>atención y soporte</UnderlineHighlight>
         </h1>
 
         <p className="mx-auto max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-600">
