@@ -304,9 +304,9 @@ export function HeroShowcase({
   const fanStepX = isCompactScreen ? 56 : 86;
 
   return (
-    <div className="space-y-16 sm:space-y-24 lg:space-y-28">
+    <div className="space-y-8 sm:space-y-10 lg:space-y-12">
       {/* Hero abierto sin caja envolvente innecesaria + Tarjetas verticales de rifas */}
-      <section className="relative py-2 sm:py-6">
+      <section className="relative py-1 sm:py-4">
         <div className="grid items-center gap-10 lg:grid-cols-12">
           {/* Columna Izquierda: Titular, Subtítulo, CTAs y Prueba Social */}
           <div className="space-y-6 text-center lg:col-span-6 lg:text-left">
@@ -580,8 +580,8 @@ export function HeroShowcase({
       {/* Banner Marquee Deslizante en Pantalla Completa */}
       <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} fullBleed />
 
-      {/* Cómo funciona: 4 pasos simples con cabecera centrada y separación generosa */}
-      <section id="como-funciona" className="space-y-8 pt-4 pb-6 sm:pt-6 sm:pb-8">
+      {/* Cómo funciona: 4 pasos simples con cabecera centrada */}
+      <section id="como-funciona" className="space-y-5 pt-1 pb-1">
         <div className="mx-auto max-w-2xl space-y-2 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
             Proceso simple en 4 pasos
@@ -679,7 +679,7 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
   const destacadas = listaCausas.slice(0, 3);
 
   return (
-    <section id="causas-destacadas" className="space-y-6 pt-4">
+    <section id="causas-destacadas" className="space-y-5">
       <div className="mx-auto max-w-2xl space-y-2.5 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
           <HeartHandshake className="h-3.5 w-3.5" />
@@ -827,7 +827,7 @@ export function GarantiasSection() {
   ];
 
   return (
-    <section id="garantias" className="space-y-6 pt-4">
+    <section id="garantias" className="space-y-5">
       <div className="mx-auto max-w-2xl space-y-2 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
@@ -926,7 +926,7 @@ export function GarantiasSection() {
 
 export function LandingFinalCta() {
   return (
-    <section className="py-6 text-center text-slate-900">
+    <section className="py-4 text-center text-slate-900">
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-5">
         <div className="space-y-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
@@ -967,7 +967,7 @@ export function UltimosSorteosSection({ sorteos = [] }) {
   const listaSorteos = sorteos && sorteos.length > 0 ? sorteos : FALLBACK_SORTEOS_PUBLICOS;
 
   return (
-    <section id="ultimos-sorteos" className="space-y-6 pt-2">
+    <section id="ultimos-sorteos" className="space-y-5">
       <div className="mx-auto max-w-2xl space-y-2.5 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
           <Trophy className="h-3.5 w-3.5 text-amber-600" />
