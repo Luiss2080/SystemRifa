@@ -686,8 +686,8 @@ export function CausasDestacadasSection({ causas = [], onSelectCausa }) {
           <HeartHandshake className="h-3.5 w-3.5" />
           Impacto social verificado
         </span>
-        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-          Causas que transforman realidades
+        <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+          Causas que <UnderlineHighlight>transforman</UnderlineHighlight> realidades
         </h2>
         <p className="text-xs text-slate-600">
           Cada ticket vendido respalda una causa aprobada con metas claras y trazabilidad pública.
@@ -834,8 +834,8 @@ export function GarantiasSection() {
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
           Garantías del sistema
         </span>
-        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-          Transparencia técnica en cada boleto y sorteo
+        <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+          <UnderlineHighlight>Transparencia</UnderlineHighlight> técnica en cada boleto y sorteo
         </h2>
         <p className="text-xs leading-relaxed text-slate-600">
           Nuestra arquitectura protege a participantes y organizadores, asegurando equidad real desde la reserva hasta la entrega del premio.
