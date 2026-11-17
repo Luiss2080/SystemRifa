@@ -428,23 +428,6 @@ export function ContactoPage() {
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 text-xs sm:text-sm font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200 resize-none"
                   />
                 </div>
-
-                {/* Sugerencias de consulta rápida para mayor intuición */}
-                <div className="pt-1 space-y-1">
-                  <p className="text-[11px] font-bold text-slate-500">¿Consultas frecuentes? Pulsa para rellenar:</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {SUGERENCIAS_MENSAJE.map((sug, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => aplicarSugerencia(sug)}
-                        className="rounded-lg border border-slate-200 bg-slate-100/70 px-2 py-1 text-[11px] font-medium text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer text-left"
-                      >
-                        &ldquo;{sug}&rdquo;
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {/* Pie del formulario con botón con icono y nota de seguridad */}
