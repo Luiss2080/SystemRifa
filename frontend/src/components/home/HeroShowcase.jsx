@@ -967,22 +967,22 @@ export function UltimosSorteosSection({ sorteos = [] }) {
   const listaSorteos = sorteos && sorteos.length > 0 ? sorteos : FALLBACK_SORTEOS_PUBLICOS;
 
   return (
-    <section id="ultimos-sorteos" className="space-y-5">
-      <div className="mx-auto max-w-2xl space-y-2.5 text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
+    <section id="ultimos-sorteos" className="space-y-3.5">
+      <div className="mx-auto max-w-2xl space-y-1.5 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
           <Trophy className="h-3.5 w-3.5 text-amber-600" />
           Resultados reales verificados
         </span>
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
           Últimos sorteos auditados y ganadores
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-xs text-slate-600">
           Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-0.5">
           <Link
             to="/sorteos"
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
           >
             Ver todos los sorteos y ganadores
             <ArrowRight className="h-3.5 w-3.5" />
