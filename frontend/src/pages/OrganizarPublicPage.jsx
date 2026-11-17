@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext.jsx';
 import { Button } from '../components/ui/Button.jsx';
+import { UnderlineHighlight } from '../components/ui/UnderlineHighlight.jsx';
 
 export function OrganizarPublicPage() {
   const { autenticado } = useAuth();
@@ -104,7 +105,7 @@ export function OrganizarPublicPage() {
 
         <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
           Organiza tu rifa solidaria con{' '}
-          <span className="text-emerald-700">respaldo tecnológico y legal</span>
+          <UnderlineHighlight>respaldo tecnológico y legal</UnderlineHighlight>
         </h1>
 
         <p className="mx-auto max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -172,8 +173,8 @@ export function OrganizarPublicPage() {
             <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
             Herramientas Profesionales
           </span>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
-            Todo lo que necesitas para que tu rifa sea un éxito
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            Todo lo que necesitas para que tu rifa sea un <UnderlineHighlight>éxito</UnderlineHighlight>
           </h2>
           <p className="text-sm text-slate-600">
             Aumenta tus ventas y brinda máxima confianza a tus colaboradores con tecnología de
@@ -211,8 +212,8 @@ export function OrganizarPublicPage() {
             <FileCheck className="h-3.5 w-3.5 text-amber-600" />
             Proceso de Acreditación
           </span>
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
-            ¿Cómo publicar tu rifa en 4 pasos?
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            ¿Cómo publicar tu rifa en <UnderlineHighlight>4 pasos</UnderlineHighlight>?
           </h2>
         </div>
 
