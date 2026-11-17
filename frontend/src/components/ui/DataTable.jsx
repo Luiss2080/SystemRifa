@@ -23,9 +23,7 @@ export function PaginationCard({
     pages.push(p);
   }
 
-  const containerCls = centered
-    ? `mx-auto flex w-full max-w-lg flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-6 py-3 shadow-2xs backdrop-blur-md sm:flex-row ${className}`
-    : `flex flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 py-3.5 shadow-2xs backdrop-blur-md sm:flex-row ${className}`;
+  const containerCls = `flex w-full flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200/60 pt-3 pb-1 ${className}`;
 
   return (
     <div className={containerCls}>

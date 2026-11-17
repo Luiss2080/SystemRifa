@@ -91,9 +91,9 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
   return (
     <nav
       aria-label="Miga de pan"
-      className={`inline-flex max-w-full items-center ${className}`}
+      className={`flex w-full items-center ${className}`}
     >
-      <ol className="inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-emerald-200/80 bg-white/95 px-3.5 py-1 text-xs text-slate-700 shadow-2xs backdrop-blur-xs">
+      <ol className="flex w-full flex-wrap items-center gap-1.5 py-1 text-xs text-slate-600">
         {breadcrumbList.map((item, idx) => {
           const esPrimero = idx === 0;
           const esUltimo = idx === breadcrumbList.length - 1;
@@ -109,7 +109,7 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
 
               {esUltimo || !item.href ? (
                 <span
-                  className="truncate font-extrabold text-emerald-800 max-w-[160px] sm:max-w-xs"
+                  className="truncate font-extrabold text-emerald-800 max-w-[200px] sm:max-w-md"
                   aria-current="page"
                   title={item.label}
                 >
@@ -119,7 +119,7 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
                 <button
                   type="button"
                   onClick={item.onClick}
-                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer truncate max-w-[140px] sm:max-w-xs"
+                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer truncate max-w-[160px] sm:max-w-sm"
                   title={item.label}
                 >
                   {esPrimero && <Home className="h-3.5 w-3.5 text-emerald-600 shrink-0" />}
@@ -128,7 +128,7 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
               ) : (
                 <Link
                   to={item.href}
-                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors truncate max-w-[140px] sm:max-w-xs"
+                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors truncate max-w-[160px] sm:max-w-sm"
                   title={item.label}
                 >
                   {esPrimero && <Home className="h-3.5 w-3.5 text-emerald-600 shrink-0" />}
