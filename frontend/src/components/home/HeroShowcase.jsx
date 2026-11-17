@@ -24,6 +24,7 @@ import {
   Users,
 } from 'lucide-react';
 import { formatearBs, formatearFechaCorta } from '../../utils/format.js';
+import { UnderlineHighlight } from '../ui/UnderlineHighlight.jsx';
 
 const CARD_PALETTES = [
   'from-emerald-600 via-teal-600 to-emerald-800',
@@ -586,8 +587,8 @@ export function HeroShowcase({
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
             Proceso simple en 4 pasos
           </span>
-          <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-            Cómo participar de forma segura
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            Cómo participar de forma <UnderlineHighlight>segura</UnderlineHighlight>
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-2 pt-0.5">
             <Link
