@@ -318,7 +318,7 @@ export function CatalogoPage({ mode = 'landing' }) {
   }).length;
 
   return (
-    <div className={esVistaLanding ? 'space-y-20 sm:space-y-28 lg:space-y-36 pb-16' : 'space-y-8 pb-16'}>
+    <div className={esVistaLanding ? 'space-y-10 sm:space-y-12 lg:space-y-14 pb-12' : 'space-y-6 pb-12'}>
       {esVistaLanding ? (
         <HeroShowcase
           rifas={rifasBase}
@@ -367,7 +367,22 @@ export function CatalogoPage({ mode = 'landing' }) {
         </section>
       )}
 
-      <section id="catalogo-activo" className="space-y-5">
+      <section id="catalogo-activo" className="space-y-4">
+        {/* Miga de pan de navegación */}
+        <div className="flex items-center justify-start">
+          <Breadcrumbs
+            items={[
+              { label: 'Inicio', href: '/' },
+              {
+                label: 'Catálogo de rifas',
+                href: esVistaLanding ? '#catalogo-activo' : '/explorar',
+                onClick: causaActivaObj ? () => seleccionarCausa('') : undefined,
+              },
+              ...(causaActivaObj ? [{ label: causaActivaObj.nombre }] : []),
+            ]}
+          />
+        </div>
+
         {esVistaLanding && (
           <div className="mx-auto max-w-2xl space-y-2 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
