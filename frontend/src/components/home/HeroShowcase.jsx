@@ -934,8 +934,8 @@ export function LandingFinalCta() {
             <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
             Comienza hoy mismo
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            ¿Listo para elegir tus números y apoyar una causa real?
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            ¿Listo para elegir tus números y apoyar una <UnderlineHighlight>causa real</UnderlineHighlight>?
           </h2>
           <p className="text-sm leading-relaxed text-slate-600">
             Regístrate gratis en menos de un minuto para reservar boletos con seguridad, validar pagos y seguir sorteos auditados.
@@ -974,8 +974,8 @@ export function UltimosSorteosSection({ sorteos = [] }) {
           <Trophy className="h-3.5 w-3.5 text-amber-600" />
           Resultados reales verificados
         </span>
-        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-          Últimos sorteos auditados y ganadores
+        <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+          Últimos sorteos <UnderlineHighlight>auditados</UnderlineHighlight> y ganadores
         </h2>
         <p className="text-xs text-slate-600">
           Ganadores publicados desde nuestra base de datos protegidos con alias público e iniciales.
@@ -1124,8 +1124,8 @@ export function PlatformContentSection({ totalRifas = 0, totalCausas = 0, metric
             <Sparkles className="h-3.5 w-3.5" />
             Ecosistema solidario completo
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            Diseñado para participantes, organizadores y causas reales
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            Diseñado para <UnderlineHighlight>participantes</UnderlineHighlight>, organizadores y causas reales
           </h2>
           <p className="text-sm text-slate-600">
             Cada rol cuenta con herramientas claras para participar, recaudar y verificar sorteos en tiempo real.
