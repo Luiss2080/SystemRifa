@@ -304,9 +304,9 @@ export function HeroShowcase({
   const fanStepX = isCompactScreen ? 56 : 86;
 
   return (
-    <div className="space-y-8 sm:space-y-10 lg:space-y-12">
+    <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       {/* Hero abierto sin caja envolvente innecesaria + Tarjetas verticales de rifas */}
-      <section className="relative py-1 sm:py-4">
+      <section className="relative py-1 sm:py-3">
         <div className="grid items-center gap-10 lg:grid-cols-12">
           {/* Columna Izquierda: Titular, Subtítulo, CTAs y Prueba Social */}
           <div className="space-y-6 text-center lg:col-span-6 lg:text-left">
@@ -581,15 +581,15 @@ export function HeroShowcase({
       <CauseMarqueeTicker causas={causas} onSelectCausa={onSelectCausa} fullBleed />
 
       {/* Cómo funciona: 4 pasos simples con cabecera centrada */}
-      <section id="como-funciona" className="space-y-5 pt-1 pb-1">
-        <div className="mx-auto max-w-2xl space-y-2 text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
+      <section id="como-funciona" className="space-y-3.5 pt-0 pb-0">
+        <div className="mx-auto max-w-2xl space-y-1 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80">
             Proceso simple en 4 pasos
           </span>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
             Cómo participar de forma segura
           </h2>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-0.5">
             <Link
               to="/como-funciona"
               className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800"

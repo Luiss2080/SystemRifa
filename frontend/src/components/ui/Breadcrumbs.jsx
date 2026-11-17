@@ -83,8 +83,8 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
     return list;
   })();
 
-  if (!breadcrumbList || breadcrumbList.length <= 1) {
-    // Si solo hay "Inicio" y no hay hijos, no mostramos nada para no saturar
+  if (!breadcrumbList || (!items && breadcrumbList.length <= 1)) {
+    // Si solo hay "Inicio" y no hay hijos en modo automático, no mostramos nada para no saturar
     return null;
   }
 
@@ -93,7 +93,7 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
       aria-label="Miga de pan"
       className={`inline-flex max-w-full items-center ${className}`}
     >
-      <ol className="inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/95 px-3.5 py-1 text-xs text-slate-600 shadow-2xs backdrop-blur-xs">
+      <ol className="inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-emerald-200/80 bg-white/95 px-3.5 py-1 text-xs text-slate-700 shadow-2xs backdrop-blur-xs">
         {breadcrumbList.map((item, idx) => {
           const esPrimero = idx === 0;
           const esUltimo = idx === breadcrumbList.length - 1;
@@ -104,12 +104,12 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
               className="inline-flex items-center gap-1.5 min-w-0"
             >
               {!esPrimero && (
-                <ChevronRight className="h-3 w-3 shrink-0 text-slate-300" aria-hidden="true" />
+                <ChevronRight className="h-3 w-3 shrink-0 text-slate-400" aria-hidden="true" />
               )}
 
               {esUltimo || !item.href ? (
                 <span
-                  className="truncate font-bold text-emerald-800 max-w-[160px] sm:max-w-xs"
+                  className="truncate font-extrabold text-emerald-800 max-w-[160px] sm:max-w-xs"
                   aria-current="page"
                   title={item.label}
                 >
@@ -119,19 +119,19 @@ export function Breadcrumbs({ items, extraItems = [], className = '' }) {
                 <button
                   type="button"
                   onClick={item.onClick}
-                  className="inline-flex items-center gap-1 font-medium text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer truncate max-w-[140px] sm:max-w-xs"
+                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer truncate max-w-[140px] sm:max-w-xs"
                   title={item.label}
                 >
-                  {esPrimero && <Home className="h-3.5 w-3.5 text-slate-400 shrink-0" />}
+                  {esPrimero && <Home className="h-3.5 w-3.5 text-emerald-600 shrink-0" />}
                   <span>{item.label}</span>
                 </button>
               ) : (
                 <Link
                   to={item.href}
-                  className="inline-flex items-center gap-1 font-medium text-slate-600 hover:text-emerald-700 transition-colors truncate max-w-[140px] sm:max-w-xs"
+                  className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-emerald-700 transition-colors truncate max-w-[140px] sm:max-w-xs"
                   title={item.label}
                 >
-                  {esPrimero && <Home className="h-3.5 w-3.5 text-slate-400 shrink-0" />}
+                  {esPrimero && <Home className="h-3.5 w-3.5 text-emerald-600 shrink-0" />}
                   <span>{item.label}</span>
                 </Link>
               )}

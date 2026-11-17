@@ -13,9 +13,9 @@ export function PublicLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col overflow-x-clip bg-transparent">
       <AppHeader variant="public" />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-4 sm:px-6 lg:px-8">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-2 sm:py-3 lg:py-4 sm:px-6 lg:px-8">
         {!esHome && (
-          <div className="mb-3 sm:mb-4">
+          <div className="mb-2 sm:mb-3">
             <Breadcrumbs />
           </div>
         )}
@@ -30,8 +30,8 @@ export function AuthLayout() {
   return (
     <div className="relative z-10 flex min-h-screen flex-col overflow-x-clip bg-transparent">
       <AppHeader variant="public" />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-4 self-start">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mb-3 self-start">
           <Breadcrumbs />
         </div>
         <Outlet />
@@ -43,9 +43,9 @@ export function AuthLayout() {
 export function UserLayout() {
   return (
     <RoleShell>
-      <main className="flex flex-1 flex-col px-4 py-4 pb-20 sm:px-6 lg:px-8 lg:pb-10">
+      <main className="flex flex-1 flex-col px-4 py-2 sm:py-3 pb-20 sm:px-6 lg:px-8 lg:pb-10">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col">
-          <div className="mb-3 sm:mb-4">
+          <div className="mb-2 sm:mb-3">
             <Breadcrumbs />
           </div>
           <Outlet />
