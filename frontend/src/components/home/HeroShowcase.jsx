@@ -827,22 +827,22 @@ export function GarantiasSection() {
   ];
 
   return (
-    <section id="garantias" className="space-y-5">
-      <div className="mx-auto max-w-2xl space-y-2 text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
+    <section id="garantias" className="space-y-3.5">
+      <div className="mx-auto max-w-2xl space-y-1.5 text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
           Garantías del sistema
         </span>
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
           Transparencia técnica en cada boleto y sorteo
         </h2>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="text-xs leading-relaxed text-slate-600">
           Nuestra arquitectura protege a participantes y organizadores, asegurando equidad real desde la reserva hasta la entrega del premio.
         </p>
-        <div className="pt-1">
+        <div className="pt-0.5">
           <Link
             to="/garantias"
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-4 py-2 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/90 px-3.5 py-1 text-xs font-extrabold text-emerald-800 shadow-2xs transition hover:bg-emerald-50"
           >
             Conocer todas las garantías técnicas
             <ArrowRight className="h-3.5 w-3.5" />
