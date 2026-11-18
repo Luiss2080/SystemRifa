@@ -186,6 +186,11 @@ export async function getTiposNotificacionApi() {
   return data;
 }
 
+export async function crearTipoNotificacionApi(payload) {
+  const { data } = await apiClient.post('/tipos-notificacion', payload);
+  return data;
+}
+
 export async function actualizarTipoNotificacionApi(id, payload) {
   const { data } = await apiClient.patch(`/tipos-notificacion/${id}`, payload);
   return data;
