@@ -1,11 +1,12 @@
 export function UnderlineHighlight({ children, className = '' }) {
   return (
-    <span className={`relative inline-block text-emerald-700 ${className}`}>
-      {children}
+    <span className={`relative inline-block text-emerald-700 pb-1.5 sm:pb-2 ${className}`}>
+      <span className="relative z-10">{children}</span>
       <svg
         aria-hidden="true"
         viewBox="0 0 220 18"
-        className="absolute -bottom-2 sm:-bottom-2.5 left-0 w-full text-amber-400 pointer-events-none overflow-visible"
+        preserveAspectRatio="none"
+        className="absolute -bottom-0.5 sm:-bottom-1 left-0 w-full h-[7px] sm:h-[9px] text-amber-400 pointer-events-none z-0"
         fill="none"
       >
         <path

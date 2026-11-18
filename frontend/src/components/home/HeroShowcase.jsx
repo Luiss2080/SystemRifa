@@ -320,22 +320,7 @@ export function HeroShowcase({
               La transparencia
               <br />
               que tu causa{' '}
-              <span className="relative inline-block text-emerald-700">
-                necesita
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 220 18"
-                  className="absolute -bottom-2 left-0 w-full text-amber-400"
-                  fill="none"
-                >
-                  <path
-                    d="M3 12C55 4 148 3 217 11"
-                    stroke="currentColor"
-                    strokeWidth="7"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
+              <UnderlineHighlight>necesita</UnderlineHighlight>
             </h1>
 
             <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base lg:mx-0">
