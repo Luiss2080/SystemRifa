@@ -637,71 +637,26 @@ export function AdminPlantillasPage() {
         </>
       )}
 
-      {/* Modal de Previsualización en Vivo */}
+      {/* Modal de Previsualización en Vivo Horizontal */}
       <Modal
         open={Boolean(previsualizando)}
         onClose={() => setPrevisualizando(null)}
-        title={`Vista Previa en Vivo · ${previsualizando?.codigo || ''}`}
+        title={`Vista previa en vivo · ${previsualizando?.codigo || ''}`}
         description="Simulación del mensaje renderizado tal como lo recibe el usuario final con variables dinámicas."
         badge={getEventoConfig(previsualizando?.codigo).categoria}
         icon={Eye}
-        maxWidth="max-w-2xl"
-      >
-        {previsualizando && (
-          <div className="space-y-4">
-            {/* Cabecera de simulación de correo / push */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 text-xs">
-                <div className="space-y-0.5">
-                  <p className="text-slate-500">
-                    <strong className="text-slate-700">De:</strong> Sistema Rifas Solidarias &lt;notificaciones@rifas.local&gt;
-                  </p>
-                  <p className="text-slate-500">
-                    <strong className="text-slate-700">Para:</strong> {EJEMPLOS_VARIABLES.nombre} &lt;participante@rifas.local&gt;
-                  </p>
-                </div>
-                <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-700">
-                  <Send className="h-3 w-3 text-emerald-600" />
-                  {getEventoConfig(previsualizando.codigo).canal}
-                </span>
-              </div>
-
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Asunto / Título</p>
-                <p className="mt-0.5 text-base font-extrabold text-slate-900">
-                  {previsualizarTexto(previsualizando.plantillaTitulo, previsualizando.variables || [])}
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800 mb-1">Cuerpo del Mensaje</p>
-                <p className="text-sm leading-relaxed text-slate-800 whitespace-pre-wrap">
-                  {previsualizarTexto(previsualizando.plantillaMensaje, previsualizando.variables || [])}
-                </p>
-              </div>
-            </div>
-
-            {/* Resumen de variables aplicadas */}
-            <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3.5 space-y-2 text-xs">
-              <p className="font-bold text-indigo-950 flex items-center gap-1.5">
-                <Variable className="h-4 w-4 text-indigo-600" />
-                Variables simuladas en esta plantilla:
-              </p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {(previsualizando.variables || []).map((v) => (
-                  <div key={v} className="rounded-lg border border-indigo-200/80 bg-white p-2">
-                    <p className="font-mono text-[11px] font-bold text-indigo-700">{`{${v}}`}</p>
-                    <p className="truncate text-[11px] text-slate-600 font-medium">{EJEMPLOS_VARIABLES[v] ?? '—'}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button variant="secondary" onClick={() => setPrevisualizando(null)}>
+        maxWidth="max-w-4xl sm:max-w-5xl"
+        footer={
+          <div className="flex w-full items-center justify-between">
+            <span className="text-xs text-slate-500">
+              Canal: <strong>{getEventoConfig(previsualizando?.codigo).canal}</strong>
+            </span>
+            <div className="flex gap-2">
+              <Button variant="secondary" size="sm" onClick={() => setPrevisualizando(null)}>
                 Cerrar
               </Button>
               <Button
+                size="sm"
                 onClick={() => {
                   const t = previsualizando;
                   setPrevisualizando(null);
@@ -713,89 +668,205 @@ export function AdminPlantillasPage() {
               </Button>
             </div>
           </div>
+        }
+      >
+        {previsualizando && (
+          <div className="grid gap-4 md:grid-cols-12 items-start">
+            {/* Cabecera y cuerpo de simulación */}
+            <div className="md:col-span-7 rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5 text-xs">
+                <div className="space-y-0.5">
+                  <p className="text-slate-500">
+                    <strong className="text-slate-700">De:</strong> Rifas Solidarias &lt;notificaciones@rifas.local&gt;
+                  </p>
+                  <p className="text-slate-500">
+                    <strong className="text-slate-700">Para:</strong> {EJEMPLOS_VARIABLES.nombre} &lt;participante@rifas.local&gt;
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700">
+                  <Send className="h-3 w-3 text-emerald-600" />
+                  {getEventoConfig(previsualizando.codigo).canal}
+                </span>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Asunto / Título</p>
+                <p className="mt-0.5 text-sm font-extrabold text-slate-900 leading-snug">
+                  {previsualizarTexto(previsualizando.plantillaTitulo, previsualizando.variables || [])}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30 p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 mb-1">Cuerpo del Mensaje</p>
+                <p className="text-xs leading-relaxed text-slate-800 whitespace-pre-wrap">
+                  {previsualizarTexto(previsualizando.plantillaMensaje, previsualizando.variables || [])}
+                </p>
+              </div>
+            </div>
+
+            {/* Resumen lateral de variables aplicadas */}
+            <div className="md:col-span-5 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-3.5 space-y-2.5 text-xs">
+              <p className="font-bold text-indigo-950 flex items-center gap-1.5">
+                <Variable className="h-4 w-4 text-indigo-600" />
+                Variables renderizadas:
+              </p>
+              <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                {(previsualizando.variables || []).map((v) => (
+                  <div key={v} className="rounded-lg border border-indigo-200/80 bg-white p-2">
+                    <p className="font-mono text-[11px] font-bold text-indigo-700">{`{${v}}`}</p>
+                    <p className="truncate text-[11px] text-slate-700 font-medium">{EJEMPLOS_VARIABLES[v] ?? '—'}</p>
+                  </div>
+                ))}
+                {(!previsualizando.variables || previsualizando.variables.length === 0) && (
+                  <p className="text-slate-500 italic">Esta plantilla no utiliza variables dinámicas.</p>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </Modal>
 
-      {/* Modal de Edición */}
+      {/* Modal Compacto y Horizontal de Creación / Edición */}
       <Modal
-        open={Boolean(editando)}
-        onClose={() => setEditando(null)}
-        title={`Editar plantilla · ${editando?.codigo || ''}`}
-        description="Personaliza el título, mensaje y variables admitidas. Puedes usar {nombre} para un trato personalizado o {alias}."
-        badge={getEventoConfig(editando?.codigo).categoria}
+        open={Boolean(modalPlantilla)}
+        onClose={() => setModalPlantilla(null)}
+        title={
+          modalPlantilla?.modo === 'crear'
+            ? 'Nueva plantilla de notificación'
+            : `Editar plantilla · ${modalPlantilla?.tipo?.codigo || ''}`
+        }
+        description="Personaliza el asunto, variables dinámicas y mensaje que recibirán automáticamente los participantes."
+        badge={modalPlantilla?.tipo ? getEventoConfig(modalPlantilla.tipo.codigo).categoria : 'Mensajería'}
         icon={Mail}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-4xl sm:max-w-5xl"
       >
-        {editando && (
+        {modalPlantilla && (
           <form onSubmit={handleGuardar} className="space-y-4">
-            <div className="space-y-1.5 rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 text-xs text-indigo-950">
-              <p className="font-bold flex items-center gap-1.5">
-                <Variable className="h-4 w-4 text-indigo-600" />
-                Variables admitidas (haz clic para insertar en el mensaje):
-              </p>
-              {varsAdmitidas.length ? (
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {varsAdmitidas.map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => insertarVariable(v)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-indigo-200 bg-white px-2.5 py-1 font-mono text-[11px] font-bold text-indigo-700 hover:border-indigo-400 hover:bg-indigo-50 shadow-2xs transition cursor-pointer"
-                    >
-                      <PlusCircle className="h-3 w-3 text-indigo-500" />
-                      {`{${v}}`}
-                    </button>
-                  ))}
+            <div className="grid gap-4 md:grid-cols-12 items-stretch">
+              {/* Columna izquierda (7 cols): Campos de configuración */}
+              <div className="space-y-3 md:col-span-7">
+                {modalPlantilla.modo === 'crear' ? (
+                  <Input
+                    label="Código único de evento"
+                    icon={Code2}
+                    required
+                    placeholder="Ej. BOLETO_CONFIRMADO"
+                    value={form.codigo}
+                    onChange={(e) => setForm((f) => ({ ...f, codigo: e.target.value.toUpperCase() }))}
+                  />
+                ) : (
+                  <div className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/70 p-2.5 text-xs">
+                    <span className="font-bold text-slate-600">Código de evento:</span>
+                    <span className="font-mono font-black text-slate-900">{modalPlantilla.tipo.codigo}</span>
+                  </div>
+                )}
+
+                <Input
+                  label="Plantilla del título / Asunto *"
+                  required
+                  placeholder="Ej. ¡Felicidades {nombre}, tu pago fue verificado!"
+                  value={form.plantillaTitulo}
+                  onChange={(e) => setForm((f) => ({ ...f, plantillaTitulo: e.target.value }))}
+                />
+
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700">
+                      Plantilla del mensaje *
+                    </label>
+                    <span className="text-[10px] text-slate-400">Clic en variable para insertar</span>
+                  </div>
+                  
+                  {/* Variables admitidas como chips interactivos */}
+                  <div className="flex flex-wrap gap-1 pb-1">
+                    {varsAdmitidas.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => insertarVariable(v)}
+                        className="inline-flex items-center gap-1 rounded-md border border-indigo-200/90 bg-indigo-50/80 px-2 py-0.5 font-mono text-[11px] font-bold text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 shadow-2xs transition cursor-pointer"
+                        title={`Insertar {${v}}`}
+                      >
+                        <PlusCircle className="h-3 w-3 text-indigo-500" />
+                        {`{${v}}`}
+                      </button>
+                    ))}
+                  </div>
+
+                  <Textarea
+                    required
+                    rows={4}
+                    placeholder="Escribe el mensaje completo respetando las llaves para variables..."
+                    value={form.plantillaMensaje}
+                    onChange={(e) => setForm((f) => ({ ...f, plantillaMensaje: e.target.value }))}
+                  />
                 </div>
-              ) : (
-                <span className="text-slate-500">Ninguna variable</span>
-              )}
+
+                <label className="flex items-center gap-2 pt-1 text-xs font-bold text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    checked={form.estaActivo}
+                    onChange={(e) => setForm((f) => ({ ...f, estaActivo: e.target.checked }))}
+                  />
+                  <span>Habilitar envío automático en producción</span>
+                </label>
+              </div>
+
+              {/* Columna derecha (5 cols): Previsualización realista en vivo */}
+              <div className="md:col-span-5 flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-gradient-to-b from-slate-50/60 to-white p-3.5 shadow-2xs space-y-3">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-200/70 pb-2">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-emerald-800">
+                      <Eye className="h-3.5 w-3.5 text-emerald-600" />
+                      Vista previa en vivo
+                    </span>
+                    <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                      Simulación
+                    </span>
+                  </div>
+
+                  {/* Tarjeta de simulación */}
+                  <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3 shadow-2xs text-xs">
+                    <div className="border-b border-slate-100 pb-2 text-[10.5px] text-slate-500 space-y-0.5">
+                      <p><strong>De:</strong> Rifas Solidarias &lt;notif@rifas.local&gt;</p>
+                      <p><strong>Para:</strong> {EJEMPLOS_VARIABLES.nombre} &lt;usuario@ejemplo.bo&gt;</p>
+                    </div>
+
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Asunto</p>
+                      <p className="font-extrabold text-slate-900 text-xs">
+                        {previsualizarTexto(form.plantillaTitulo, varsAdmitidas) || (
+                          <span className="text-slate-400 italic">Escribe un título...</span>
+                        )}
+                      </p>
+                    </div>
+
+                    <div className="rounded-lg border border-emerald-100 bg-emerald-50/40 p-2.5">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 mb-0.5">Mensaje</p>
+                      <p className="text-[11.5px] leading-relaxed text-slate-800 whitespace-pre-wrap">
+                        {previsualizarTexto(form.plantillaMensaje, varsAdmitidas) || (
+                          <span className="text-slate-400 italic">Escribe el cuerpo del mensaje...</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-2 text-[10.5px] text-indigo-950">
+                  <p className="font-bold mb-1">Valores simulados:</p>
+                  <p className="text-slate-600 truncate">nombre: <strong>{EJEMPLOS_VARIABLES.nombre}</strong></p>
+                  <p className="text-slate-600 truncate">rifa: <strong>{EJEMPLOS_VARIABLES.nombreRifa}</strong></p>
+                </div>
+              </div>
             </div>
 
-            <Input
-              label="Plantilla del título / Asunto"
-              required
-              value={form.plantillaTitulo}
-              onChange={(e) => setForm((f) => ({ ...f, plantillaTitulo: e.target.value }))}
-            />
-
-            <Textarea
-              label="Plantilla del mensaje"
-              required
-              rows={3}
-              value={form.plantillaMensaje}
-              onChange={(e) => setForm((f) => ({ ...f, plantillaMensaje: e.target.value }))}
-            />
-
-            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 cursor-pointer">
-              <input
-                type="checkbox"
-                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                checked={form.estaActivo}
-                onChange={(e) => setForm((f) => ({ ...f, estaActivo: e.target.checked }))}
-              />
-              Notificación activa para envío en producción
-            </label>
-
-            <div className="space-y-1 rounded-xl border border-emerald-200/90 bg-emerald-50/70 p-4 shadow-2xs">
-              <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                <Eye className="h-3.5 w-3.5" />
-                Vista previa en tiempo real
-              </p>
-              <p className="text-sm font-extrabold text-slate-900">
-                {previsualizarTexto(form.plantillaTitulo, varsAdmitidas)}
-              </p>
-              <p className="text-xs text-slate-700 leading-relaxed mt-1">
-                {previsualizarTexto(form.plantillaMensaje, varsAdmitidas)}
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button variant="secondary" onClick={() => setEditando(null)}>
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+              <Button variant="secondary" size="sm" onClick={() => setModalPlantilla(null)}>
                 Cancelar
               </Button>
-              <Button type="submit" loading={saving}>
-                Guardar plantilla
+              <Button type="submit" size="sm" loading={saving}>
+                {modalPlantilla.modo === 'crear' ? 'Crear plantilla' : 'Guardar cambios'}
               </Button>
             </div>
           </form>

@@ -5,10 +5,12 @@ import {
   CheckCircle2,
   Eye,
   Mail,
+  Plus,
   Shield,
   ShieldCheck,
   SlidersHorizontal,
   UserCheck,
+  UserPlus,
   Users,
   UserX,
 } from 'lucide-react';
@@ -23,11 +25,14 @@ import {
   quitarPermisoUsuarioApi,
   quitarRolUsuarioApi,
 } from '../../features/panel/panelApi.js';
+import { registroRequest } from '../../features/auth/authApi.js';
 import { useAuth } from '../../features/auth/AuthContext.jsx';
 import { extraerErrorApi } from '../../utils/apiError.js';
 import { Badge } from '../../components/ui/Badge.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
+import { Input } from '../../components/ui/Input.jsx';
+import { Select } from '../../components/ui/Select.jsx';
 import { ConfirmModal, Modal } from '../../components/ui/Modal.jsx';
 import { useToast } from '../../components/ui/Toast.jsx';
 import {
