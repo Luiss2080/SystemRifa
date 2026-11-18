@@ -421,41 +421,83 @@ export function AdminCausasPage() {
         description="Define el propósito, el mensaje público para los donantes y la meta de recaudación."
         badge="Catálogo solidario"
         icon={HeartHandshake}
-        maxWidth="max-w-xl"
+        maxWidth="max-w-4xl"
       >
-        <form onSubmit={handleGuardar} className="space-y-4">
-          <Input
-            label="Nombre de la causa"
-            icon={HeartHandshake}
-            required
-            placeholder="Ej. Albergue Patitas Felices"
-            value={form.nombre}
-            onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
-          />
-          <Textarea
-            label="Descripción e impacto"
-            required
-            rows={4}
-            placeholder="Explica a qué se destinarán los fondos y quiénes se benefician."
-            value={form.descripcion}
-            onChange={(e) => setForm((f) => ({ ...f, descripcion: e.target.value }))}
-          />
-          <Input
-            label="Meta de recaudación (Bs)"
-            type="number"
-            icon={DollarSign}
-            step="0.01"
-            min="1"
-            placeholder="5000.00"
-            helperText="Se mostrará como referencia de progreso para las campañas vinculadas."
-            value={form.meta}
-            onChange={(e) => setForm((f) => ({ ...f, meta: e.target.value }))}
-          />
-          <div className="flex justify-end gap-2.5 border-t border-slate-100 pt-4">
-            <Button variant="secondary" onClick={() => setModal(null)}>
+        <form onSubmit={handleGuardar} className="space-y-3.5">
+          <div className="grid gap-3.5 md:grid-cols-12 items-stretch">
+            {/* Formulario compacto */}
+            <div className="space-y-2.5 md:col-span-7">
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                <Input
+                  label="Nombre de la causa"
+                  icon={HeartHandshake}
+                  required
+                  placeholder="Ej. Albergue Patitas Felices"
+                  value={form.nombre}
+                  onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
+                />
+                <Input
+                  label="Meta de recaudación (Bs)"
+                  type="number"
+                  icon={DollarSign}
+                  step="0.01"
+                  min="1"
+                  placeholder="5000.00"
+                  value={form.meta}
+                  onChange={(e) => setForm((f) => ({ ...f, meta: e.target.value }))}
+                />
+              </div>
+
+              <Textarea
+                label="Descripción e impacto"
+                required
+                rows={3}
+                placeholder="Explica a qué se destinarán los fondos y quiénes se benefician."
+                value={form.descripcion}
+                onChange={(e) => setForm((f) => ({ ...f, descripcion: e.target.value }))}
+              />
+            </div>
+
+            {/* Previsualización en vivo horizontal */}
+            <div className="md:col-span-5 flex flex-col justify-between rounded-xl border border-emerald-200/80 bg-gradient-to-b from-emerald-50/50 via-slate-50/40 to-white p-3.5 shadow-2xs">
+              <div>
+                <div className="flex items-center justify-between border-b border-emerald-200/60 pb-2 mb-2.5">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                    <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+                    Vista en catálogo
+                  </span>
+                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9.5px] font-bold text-emerald-800">
+                    Verificada
+                  </span>
+                </div>
+
+                <div className="space-y-2 rounded-lg border border-slate-200/60 bg-white p-3 shadow-2xs">
+                  <p className="text-xs font-extrabold text-slate-900 leading-snug">
+                    {form.nombre.trim() || <span className="text-slate-400 italic">Nombre de la causa...</span>}
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-slate-600 line-clamp-3">
+                    {form.descripcion.trim() || <span className="text-slate-400 italic">Descripción para los donantes...</span>}
+                  </p>
+                  <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500 font-medium">Meta solidaria:</span>
+                    <span className="font-extrabold text-emerald-700">
+                      Bs {Number(form.meta || 0).toLocaleString('es-BO', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-2 text-[10.5px] text-slate-500 leading-tight">
+                Se exhibirá en el catálogo público para asociar campañas y visibilizar el avance de recaudación.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModal(null)}>
               Cancelar
             </Button>
-            <Button type="submit" loading={saving}>
+            <Button type="submit" size="sm" loading={saving}>
               {modal?.modo === 'editar' ? 'Guardar cambios' : 'Crear causa'}
             </Button>
           </div>
