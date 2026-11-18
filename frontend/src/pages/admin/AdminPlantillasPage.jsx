@@ -15,6 +15,7 @@ import {
   List,
   Mail,
   PauseCircle,
+  Plus,
   PlusCircle,
   Send,
   SlidersHorizontal,
@@ -28,6 +29,7 @@ import {
 } from 'lucide-react';
 import {
   actualizarTipoNotificacionApi,
+  crearTipoNotificacionApi,
   getTiposNotificacionApi,
 } from '../../features/panel/panelApi.js';
 import { extraerErrorApi } from '../../utils/apiError.js';
