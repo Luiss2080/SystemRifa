@@ -394,6 +394,22 @@ export function AdminUsuariosPage() {
             ],
           },
         ]}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" onClick={() => setModalCrear(true)}>
+              <Plus className="h-4 w-4" />
+              Nuevo usuario
+            </Button>
+            {tienePermiso('roles', 'administrar') && (
+              <Link to="/admin/roles">
+                <Button variant="secondary" size="sm">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  Gestionar roles
+                </Button>
+              </Link>
+            )}
+          </div>
+        }
       />
 
       <PanelSectionHeader
@@ -575,6 +591,88 @@ export function AdminUsuariosPage() {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Modal Compacto y Horizontal para Crear Usuario */}
+      <Modal
+        open={modalCrear}
+        onClose={() => setModalCrear(false)}
+        title="Registrar nuevo usuario"
+        description="Ingresa los datos personales y credenciales para crear una cuenta en el sistema."
+        badge="Directorio de usuarios"
+        icon={UserPlus}
+        maxWidth="max-w-3xl sm:max-w-4xl"
+      >
+        <form onSubmit={handleCrearUsuario} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 items-start">
+            {/* Columna Izquierda: Datos Personales */}
+            <div className="space-y-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                1. Datos de Identidad
+              </p>
+              <Input
+                label="Nombres *"
+                required
+                placeholder="Ej. Roberto Carlos"
+                value={formCrear.nombres}
+                onChange={(e) => setFormCrear((f) => ({ ...f, nombres: e.target.value }))}
+              />
+              <Input
+                label="Apellidos *"
+                required
+                placeholder="Ej. Flores Vargas"
+                value={formCrear.apellidos}
+                onChange={(e) => setFormCrear((f) => ({ ...f, apellidos: e.target.value }))}
+              />
+              <Input
+                label="Alias de usuario (@handle) *"
+                required
+                placeholder="Ej. rflores"
+                value={formCrear.alias}
+                onChange={(e) => setFormCrear((f) => ({ ...f, alias: e.target.value.toLowerCase().replace(/\s+/g, '') }))}
+              />
+            </div>
+
+            {/* Columna Derecha: Acceso y Contacto */}
+            <div className="space-y-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                2. Contacto y Seguridad
+              </p>
+              <Input
+                label="Correo electrónico *"
+                type="email"
+                icon={Mail}
+                required
+                placeholder="ejemplo@rifas.bo"
+                value={formCrear.email}
+                onChange={(e) => setFormCrear((f) => ({ ...f, email: e.target.value }))}
+              />
+              <Input
+                label="Teléfono / WhatsApp"
+                placeholder="+591 70012345"
+                value={formCrear.telefono}
+                onChange={(e) => setFormCrear((f) => ({ ...f, telefono: e.target.value }))}
+              />
+              <Input
+                label="Contraseña inicial *"
+                type="password"
+                required
+                placeholder="Mínimo 8 caracteres"
+                value={formCrear.password}
+                onChange={(e) => setFormCrear((f) => ({ ...f, password: e.target.value }))}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModalCrear(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" size="sm" loading={creando}>
+              Crear cuenta de usuario
+            </Button>
+          </div>
+        </form>
       </Modal>
     </div>
   );
