@@ -1,4 +1,4 @@
-# Checklist de Trazabilidad y Verificación Final
+hay# Checklist de Trazabilidad y Verificación Final
 
 Trazabilidad oficial con los requisitos funcionales (`RF-01`..`RF-15`), no funcionales (`RNF-01`..`RNF-10`), tarjetas de Trello y recorrido completo (Secciones 15 y 16 de la guía).
 
