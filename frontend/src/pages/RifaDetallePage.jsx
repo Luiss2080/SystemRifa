@@ -923,84 +923,97 @@ export function RifaDetallePage() {
         description="Tus números están reservados temporalmente. Registra tu comprobante antes de que venza el tiempo."
         badge="Reserva activa · 15 min"
         icon={ShoppingCart}
+        maxWidth="max-w-4xl"
       >
         {reservaActiva && (
-          <form onSubmit={handleRegistrarPago} className="space-y-4">
-            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-              <Countdown targetIso={reservaActiva.reservadoHasta} showBar />
-            </div>
-
-            <div className="space-y-1 rounded-xl bg-slate-50 p-3.5 text-sm">
-              <p>
-                <strong>Números:</strong> {reservaActiva.numeros.map((n) => `#${n}`).join(', ')}
-              </p>
-              <p>
-                <strong>Total a pagar:</strong>{' '}
-                <span className="font-bold text-emerald-700">
-                  {formatearBs(reservaActiva.montoTotal)}
-                </span>
-              </p>
-            </div>
-
-            <Select
-              label="Método de pago"
-              value={metodoPago}
-              onChange={(e) => setMetodoPago(e.target.value)}
-              options={[
-                { value: 'TRANSFERENCIA_QR', label: 'Transferencia / QR Bancario' },
-                { value: 'TRANSFERENCIA_BANCARIA', label: 'Transferencia bancaria directa' },
-                { value: 'EFECTIVO', label: 'Efectivo' },
-              ]}
-            />
-
-            {metodoPago === 'TRANSFERENCIA_QR' && (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-center">
-                <div className="flex h-36 w-36 items-center justify-center rounded-xl border border-slate-300 bg-white p-2 shadow-xs">
-                  <svg className="h-full w-full text-slate-800" viewBox="0 0 100 100" fill="currentColor">
-                    <rect x="10" y="10" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
-                    <rect x="16" y="16" width="12" height="12" />
-                    <rect x="66" y="10" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
-                    <rect x="72" y="16" width="12" height="12" />
-                    <rect x="10" y="66" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
-                    <rect x="16" y="72" width="12" height="12" />
-                    <rect x="42" y="15" width="8" height="8" />
-                    <rect x="52" y="25" width="8" height="8" />
-                    <rect x="42" y="42" width="16" height="16" />
-                    <rect x="25" y="45" width="8" height="8" />
-                    <rect x="65" y="45" width="8" height="8" />
-                    <rect x="45" y="70" width="10" height="10" />
-                    <rect x="70" y="68" width="18" height="8" />
-                    <rect x="68" y="80" width="10" height="10" />
-                  </svg>
+          <form onSubmit={handleRegistrarPago} className="space-y-3.5">
+            <div className="grid gap-3.5 md:grid-cols-12 items-start">
+              {/* Columna izquierda: Contador, resumen y datos de operación */}
+              <div className="space-y-2.5 md:col-span-6">
+                <div className="rounded-xl border border-amber-200 bg-amber-50/90 px-3 py-2 text-xs text-amber-900 shadow-2xs">
+                  <Countdown targetIso={reservaActiva.reservadoHasta} showBar />
                 </div>
-                <p className="mt-2 text-xs font-bold text-slate-900">QR Simple Pago · Banco Unión / Mercantil</p>
-                <p className="text-[11px] text-slate-600">Escanea desde cualquier app bancaria de Bolivia</p>
-              </div>
-            )}
 
-            {metodoPago === 'TRANSFERENCIA_BANCARIA' && (
-              <div className="space-y-1.5 rounded-2xl border border-sky-200 bg-sky-50/70 p-3.5 text-xs text-slate-700">
-                <p><strong>Banco:</strong> Banco Mercantil Santa Cruz</p>
-                <p><strong>Cuenta Corriente:</strong> 4029-182390-12 (Bs)</p>
-                <p><strong>Titular:</strong> Fundación Solidaria Rifas Bolivia</p>
-                <p><strong>NIT:</strong> 3948201024</p>
-              </div>
-            )}
+                <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-2.5 text-xs text-slate-700 space-y-1">
+                  <p className="break-words">
+                    <strong>Números reservados:</strong>{' '}
+                    {reservaActiva.numeros.map((n) => `#${n}`).join(', ')}
+                  </p>
+                  <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between">
+                    <span className="font-semibold text-slate-600">Total a pagar:</span>
+                    <span className="font-extrabold text-emerald-700 text-sm">
+                      {formatearBs(reservaActiva.montoTotal)}
+                    </span>
+                  </div>
+                </div>
 
-            <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs text-slate-600">
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-              <span>{INSTRUCCIONES_METODO[metodoPago]}</span>
+                <Select
+                  label="Método de pago"
+                  value={metodoPago}
+                  onChange={(e) => setMetodoPago(e.target.value)}
+                  options={[
+                    { value: 'TRANSFERENCIA_QR', label: 'Transferencia / QR Bancario' },
+                    { value: 'TRANSFERENCIA_BANCARIA', label: 'Transferencia bancaria directa' },
+                    { value: 'EFECTIVO', label: 'Efectivo' },
+                  ]}
+                />
+
+                <Input
+                  label="Número de referencia o comprobante"
+                  placeholder="Ej. QR-847291 o N° de transacción"
+                  value={referenciaPago}
+                  onChange={(e) => setReferenciaPago(e.target.value)}
+                  helperText="Un administrador verificará tu comprobante para confirmar los tickets"
+                />
+              </div>
+
+              {/* Columna derecha: QR / Cuenta bancaria e instrucciones */}
+              <div className="space-y-2.5 md:col-span-6 flex flex-col justify-between">
+                {metodoPago === 'TRANSFERENCIA_QR' && (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 text-center shadow-2xs">
+                    <div className="flex h-28 w-28 items-center justify-center rounded-xl border border-slate-300 bg-white p-1.5 shadow-2xs">
+                      <svg className="h-full w-full text-slate-800" viewBox="0 0 100 100" fill="currentColor">
+                        <rect x="10" y="10" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
+                        <rect x="16" y="16" width="12" height="12" />
+                        <rect x="66" y="10" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
+                        <rect x="72" y="16" width="12" height="12" />
+                        <rect x="10" y="66" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="6" />
+                        <rect x="16" y="72" width="12" height="12" />
+                        <rect x="42" y="15" width="8" height="8" />
+                        <rect x="52" y="25" width="8" height="8" />
+                        <rect x="42" y="42" width="16" height="16" />
+                        <rect x="25" y="45" width="8" height="8" />
+                        <rect x="65" y="45" width="8" height="8" />
+                        <rect x="45" y="70" width="10" height="10" />
+                        <rect x="70" y="68" width="18" height="8" />
+                        <rect x="68" y="80" width="10" height="10" />
+                      </svg>
+                    </div>
+                    <p className="mt-1.5 text-xs font-bold text-slate-900">QR Simple Pago · Bancos de Bolivia</p>
+                    <p className="text-[10.5px] text-slate-600">Escanea desde cualquier banca móvil autorizada</p>
+                  </div>
+                )}
+
+                {metodoPago === 'TRANSFERENCIA_BANCARIA' && (
+                  <div className="space-y-1 rounded-xl border border-sky-200 bg-sky-50/70 p-3 text-xs text-slate-700 shadow-2xs">
+                    <p className="font-bold text-sky-950 uppercase text-[10px] tracking-wider mb-1">
+                      Cuenta bancaria institucional
+                    </p>
+                    <p><strong>Banco:</strong> Banco Mercantil Santa Cruz</p>
+                    <p><strong>Cuenta Corriente:</strong> 4029-182390-12 (Bs)</p>
+                    <p><strong>Titular:</strong> Fundación Solidaria Rifas Bolivia</p>
+                    <p><strong>NIT:</strong> 3948201024</p>
+                  </div>
+                )}
+
+                <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                  <span className="text-[11px] leading-relaxed">{INSTRUCCIONES_METODO[metodoPago]}</span>
+                </div>
+              </div>
             </div>
 
-            <Input
-              label="Número de referencia o comprobante"
-              placeholder="Ej. QR-847291 o N° de transacción"
-              value={referenciaPago}
-              onChange={(e) => setReferenciaPago(e.target.value)}
-              helperText="Un administrador verificará tu comprobante para confirmar los tickets"
-            />
-
-            <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
               <Button
                 type="button"
                 variant="danger"
@@ -1011,10 +1024,10 @@ export function RifaDetallePage() {
                 Liberar reserva
               </Button>
               <div className="flex gap-2">
-                <Button type="button" variant="secondary" onClick={() => setReservaActiva(null)}>
+                <Button type="button" variant="secondary" size="sm" onClick={() => setReservaActiva(null)}>
                   Pagar después
                 </Button>
-                <Button type="submit" loading={enviandoPago}>
+                <Button type="submit" size="sm" loading={enviandoPago}>
                   Enviar comprobante
                 </Button>
               </div>
