@@ -158,20 +158,35 @@ export function AdminPlantillasPage() {
   const pageSize = 8;
 
   const [previsualizando, setPrevisualizando] = useState(null);
-  const [editando, setEditando] = useState(null);
+  const [modalPlantilla, setModalPlantilla] = useState(null); // { modo: 'crear' | 'editar', tipo?: obj }
   const [form, setForm] = useState({
+    codigo: '',
     plantillaTitulo: '',
     plantillaMensaje: '',
+    variables: ['nombre', 'alias', 'nombreRifa'],
     estaActivo: true,
   });
   const [saving, setSaving] = useState(false);
   const [togglingId, setTogglingId] = useState(null);
 
-  function abrirEditar(tipo) {
-    setEditando(tipo);
+  function abrirCrear() {
+    setModalPlantilla({ modo: 'crear' });
     setForm({
+      codigo: '',
+      plantillaTitulo: '',
+      plantillaMensaje: '',
+      variables: ['nombre', 'alias', 'nombreRifa'],
+      estaActivo: true,
+    });
+  }
+
+  function abrirEditar(tipo) {
+    setModalPlantilla({ modo: 'editar', tipo });
+    setForm({
+      codigo: tipo.codigo,
       plantillaTitulo: tipo.plantillaTitulo,
       plantillaMensaje: tipo.plantillaMensaje,
+      variables: tipo.variables || ['nombre', 'alias'],
       estaActivo: tipo.estaActivo,
     });
   }
@@ -183,10 +198,14 @@ export function AdminPlantillasPage() {
     }));
   }
 
-  const varsAdmitidas = useMemo(
-    () => (Array.isArray(editando?.variables) ? editando.variables : []),
-    [editando]
-  );
+  const varsAdmitidas = useMemo(() => {
+    if (modalPlantilla?.modo === 'editar') {
+      return Array.isArray(modalPlantilla.tipo?.variables) && modalPlantilla.tipo.variables.length
+        ? modalPlantilla.tipo.variables
+        : ['nombre', 'alias', 'nombreRifa'];
+    }
+    return form.variables || ['nombre', 'alias', 'nombreRifa'];
+  }, [modalPlantilla, form.variables]);
 
   const items = useMemo(() => {
     const base = data?.items || [];
