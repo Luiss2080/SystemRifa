@@ -305,13 +305,15 @@ export function RowActionButton({
   disabled = false,
 }) {
   const tones = {
-    view: 'bg-slate-900 text-white hover:bg-slate-800 shadow-2xs',
-    primary: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-2xs',
-    amber: 'bg-amber-500 text-slate-950 hover:bg-amber-600 shadow-2xs',
+    view: 'border-slate-200/90 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900',
+    primary:
+      'border-slate-200/90 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700',
+    amber:
+      'border-slate-200/90 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800',
     danger:
-      'border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white',
+      'border-slate-200/90 bg-white text-slate-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700',
     neutral:
-      'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800',
+      'border-slate-200/90 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900',
   };
 
   return (
@@ -321,11 +323,11 @@ export function RowActionButton({
       disabled={disabled}
       title={title || label}
       aria-label={title || label}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-2.5 py-2 text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${
+      className={`inline-flex items-center justify-center gap-1.5 rounded-lg border h-8 ${label ? 'px-2.5' : 'w-8'} text-xs font-semibold shadow-2xs transition disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer ${
         tones[tone] || tones.neutral
       }`}
     >
-      {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+      {Icon && <Icon className="h-4 w-4 shrink-0" />}
       {label && <span>{label}</span>}
     </button>
   );
