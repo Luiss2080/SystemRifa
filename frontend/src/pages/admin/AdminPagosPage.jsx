@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Calendar,
@@ -8,6 +9,7 @@ import {
   CreditCard,
   DollarSign,
   Eye,
+  History,
   Info,
   SlidersHorizontal,
   Ticket,
@@ -303,6 +305,16 @@ export function AdminPagosPage() {
             ],
           },
         ]}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/admin/auditoria">
+              <Button variant="secondary" size="sm">
+                <History className="h-4 w-4 text-indigo-600" />
+                Bitácora de pagos
+              </Button>
+            </Link>
+          </div>
+        }
         extraContent={
           <div className="flex items-start gap-2.5 rounded-2xl border border-emerald-200/70 bg-emerald-50/50 px-3.5 py-2.5 text-xs text-slate-700">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
