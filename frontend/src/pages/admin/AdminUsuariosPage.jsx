@@ -95,6 +95,17 @@ export function AdminUsuariosPage() {
   const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
+  const [modalCrear, setModalCrear] = useState(false);
+  const [formCrear, setFormCrear] = useState({
+    nombres: '',
+    apellidos: '',
+    alias: '',
+    email: '',
+    telefono: '',
+    password: '',
+  });
+  const [creando, setCreando] = useState(false);
+
   const [usuarioDetalleId, setUsuarioDetalleId] = useState(null);
   const [usuarioToggle, setUsuarioToggle] = useState(null);
   const [procesandoToggle, setProcesandoToggle] = useState(false);
@@ -126,6 +137,29 @@ export function AdminUsuariosPage() {
     queryFn: () => getPermisosApi(),
     enabled: tienePermiso('permisos', 'administrar'),
   });
+
+  async function handleCrearUsuario(e) {
+    e.preventDefault();
+    setCreando(true);
+    try {
+      await registroRequest({
+        nombres: formCrear.nombres.trim(),
+        apellidos: formCrear.apellidos.trim(),
+        alias: formCrear.alias.trim(),
+        email: formCrear.email.trim(),
+        telefono: formCrear.telefono.trim() || undefined,
+        password: formCrear.password,
+      });
+      toast.success('Usuario registrado', `La cuenta @${formCrear.alias} fue creada correctamente.`);
+      setModalCrear(false);
+      setFormCrear({ nombres: '', apellidos: '', alias: '', email: '', telefono: '', password: '' });
+      queryClient.invalidateQueries({ queryKey: ['admin-usuarios'] });
+    } catch (err) {
+      toast.error('Error al registrar usuario', extraerErrorApi(err).message);
+    } finally {
+      setCreando(false);
+    }
+  }
 
   async function handleToggleActivo() {
     if (!usuarioToggle) return;
