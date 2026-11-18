@@ -114,14 +114,14 @@ export function SplashOverlay({ cargando = false }) {
       role="status"
       aria-live="polite"
       aria-label="Cargando Rifas Solidarias"
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-emerald-50/70 to-teal-50/80 px-6 select-none transition-opacity duration-350 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-[#f8fafc] bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50 px-6 select-none transition-opacity duration-350 ${
         fading ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      {/* Halos atmosféricos suaves en pantalla completa */}
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[32rem] w-[32rem] rounded-full bg-emerald-200/45 blur-3xl animate-float-slow" />
-      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[32rem] w-[32rem] rounded-full bg-amber-200/40 blur-3xl animate-float-slower" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[26rem] rounded-full bg-teal-100/40 blur-3xl" />
+      {/* Halos atmosféricos suaves con los colores verde y ámbar de la web */}
+      <div className="pointer-events-none absolute -top-32 -left-32 h-[32rem] w-[32rem] rounded-full bg-emerald-200/35 blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[32rem] w-[32rem] rounded-full bg-amber-200/30 blur-3xl animate-float-slower" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[26rem] rounded-full bg-teal-100/30 blur-3xl" />
 
       {/* Anillos orbitales concéntricos gigantes de fondo */}
       <svg
