@@ -30,7 +30,8 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div className="pointer-events-none fixed right-4 bottom-20 z-50 flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2.5 sm:right-5">
+      {/* Contenedor de notificaciones y mensajes de acciones en el extremo superior izquierdo */}
+      <div className="pointer-events-none fixed top-4 left-4 z-[90] flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2.5 sm:top-5 sm:left-5">
         {toasts.map((t) => {
           const isSuccess = t.type === 'success';
           const isError = t.type === 'error';
@@ -56,9 +57,9 @@ export function ToastProvider({ children }) {
           return (
             <div
               key={t.id}
-              className={`animate-modal-in pointer-events-auto relative flex items-start gap-3 overflow-hidden rounded-2xl border p-3.5 shadow-xl ring-1 ring-slate-900/5 backdrop-blur-md ${style.card}`}
+              className={`animate-slide-down pointer-events-auto relative flex items-start gap-3 overflow-hidden rounded-2xl border p-3.5 shadow-2xl ring-1 ring-slate-900/10 backdrop-blur-md ${style.card}`}
             >
-              <span className={`absolute inset-y-0 left-0 w-1 ${style.bar}`} />
+              <span className={`absolute inset-y-0 left-0 w-1.5 ${style.bar}`} />
               <span
                 className={`ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${style.icon}`}
               >
