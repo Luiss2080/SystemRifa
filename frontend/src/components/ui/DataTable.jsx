@@ -23,25 +23,16 @@ export function PaginationCard({
     pages.push(p);
   }
 
-  const containerCls = `flex w-full flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200/60 pt-3 pb-1 ${className}`;
-
   return (
-    <div className={containerCls}>
-      <p className="text-xs text-slate-600">
-        Mostrando{' '}
-        <strong className="font-extrabold text-slate-900">
-          {showingFrom} - {showingTo}
-        </strong>{' '}
-        de <strong className="font-extrabold text-slate-900">{total}</strong> {itemLabel}
-      </p>
-
-      <div className="flex items-center gap-1.5">
+    <div className={`flex w-full flex-col items-center justify-center gap-2.5 border-t border-slate-200/80 pt-4 pb-2 text-center ${className}`}>
+      {/* Controles de paginación en el centro con colores empresariales serios */}
+      <div className="flex items-center justify-center gap-1.5">
         <button
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
           aria-label="Página anterior"
-          className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -51,7 +42,7 @@ export function PaginationCard({
             <button
               type="button"
               onClick={() => onPageChange(1)}
-              className="flex h-8 min-w-8 items-center justify-center rounded-xl border border-slate-200 bg-white px-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer"
+              className="flex h-8 min-w-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 cursor-pointer"
             >
               1
             </button>
@@ -65,10 +56,10 @@ export function PaginationCard({
             type="button"
             onClick={() => onPageChange(p)}
             aria-current={p === page ? 'page' : undefined}
-            className={`flex h-8 min-w-8 items-center justify-center rounded-xl px-2.5 text-xs font-extrabold transition cursor-pointer ${
+            className={`flex h-8 min-w-8 items-center justify-center rounded-lg px-2.5 text-xs font-bold transition shadow-2xs cursor-pointer ${
               p === page
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800'
+                ? 'border border-slate-900 bg-slate-900 text-white shadow-xs'
+                : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
             {p}
@@ -81,7 +72,7 @@ export function PaginationCard({
             <button
               type="button"
               onClick={() => onPageChange(totalPages)}
-              className="flex h-8 min-w-8 items-center justify-center rounded-xl border border-slate-200 bg-white px-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer"
+              className="flex h-8 min-w-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 cursor-pointer"
             >
               {totalPages}
             </button>
@@ -93,11 +84,17 @@ export function PaginationCard({
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
           aria-label="Página siguiente"
-          className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>
+
+      {/* Contador de registros centrado */}
+      <p className="text-xs font-medium text-slate-500">
+        Mostrando <span className="font-semibold text-slate-800">{showingFrom} - {showingTo}</span> de{' '}
+        <span className="font-semibold text-slate-800">{total}</span> {itemLabel}
+      </p>
     </div>
   );
 }
@@ -150,17 +147,17 @@ export function DataTable({
 
   return (
     <div className="space-y-3">
-      <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 shadow-xs backdrop-blur-md">
+      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xs">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200/80 text-left text-sm">
-            <thead className="bg-emerald-50/55 text-[11px] font-extrabold uppercase tracking-wider text-slate-600">
+          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <thead className="bg-slate-50/90 text-[11px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200">
               <tr>
                 {columns.map((col) => {
                   const ColIcon = col.icon;
                   return (
                     <th key={col.key} className={`px-5 py-3.5 ${col.headerClassName || ''}`}>
                       <span className="inline-flex items-center gap-1.5">
-                        {ColIcon && <ColIcon className="h-3.5 w-3.5 text-emerald-600" />}
+                        {ColIcon && <ColIcon className="h-3.5 w-3.5 text-slate-400" />}
                         <span>{col.label}</span>
                       </span>
                     </th>
@@ -168,11 +165,11 @@ export function DataTable({
                 })}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white/80">
+            <tbody className="divide-y divide-slate-100 bg-white">
               {visibleRows.map((row, idx) => (
                 <tr
                   key={row[rowKey] ?? idx}
-                  className="transition hover:bg-emerald-50/30"
+                  className="transition hover:bg-slate-50/70"
                 >
                   {columns.map((col) => (
                     <td
