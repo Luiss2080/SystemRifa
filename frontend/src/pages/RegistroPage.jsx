@@ -99,73 +99,72 @@ export function RegistroPage() {
       : 'Débil';
 
   return (
-    <div className="my-auto mx-auto w-full max-w-5xl py-4 sm:py-6">
-      <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 lg:grid-cols-12">
-        {/* Columna izquierda informativa con fondo esmeralda profundo y branding premium */}
-        <section className="relative flex flex-col justify-between overflow-hidden border-b border-emerald-950/20 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-6 text-white sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r lg:border-emerald-900/40">
+    <div className="my-auto mx-auto w-full max-w-4xl py-2 sm:py-4">
+      <div className="grid w-full overflow-hidden rounded-[24px] border border-slate-200/90 bg-white shadow-xl shadow-slate-900/10 ring-1 ring-slate-900/5 lg:grid-cols-12">
+        {/* Columna izquierda informativa compacta con fondo esmeralda profundo y branding premium */}
+        <section className="relative flex flex-col justify-between overflow-hidden border-b border-emerald-950/20 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-5 sm:p-6 text-white lg:col-span-5 lg:border-b-0 lg:border-r lg:border-emerald-900/40">
           <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-emerald-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 h-52 w-52 rounded-full bg-amber-400/15 blur-3xl" />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-500/10 blur-2xl" />
 
-          <div className="relative flex flex-1 flex-col justify-center space-y-6">
+          <div className="relative flex flex-1 flex-col justify-center space-y-4">
             <div className="text-center">
-              <div className="mb-3.5 flex justify-center">
-                <div className="rounded-2xl bg-white/10 p-2.5 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
-                  <BrandMark size="xl" />
+              <div className="mb-2.5 flex justify-center">
+                <div className="rounded-xl bg-white/10 p-2 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
+                  <BrandMark size="lg" />
                 </div>
               </div>
-              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-300 ring-1 ring-amber-300/30 backdrop-blur-xs">
-                <HeartHandshake className="h-3.5 w-3.5 text-amber-400" />
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-300 ring-1 ring-amber-300/30 backdrop-blur-xs">
+                <HeartHandshake className="h-3 w-3 text-amber-400" />
                 Únete a Rifas Solidarias
               </span>
-              <h1 className="mt-3.5 text-2xl font-black tracking-tight text-white sm:text-[28px]">
+              <h1 className="mt-2 text-xl font-black tracking-tight text-white sm:text-2xl">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="mt-2 text-xs leading-relaxed text-emerald-100/80 sm:text-sm">
-                Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
+              <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
+                Elige tus boletos en tiempo real o propón rifas benéficas.
               </p>
             </div>
 
-            <div className="space-y-3 border-t border-white/10 pt-5 text-xs">
-              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-emerald-400/40 hover:bg-white/10">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/40">
-                  <Ticket className="h-4.5 w-4.5" />
+            <div className="space-y-2 border-t border-white/10 pt-3 text-xs">
+              <div className="group flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 shadow-xs backdrop-blur-sm transition hover:border-emerald-400/40 hover:bg-white/10">
+                <span className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/40">
+                  <Ticket className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-extrabold text-white">Reservas instantáneas de 15 min</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
-                    Bloquea tus números disponibles mientras envías tu comprobante.
+                  <p className="font-extrabold text-xs text-white">Reserva de 15 min</p>
+                  <p className="text-[10.5px] leading-tight text-emerald-100/70">
+                    Bloqueo temporal exclusivo por ticket.
                   </p>
                 </div>
               </div>
 
-              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-teal-400/40 hover:bg-white/10">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/40">
-                  <ShieldCheck className="h-4.5 w-4.5" />
+              <div className="group flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 shadow-xs backdrop-blur-sm transition hover:border-teal-400/40 hover:bg-white/10">
+                <span className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/40">
+                  <ShieldCheck className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-extrabold text-white">Privacidad con alias público</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
-                    Tu nombre y contacto se mantienen privados en tableros y sorteos.
+                  <p className="font-extrabold text-xs text-white">Alias público protegido</p>
+                  <p className="text-[10.5px] leading-tight text-emerald-100/70">
+                    Tu nombre se mantiene privado en sorteos.
                   </p>
                 </div>
               </div>
 
-              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-amber-400/40 hover:bg-white/10">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-300 ring-1 ring-amber-400/40">
-                  <Bell className="h-4.5 w-4.5" />
+              <div className="group flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 shadow-xs backdrop-blur-sm transition hover:border-amber-400/40 hover:bg-white/10">
+                <span className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-300 ring-1 ring-amber-400/40">
+                  <Bell className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-extrabold text-white">Avisos automáticos</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
-                    Recibe alertas sobre validación de pagos y resultados del sorteo.
+                  <p className="font-extrabold text-xs text-white">Alertas automáticas</p>
+                  <p className="text-[10.5px] leading-tight text-emerald-100/70">
+                    Notificaciones en vivo sobre pagos y sorteos.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="relative mt-6 border-t border-white/10 pt-4 text-center text-xs text-emerald-100/70">
+          <div className="relative mt-4 border-t border-white/10 pt-3 text-center text-xs text-emerald-100/70">
             ¿Ya tienes una cuenta?{' '}
             <Link
               to="/login"
@@ -173,21 +172,21 @@ export function RegistroPage() {
               className="inline-flex items-center gap-1 font-extrabold text-amber-300 transition hover:text-amber-200 hover:underline"
             >
               Inicia sesión
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
         </section>
 
-        {/* Columna derecha: Formulario */}
-        <section className="flex flex-col justify-center p-6 sm:p-8 lg:col-span-7">
-          <div className="mb-5 text-center">
-            <div className="mx-auto mb-2.5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
-              <UserPlus className="h-5 w-5" />
+        {/* Columna derecha compacta: Formulario */}
+        <section className="flex flex-col justify-center p-5 sm:p-6 lg:col-span-7">
+          <div className="mb-3 text-center">
+            <div className="mx-auto mb-1.5 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/80">
+              <UserPlus className="h-4.5 w-4.5" />
             </div>
-            <h2 className="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+            <h2 className="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">
               Crear cuenta
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="text-[11px] text-slate-500">
               Completa tus datos para habilitar tu acceso a la plataforma
             </p>
           </div>
@@ -195,19 +194,16 @@ export function RegistroPage() {
           {errorMsg && (
             <div
               role="alert"
-              className="mb-4 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700"
+              className="mb-3 flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700"
             >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
+              <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-500" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-3">
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                Identidad y contacto
-              </p>
-              <div className="grid gap-3.5 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="space-y-2.5">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <Input
                   label="Nombres"
                   name="nombres"
@@ -230,7 +226,7 @@ export function RegistroPage() {
                 />
               </div>
 
-              <div className="grid gap-3.5 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 <Input
                   label="Alias público"
                   name="alias"
@@ -238,7 +234,7 @@ export function RegistroPage() {
                   required
                   minLength={3}
                   placeholder="ana_solidaria"
-                  helperText="Visible en sorteos en lugar de tu nombre"
+                  helperText="Visible en sorteos públicos"
                   value={form.alias}
                   onChange={handleChange}
                 />
@@ -251,26 +247,19 @@ export function RegistroPage() {
                   onChange={handleChange}
                 />
               </div>
-            </div>
 
-            <div className="space-y-3 border-t border-slate-100 pt-3">
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                Credenciales de acceso
-              </p>
-
-              <Input
-                label="Correo electrónico"
-                type="email"
-                name="email"
-                icon={Mail}
-                autoComplete="email"
-                required
-                placeholder="nombre@correo.com"
-                value={form.email}
-                onChange={handleChange}
-              />
-
-              <div className="space-y-2">
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                <Input
+                  label="Correo electrónico"
+                  type="email"
+                  name="email"
+                  icon={Mail}
+                  autoComplete="email"
+                  required
+                  placeholder="nombre@correo.com"
+                  value={form.email}
+                  onChange={handleChange}
+                />
                 <Input
                   label="Contraseña"
                   type="password"
@@ -279,74 +268,86 @@ export function RegistroPage() {
                   autoComplete="new-password"
                   required
                   minLength={8}
-                  placeholder="Mínimo 8 caracteres"
-                  labelRight={
-                    form.password ? (
-                      <span
-                        className={`text-[11px] font-bold ${
-                          puntajePassword === 3
-                            ? 'text-emerald-700'
-                            : puntajePassword === 2
-                            ? 'text-amber-600'
-                            : 'text-rose-600'
-                        }`}
-                      >
-                        Seguridad: {fuerzaTexto}
-                      </span>
-                    ) : null
-                  }
+                  placeholder="Mín. 8 caracteres"
                   value={form.password}
                   onChange={handleChange}
                 />
+              </div>
 
-                {form.password && (
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {[1, 2, 3].map((nivel) => (
-                      <span
-                        key={nivel}
-                        className={`h-1.5 rounded-full transition-colors ${
-                          puntajePassword >= nivel
-                            ? puntajePassword === 3
-                              ? 'bg-emerald-500'
-                              : puntajePassword === 2
-                              ? 'bg-amber-400'
-                              : 'bg-rose-400'
-                            : 'bg-slate-200'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex flex-wrap gap-x-4 gap-y-1.5 rounded-xl border border-slate-100 bg-slate-50/90 px-3 py-2 text-xs">
-                  {reglas.map((r) => (
+              {/* Indicador de seguridad y reglas compacto */}
+              <div className="rounded-xl border border-slate-100 bg-slate-50/90 p-2 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-semibold text-slate-500">Fuerza:</span>
+                    <div className="flex w-14 gap-1">
+                      {[1, 2, 3].map((nivel) => (
+                        <span
+                          key={nivel}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            puntajePassword >= nivel
+                              ? puntajePassword === 3
+                                ? 'bg-emerald-500'
+                                : puntajePassword === 2
+                                ? 'bg-amber-400'
+                                : 'bg-rose-400'
+                              : 'bg-slate-200'
+                          }`}
+                        />
+                      ))}
+                    </div>
                     <span
-                      key={r.label}
-                      className={`inline-flex items-center gap-1.5 transition ${
-                        r.ok ? 'font-semibold text-emerald-700' : 'text-slate-500'
+                      className={`text-[10.5px] font-bold ${
+                        puntajePassword === 3
+                          ? 'text-emerald-700'
+                          : puntajePassword === 2
+                          ? 'text-amber-600'
+                          : 'text-slate-400'
                       }`}
                     >
-                      {r.ok ? (
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                      ) : (
-                        <Circle className="h-3.5 w-3.5 text-slate-300" />
-                      )}
-                      {r.label}
+                      {fuerzaTexto}
                     </span>
-                  ))}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[10.5px]">
+                    {reglas.map((r) => (
+                      <span
+                        key={r.label}
+                        className={`inline-flex items-center gap-1 ${
+                          r.ok ? 'font-semibold text-emerald-700' : 'text-slate-400'
+                        }`}
+                      >
+                        {r.ok ? (
+                          <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                        ) : (
+                          <Circle className="h-3 w-3 text-slate-300" />
+                        )}
+                        {r.label}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
             <Button
               type="submit"
-              className="mt-3 w-full bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold shadow-lg shadow-emerald-700/25 transition duration-200 hover:-translate-y-0.5 cursor-pointer"
-              size="lg"
+              className="mt-2 w-full bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold shadow-md shadow-emerald-700/20 py-2.5 text-xs sm:text-sm transition duration-200 hover:-translate-y-0.5 cursor-pointer"
               loading={loading}
             >
               Crear mi cuenta solidaria
               <ArrowRight className="h-4 w-4" />
             </Button>
+
+            <p className="mt-1 text-center text-xs text-slate-500 lg:hidden">
+              ¿Ya tienes una cuenta?{' '}
+              <Link
+                to="/login"
+                state={{ from: destino }}
+                className="font-bold text-emerald-700 hover:underline"
+              >
+                Inicia sesión aquí
+              </Link>
+            </p>
           </form>
         </section>
       </div>
