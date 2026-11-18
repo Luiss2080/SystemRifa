@@ -435,71 +435,96 @@ export function AdminUsuariosPage() {
         description={detalleData?.usuario?.email}
         badge="Control de accesos"
         icon={ShieldCheck}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-4xl"
+        footer={
+          <Button variant="secondary" size="sm" onClick={() => setUsuarioDetalleId(null)}>
+            Cerrar
+          </Button>
+        }
       >
         {detalleData && (
-          <div className="space-y-5">
-            {tienePermiso('roles', 'administrar') && rolesData?.items && (
-              <div>
-                <h3 className="mb-2 text-sm font-semibold text-slate-900">
-                  Roles asignados (clic para asignar/quitar)
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {rolesData.items.map((rol) => {
-                    const asignado = rolesUsuarioSet.has(rol.rolId);
-                    return (
-                      <Button
-                        key={rol.rolId}
-                        size="sm"
-                        variant={asignado ? 'primary' : 'secondary'}
-                        onClick={() => handleToggleRol(rol, asignado)}
-                      >
-                        {rol.nombre} {asignado ? '✓' : '+'}
-                      </Button>
-                    );
-                  })}
+          <div className="grid gap-3.5 md:grid-cols-12 items-start">
+            {/* Columna izquierda: Asignación interactiva de roles y permisos */}
+            <div className="space-y-3 md:col-span-7">
+              {tienePermiso('roles', 'administrar') && rolesData?.items && (
+                <div>
+                  <h3 className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Roles asignados (clic para asignar/quitar)
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {rolesData.items.map((rol) => {
+                      const asignado = rolesUsuarioSet.has(rol.rolId);
+                      return (
+                        <Button
+                          key={rol.rolId}
+                          size="sm"
+                          variant={asignado ? 'primary' : 'secondary'}
+                          onClick={() => handleToggleRol(rol, asignado)}
+                          className="text-xs py-1"
+                        >
+                          {rol.nombre} {asignado ? '✓' : '+'}
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {tienePermiso('permisos', 'administrar') && permisosData?.items && (
-              <div>
-                <h3 className="mb-2 text-sm font-semibold text-slate-900">
-                  Permisos directos del usuario (clic para asignar/quitar)
-                </h3>
-                <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50/70 p-2.5">
-                  {permisosData.items.map((perm) => {
-                    const clave = `${perm.recurso}:${perm.accion}`;
-                    const asignado = permisosDirectosSet.has(clave);
-                    return (
-                      <button
-                        key={perm.permisoId}
-                        type="button"
-                        onClick={() => handleTogglePermisoDirecto(perm, asignado)}
-                        className={`rounded-lg border px-2 py-1 text-xs font-medium transition cursor-pointer ${
-                          asignado
-                            ? 'border-emerald-500 bg-emerald-600 text-white'
-                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
-                        }`}
-                      >
-                        {clave} {asignado ? '✓' : '+'}
-                      </button>
-                    );
-                  })}
+              {tienePermiso('permisos', 'administrar') && permisosData?.items && (
+                <div>
+                  <h3 className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Permisos directos individuales (clic para alternar)
+                  </h3>
+                  <div className="flex max-h-44 flex-wrap gap-1 overflow-y-auto rounded-xl border border-slate-200/80 bg-slate-50/70 p-2">
+                    {permisosData.items.map((perm) => {
+                      const clave = `${perm.recurso}:${perm.accion}`;
+                      const asignado = permisosDirectosSet.has(clave);
+                      return (
+                        <button
+                          key={perm.permisoId}
+                          type="button"
+                          onClick={() => handleTogglePermisoDirecto(perm, asignado)}
+                          className={`rounded-lg border px-2 py-0.5 text-[11px] font-medium transition cursor-pointer ${
+                            asignado
+                              ? 'border-emerald-500 bg-emerald-600 text-white font-semibold'
+                              : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          {clave} {asignado ? '✓' : '+'}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            <div>
-              <h3 className="mb-2 text-sm font-semibold text-slate-900">
-                Permisos efectivos ({detalleData.permisosEfectivos?.length || 0})
-              </h3>
-              <div className="flex flex-wrap gap-1.5 rounded-xl bg-slate-50 p-3">
-                {(detalleData.permisosEfectivos || []).map((p) => (
-                  <Badge key={p} color="slate">
-                    {p}
-                  </Badge>
-                ))}
+            {/* Columna derecha: Resumen de cuenta y permisos efectivos consolidados */}
+            <div className="space-y-2.5 md:col-span-5 rounded-xl border border-slate-200/80 bg-slate-50/60 p-3">
+              <div className="border-b border-slate-200/70 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                  Resumen de cuenta
+                </span>
+                <p className="text-xs font-extrabold text-slate-900 mt-0.5">
+                  {detalleData?.usuario?.nombres} {detalleData?.usuario?.apellidos}
+                </p>
+                <p className="text-[11px] text-slate-500">{detalleData?.usuario?.email}</p>
+              </div>
+
+              <div>
+                <h4 className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Permisos efectivos ({detalleData.permisosEfectivos?.length || 0})
+                </h4>
+                <div className="flex max-h-40 flex-wrap gap-1 overflow-y-auto rounded-lg bg-white p-2 border border-slate-100">
+                  {(detalleData.permisosEfectivos || []).map((p) => (
+                    <Badge key={p} color="slate" size="sm">
+                      {p}
+                    </Badge>
+                  ))}
+                  {(!detalleData.permisosEfectivos || detalleData.permisosEfectivos.length === 0) && (
+                    <span className="text-[11px] text-slate-400">Sin permisos activos</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
