@@ -99,62 +99,65 @@ export function RegistroPage() {
       : 'Débil';
 
   return (
-    <div className="my-auto mx-auto w-full max-w-5xl py-2">
-      <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/95 shadow-2xl shadow-slate-900/10 ring-1 ring-slate-900/5 backdrop-blur-md lg:grid-cols-12">
-        {/* Columna izquierda informativa (tema claro comercial) */}
-        <section className="relative flex flex-col justify-between overflow-hidden border-b border-slate-200/80 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/90 p-6 text-slate-900 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
-          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-300/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-cyan-300/20 blur-3xl" />
+    <div className="my-auto mx-auto w-full max-w-5xl py-4 sm:py-6">
+      <div className="grid w-full overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5 lg:grid-cols-12">
+        {/* Columna izquierda informativa con fondo esmeralda profundo y branding premium */}
+        <section className="relative flex flex-col justify-between overflow-hidden border-b border-emerald-950/20 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-6 text-white sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r lg:border-emerald-900/40">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-emerald-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-52 w-52 rounded-full bg-amber-400/15 blur-3xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-500/10 blur-2xl" />
 
-          <div className="relative flex flex-1 flex-col justify-center space-y-5">
+          <div className="relative flex flex-1 flex-col justify-center space-y-6">
             <div className="text-center">
-              <div className="mb-3 flex justify-center">
-                <BrandMark size="xl" />
+              <div className="mb-3.5 flex justify-center">
+                <div className="rounded-2xl bg-white/10 p-2.5 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
+                  <BrandMark size="xl" />
+                </div>
               </div>
-              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 px-3 py-1 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200">
-                <HeartHandshake className="h-3.5 w-3.5 text-emerald-700" />
+              <span className="mx-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-300 ring-1 ring-amber-300/30 backdrop-blur-xs">
+                <HeartHandshake className="h-3.5 w-3.5 text-amber-400" />
                 Únete a Rifas Solidarias
               </span>
-              <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[26px]">
+              <h1 className="mt-3.5 text-2xl font-black tracking-tight text-white sm:text-[28px]">
                 Crea tu cuenta en segundos
               </h1>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+              <p className="mt-2 text-xs leading-relaxed text-emerald-100/80 sm:text-sm">
                 Elige tus números favoritos en tiempo real o propón rifas para causas verificadas.
               </p>
             </div>
 
-            <div className="space-y-2.5 border-t border-slate-200/80 pt-4 text-xs">
-              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-                  <Ticket className="h-4 w-4" />
+            <div className="space-y-3 border-t border-white/10 pt-5 text-xs">
+              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-emerald-400/40 hover:bg-white/10">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/40">
+                  <Ticket className="h-4.5 w-4.5" />
                 </span>
                 <div>
-                  <p className="font-bold text-slate-900">Reservas instantáneas de 15 min</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
+                  <p className="font-extrabold text-white">Reservas instantáneas de 15 min</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
                     Bloquea tus números disponibles mientras envías tu comprobante.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
-                  <ShieldCheck className="h-4 w-4" />
+              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-teal-400/40 hover:bg-white/10">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/40">
+                  <ShieldCheck className="h-4.5 w-4.5" />
                 </span>
                 <div>
-                  <p className="font-bold text-slate-900">Privacidad con alias público</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
+                  <p className="font-extrabold text-white">Privacidad con alias público</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
                     Tu nombre y contacto se mantienen privados en tableros y sorteos.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white/90 p-3 shadow-2xs">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                  <Bell className="h-4 w-4" />
+              <div className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3.5 shadow-sm backdrop-blur-sm transition hover:border-amber-400/40 hover:bg-white/10">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-300 ring-1 ring-amber-400/40">
+                  <Bell className="h-4.5 w-4.5" />
                 </span>
                 <div>
-                  <p className="font-bold text-slate-900">Avisos automáticos</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">
+                  <p className="font-extrabold text-white">Avisos automáticos</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-emerald-100/70">
                     Recibe alertas sobre validación de pagos y resultados del sorteo.
                   </p>
                 </div>
@@ -162,12 +165,12 @@ export function RegistroPage() {
             </div>
           </div>
 
-          <div className="relative mt-6 border-t border-slate-200/80 pt-4 text-center text-xs text-slate-600">
+          <div className="relative mt-6 border-t border-white/10 pt-4 text-center text-xs text-emerald-100/70">
             ¿Ya tienes una cuenta?{' '}
             <Link
               to="/login"
               state={{ from: destino }}
-              className="inline-flex items-center gap-1 font-bold text-emerald-700 underline-offset-2 hover:text-emerald-800 hover:underline"
+              className="inline-flex items-center gap-1 font-extrabold text-amber-300 transition hover:text-amber-200 hover:underline"
             >
               Inicia sesión
               <ArrowRight className="h-3.5 w-3.5" />
