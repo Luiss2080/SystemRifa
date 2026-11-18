@@ -14,6 +14,7 @@ import {
 export function AdminAuditoriaPage() {
   const [entidad, setEntidad] = useState('');
   const [accion, setAccion] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -27,7 +28,15 @@ export function AdminAuditoriaPage() {
       }),
   });
 
-  const items = useMemo(() => data?.items || [], [data]);
+  const items = useMemo(() => {
+    let list = data?.items || [];
+    if (orden === 'antiguos') {
+      list = [...list].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    } else {
+      list = [...list].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    }
+    return list;
+  }, [data, orden]);
   const totalGlobal = data?.pagination?.total ?? items.length;
   const entidadesUnicas = new Set(items.map((i) => i.entidad)).size;
   const actoresUnicos = new Set(items.map((i) => i.usuarioId)).size;
@@ -75,7 +84,7 @@ export function AdminAuditoriaPage() {
     },
   ];
 
-  const hasFilters = Boolean(entidad.trim() || accion.trim());
+  const hasFilters = Boolean(entidad.trim() || accion.trim() || orden !== 'recientes');
 
   return (
     <div className="space-y-5">
@@ -92,6 +101,7 @@ export function AdminAuditoriaPage() {
         onResetFilters={() => {
           setEntidad('');
           setAccion('');
+          setOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -109,6 +119,15 @@ export function AdminAuditoriaPage() {
               { value: 'solicitud', label: 'Solicitudes' },
               { value: 'usuario', label: 'Usuarios' },
               { value: 'premio', label: 'Premios' },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'antiguos', label: 'Más antiguos' },
             ],
           },
         ]}

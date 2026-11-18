@@ -1,4 +1,18 @@
-import { Filter, RotateCcw, Search, SlidersHorizontal, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import {
+  Check,
+  CheckCircle2,
+  Filter,
+  ListFilter,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  TrendingUp,
+} from 'lucide-react';
+import { Select } from '../ui/Select.jsx';
+import { Modal } from '../ui/Modal.jsx';
+import { Button } from '../ui/Button.jsx';
 
 const SPARKLINE_PATHS = [
   'M2 18 L12 14 L22 16 L32 9 L42 12 L52 4',
@@ -61,7 +75,10 @@ export function PanelFilterBar({
   selects = [],
   extraContent,
   rightActions,
+  modalFiltersContent,
 }) {
+  const [modalMasFiltros, setModalMasFiltros] = useState(false);
+
   return (
     <section className="rounded-3xl border border-slate-200/90 bg-white/95 p-5 shadow-xs backdrop-blur-md">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -117,7 +134,15 @@ export function PanelFilterBar({
 
       <div className="mt-4 grid gap-3 md:grid-cols-12 md:items-end">
         {onSearchChange && (
-          <div className={selects.length >= 2 ? 'md:col-span-5' : selects.length === 1 ? 'md:col-span-7' : 'md:col-span-11'}>
+          <div
+            className={
+              selects.length >= 2
+                ? 'md:col-span-5'
+                : selects.length === 1
+                  ? 'md:col-span-7'
+                  : 'md:col-span-11'
+            }
+          >
             <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-emerald-700">
               Filtrar registros
             </label>
@@ -145,36 +170,162 @@ export function PanelFilterBar({
                   : 'md:col-span-2'
             }
           >
-            <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              {sel.label}
-            </label>
-            <select
+            <Select
+              label={sel.label}
               value={sel.value}
-              onChange={(e) => sel.onChange(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 cursor-pointer"
-            >
-              {sel.options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              options={sel.options}
+              onValueChange={sel.onChange}
+              onChange={(e) => sel.onChange(e?.target ? e.target.value : e)}
+            />
           </div>
         ))}
 
         {onSearchChange && (
           <div className="hidden md:col-span-1 md:flex md:justify-end">
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-xs"
+            <button
+              type="button"
+              onClick={() => setModalMasFiltros(true)}
+              title="Más filtros avanzados"
+              className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-xs hover:from-emerald-700 hover:to-teal-700 hover:scale-105 active:scale-95 transition cursor-pointer"
+              aria-label="Abrir modal de más filtros"
             >
-              <Filter className="h-4 w-4" />
-            </span>
+              <SlidersHorizontal className="h-4 w-4" />
+              {hasActiveFilters && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400 ring-2 ring-white" />
+                </span>
+              )}
+            </button>
           </div>
         )}
       </div>
 
       {extraContent && <div className="mt-3 border-t border-slate-100 pt-3">{extraContent}</div>}
+
+      {/* Modal de más filtros para todos los módulos */}
+      <Modal
+        open={modalMasFiltros}
+        onClose={() => setModalMasFiltros(false)}
+        title={`Filtros avanzados · ${title || 'Módulo'}`}
+        description="Ajusta criterios de ordenamiento, filtros rápidos y parámetros de consulta para afinar los registros."
+        badge="Filtros avanzados"
+        icon={SlidersHorizontal}
+        tone="emerald"
+        maxWidth="max-w-3xl sm:max-w-4xl"
+        footer={
+          <div className="flex w-full items-center justify-between">
+            {onResetFilters && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  onResetFilters();
+                  setModalMasFiltros(false);
+                }}
+                disabled={!hasActiveFilters}
+              >
+                <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                Limpiar todo
+              </Button>
+            )}
+            <div className="flex items-center gap-2 ml-auto">
+              <Button variant="secondary" size="sm" onClick={() => setModalMasFiltros(false)}>
+                Cerrar
+              </Button>
+              <Button variant="primary" size="sm" onClick={() => setModalMasFiltros(false)}>
+                Aplicar filtros
+              </Button>
+            </div>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          {modalFiltersContent ? (
+            modalFiltersContent
+          ) : (
+            <div className="grid gap-4 md:grid-cols-12 items-start">
+              {/* Columna izquierda: Filtros principales de selección */}
+              <div className="md:col-span-7 space-y-3">
+                <p className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <ListFilter className="h-3.5 w-3.5 text-emerald-600" />
+                  Criterios de filtrado rápido
+                </p>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {selects.map((sel, idx) => (
+                    <div key={sel.label || idx} className="space-y-1.5">
+                      <Select
+                        label={sel.label}
+                        value={sel.value}
+                        options={sel.options}
+                        onValueChange={sel.onChange}
+                        onChange={(e) => sel.onChange(e?.target ? e.target.value : e)}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {onSearchChange && (
+                  <div className="space-y-1.5">
+                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                      Búsqueda textual específica
+                    </label>
+                    <div className="relative">
+                      <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="search"
+                        value={searchValue}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        placeholder={searchPlaceholder}
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pr-3 pl-8 text-xs text-slate-800 transition focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Columna derecha: Resumen de filtros activos y atajos */}
+              <div className="md:col-span-5 rounded-xl border border-emerald-200/80 bg-gradient-to-b from-emerald-50/60 to-slate-50/50 p-3.5 text-xs space-y-2.5">
+                <div className="flex items-center justify-between border-b border-emerald-200/60 pb-2">
+                  <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-emerald-900">
+                    Estado de filtros
+                  </span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9.5px] font-bold ${
+                      hasActiveFilters
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-slate-100 text-slate-500'
+                    }`}
+                  >
+                    {hasActiveFilters ? 'Filtros aplicados' : 'Sin filtros'}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 text-slate-600 text-[11.5px]">
+                  <p>
+                    <strong>Búsqueda:</strong>{' '}
+                    {searchValue ? `"${searchValue}"` : <span className="text-slate-400">Ninguna</span>}
+                  </p>
+                  {selects.map((sel, idx) => {
+                    const optActiva = sel.options.find((o) => String(o.value) === String(sel.value));
+                    return (
+                      <p key={sel.label || idx} className="truncate">
+                        <strong>{sel.label}:</strong>{' '}
+                        <span className="text-emerald-700 font-bold">{optActiva?.label || sel.value || 'Predeterminado'}</span>
+                      </p>
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-lg bg-emerald-100/40 p-2 text-[10.5px] text-emerald-900 leading-tight">
+                  ✨ Los cambios seleccionados se aplican y sincronizan automáticamente con la tabla y catálogo de datos.
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal>
     </section>
   );
 }

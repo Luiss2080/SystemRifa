@@ -118,6 +118,7 @@ export function MisTicketsPage() {
   const toast = useToast();
 
   const [filtroEstado, setFiltroEstado] = useState('');
+  const [filtroOrden, setFiltroOrden] = useState('recientes');
   const [busqueda, setBusqueda] = useState('');
   const [page, setPage] = useState(1);
   const [grupoAPagar, setGrupoAPagar] = useState(null);
@@ -146,17 +147,24 @@ export function MisTicketsPage() {
   }, [todosTickets]);
 
   const tickets = useMemo(() => {
-    const byEstado = !filtroEstado
+    let list = !filtroEstado
       ? todosTickets
       : todosTickets.filter((t) => t.estado === filtroEstado);
     const q = busqueda.trim().toLowerCase();
-    if (!q) return byEstado;
-    return byEstado.filter(
-      (t) =>
-        String(t.numeroTicket).includes(q) ||
-        (t.rifa?.nombre || '').toLowerCase().includes(q)
-    );
-  }, [todosTickets, filtroEstado, busqueda]);
+    if (q) {
+      list = list.filter(
+        (t) =>
+          String(t.numeroTicket).includes(q) ||
+          (t.rifa?.nombre || '').toLowerCase().includes(q)
+      );
+    }
+    if (filtroOrden === 'num_asc') {
+      list = [...list].sort((a, b) => Number(a.numeroTicket || 0) - Number(b.numeroTicket || 0));
+    } else if (filtroOrden === 'num_desc') {
+      list = [...list].sort((a, b) => Number(b.numeroTicket || 0) - Number(a.numeroTicket || 0));
+    }
+    return list;
+  }, [todosTickets, filtroEstado, busqueda, filtroOrden]);
 
   const pageSize = 8;
   const totalPages = Math.max(1, Math.ceil(tickets.length / pageSize));
@@ -238,10 +246,11 @@ export function MisTicketsPage() {
           setPage(1);
         }}
         searchPlaceholder="Buscar por número de ticket o nombre de rifa..."
-        hasActiveFilters={Boolean(busqueda || filtroEstado)}
+        hasActiveFilters={Boolean(busqueda || filtroEstado || filtroOrden !== 'recientes')}
         onResetFilters={() => {
           setBusqueda('');
           setFiltroEstado('');
+          setFiltroOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -253,6 +262,19 @@ export function MisTicketsPage() {
               setPage(1);
             },
             options: filtros.map((f) => ({ value: f.key, label: f.label })),
+          },
+          {
+            label: 'Ordenar por',
+            value: filtroOrden,
+            onChange: (val) => {
+              setFiltroOrden(val);
+              setPage(1);
+            },
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'num_asc', label: 'N° ticket menor' },
+              { value: 'num_desc', label: 'N° ticket mayor' },
+            ],
           },
         ]}
         rightActions={

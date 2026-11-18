@@ -58,6 +58,7 @@ const FALLBACK_MIS_SOLICITUDES = [
 export function MisSolicitudesPage() {
   const [estado, setEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -77,17 +78,24 @@ export function MisSolicitudesPage() {
   }, [data]);
 
   const itemsFiltrados = useMemo(() => {
-    const raw = baseItems;
+    let raw = [...baseItems];
     const q = busqueda.trim().toLowerCase();
-    if (!q) return raw;
-    return raw.filter(
-      (r) =>
-        (r.nombre || '').toLowerCase().includes(q) ||
-        (r.observacion || '').toLowerCase().includes(q) ||
-        (r.referenciaPago || '').toLowerCase().includes(q) ||
-        String(r.rifaSolicitadaId).includes(q)
-    );
-  }, [baseItems, busqueda]);
+    if (q) {
+      raw = raw.filter(
+        (r) =>
+          (r.nombre || '').toLowerCase().includes(q) ||
+          (r.observacion || '').toLowerCase().includes(q) ||
+          (r.referenciaPago || '').toLowerCase().includes(q) ||
+          String(r.rifaSolicitadaId).includes(q)
+      );
+    }
+    if (orden === 'tickets_desc') {
+      raw.sort((a, b) => Number(b.cantidadTickets || 0) - Number(a.cantidadTickets || 0));
+    } else if (orden === 'precio_desc') {
+      raw.sort((a, b) => Number(b.precioTicket || 0) - Number(a.precioTicket || 0));
+    }
+    return raw;
+  }, [baseItems, busqueda, orden]);
 
   const rawItems = baseItems;
   const aprobadasCount = rawItems.filter((r) => r.estado === 'APROBADA').length;
@@ -166,10 +174,11 @@ export function MisSolicitudesPage() {
         searchValue={busqueda}
         onSearchChange={setBusqueda}
         searchPlaceholder="Buscar por nombre de rifa, ID o referencia..."
-        hasActiveFilters={Boolean(busqueda || estado)}
+        hasActiveFilters={Boolean(busqueda || estado || orden !== 'recientes')}
         onResetFilters={() => {
           setBusqueda('');
           setEstado('');
+          setOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -181,6 +190,16 @@ export function MisSolicitudesPage() {
               setPage(1);
             },
             options: ESTADOS_SOLICITUD.map((c) => ({ value: c.key, label: c.label })),
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'tickets_desc', label: 'Más tickets' },
+              { value: 'precio_desc', label: 'Mayor precio ticket' },
+            ],
           },
         ]}
         rightActions={

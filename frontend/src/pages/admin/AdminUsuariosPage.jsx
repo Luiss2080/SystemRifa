@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   CheckCircle2,
+  Eye,
   Mail,
   Shield,
   ShieldCheck,
@@ -286,9 +287,15 @@ export function AdminUsuariosPage() {
       render: (r) => (
         <div className="flex items-center gap-1.5">
           <RowActionButton
-            icon={Shield}
-            title="Ver detalle, roles y permisos"
+            icon={Eye}
+            title="Ver perfil completo de usuario"
             tone="view"
+            onClick={() => setUsuarioDetalleId(r.usuarioId)}
+          />
+          <RowActionButton
+            icon={Shield}
+            title="Gestionar roles y privilegios"
+            tone="edit"
             onClick={() => setUsuarioDetalleId(r.usuarioId)}
           />
           {tienePermiso('usuarios', 'administrar') && (

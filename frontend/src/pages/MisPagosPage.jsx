@@ -67,6 +67,7 @@ const FALLBACK_MIS_PAGOS = [
 export function MisPagosPage() {
   const [estado, setEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -91,15 +92,22 @@ export function MisPagosPage() {
       list = list.filter((p) => p.estado === estado);
     }
     const q = busqueda.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter(
-      (r) =>
-        (r.rifa?.nombre || '').toLowerCase().includes(q) ||
-        (r.referencia || '').toLowerCase().includes(q) ||
-        (r.metodo || '').toLowerCase().includes(q) ||
-        String(r.pagoId).includes(q)
-    );
-  }, [baseItems, estado, busqueda]);
+    if (q) {
+      list = list.filter(
+        (r) =>
+          (r.rifa?.nombre || '').toLowerCase().includes(q) ||
+          (r.referencia || '').toLowerCase().includes(q) ||
+          (r.metodo || '').toLowerCase().includes(q) ||
+          String(r.pagoId).includes(q)
+      );
+    }
+    if (orden === 'monto_desc') {
+      list = [...list].sort((a, b) => Number(b.monto || 0) - Number(a.monto || 0));
+    } else if (orden === 'monto_asc') {
+      list = [...list].sort((a, b) => Number(a.monto || 0) - Number(b.monto || 0));
+    }
+    return list;
+  }, [baseItems, estado, busqueda, orden]);
 
   const rawItems = baseItems;
   const confirmadosCount = rawItems.filter((p) => p.estado === 'CONFIRMADO').length;
@@ -172,10 +180,11 @@ export function MisPagosPage() {
         searchValue={busqueda}
         onSearchChange={setBusqueda}
         searchPlaceholder="Buscar por rifa, referencia, método o ID de pago..."
-        hasActiveFilters={Boolean(busqueda || estado)}
+        hasActiveFilters={Boolean(busqueda || estado || orden !== 'recientes')}
         onResetFilters={() => {
           setBusqueda('');
           setEstado('');
+          setOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -187,6 +196,16 @@ export function MisPagosPage() {
               setPage(1);
             },
             options: ESTADOS_PAGO.map((opt) => ({ value: opt.key, label: opt.label })),
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'monto_desc', label: 'Mayor monto' },
+              { value: 'monto_asc', label: 'Menor monto' },
+            ],
           },
         ]}
         rightActions={

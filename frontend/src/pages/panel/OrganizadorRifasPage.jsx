@@ -61,6 +61,7 @@ const FALLBACK_ORGANIZADOR_RIFAS = [
 export function OrganizadorRifasPage() {
   const [estado, setEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -80,14 +81,23 @@ export function OrganizadorRifasPage() {
   }, [data]);
 
   const items = useMemo(() => {
-    const raw = baseItems;
+    let raw = [...baseItems];
     const q = busqueda.trim().toLowerCase();
-    if (!q) return raw;
-    return raw.filter(
-      (r) =>
-        r.nombre?.toLowerCase().includes(q) || r.causa?.nombre?.toLowerCase().includes(q)
-    );
-  }, [baseItems, busqueda]);
+    if (q) {
+      raw = raw.filter(
+        (r) =>
+          r.nombre?.toLowerCase().includes(q) || r.causa?.nombre?.toLowerCase().includes(q)
+      );
+    }
+    if (orden === 'precio_desc') {
+      raw.sort((a, b) => Number(b.precioTicket || 0) - Number(a.precioTicket || 0));
+    } else if (orden === 'tickets_desc') {
+      raw.sort((a, b) => Number(b.cantidadTickets || 0) - Number(a.cantidadTickets || 0));
+    } else if (orden === 'cierre_asc') {
+      raw.sort((a, b) => new Date(a.fechaFin) - new Date(b.fechaFin));
+    }
+    return raw;
+  }, [baseItems, busqueda, orden]);
   const pagination = data?.pagination || { page: 1, totalPages: 1, total: items.length };
 
   const rawItems = baseItems;
@@ -103,10 +113,11 @@ export function OrganizadorRifasPage() {
         searchValue={busqueda}
         onSearchChange={setBusqueda}
         searchPlaceholder="Buscar rifa por nombre o causa solidaria..."
-        hasActiveFilters={Boolean(busqueda || estado)}
+        hasActiveFilters={Boolean(busqueda || estado || orden !== 'recientes')}
         onResetFilters={() => {
           setBusqueda('');
           setEstado('');
+          setOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -118,6 +129,17 @@ export function OrganizadorRifasPage() {
               setPage(1);
             },
             options: ESTADOS_RIFA.map((t) => ({ value: t.key, label: t.label })),
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'cierre_asc', label: 'Cierre próximo' },
+              { value: 'precio_desc', label: 'Mayor precio ticket' },
+              { value: 'tickets_desc', label: 'Más tickets' },
+            ],
           },
         ]}
         rightActions={

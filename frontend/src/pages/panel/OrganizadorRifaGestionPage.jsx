@@ -104,19 +104,26 @@ export function OrganizadorRifaGestionPage() {
 
   const [busquedaTicket, setBusquedaTicket] = useState('');
   const [estadoTicket, setEstadoTicket] = useState('');
+  const [ordenTicket, setOrdenTicket] = useState('num_asc');
   const [ticketAAnular, setTicketAAnular] = useState(null);
   const [motivoAnular, setMotivoAnular] = useState('');
   const [anulandoTicket, setAnulandoTicket] = useState(false);
 
   const ticketsFiltrados = useMemo(() => {
-    const items = ticketsData?.items || [];
+    let items = ticketsData?.items || [];
     const q = busquedaTicket.trim();
-    return items.filter((t) => {
+    items = items.filter((t) => {
       if (estadoTicket && t.estado !== estadoTicket) return false;
       if (q && !String(t.numeroTicket).includes(q)) return false;
       return true;
     });
-  }, [ticketsData, busquedaTicket, estadoTicket]);
+    if (ordenTicket === 'num_desc') {
+      items = [...items].sort((a, b) => Number(b.numeroTicket || 0) - Number(a.numeroTicket || 0));
+    } else {
+      items = [...items].sort((a, b) => Number(a.numeroTicket || 0) - Number(b.numeroTicket || 0));
+    }
+    return items;
+  }, [ticketsData, busquedaTicket, estadoTicket, ordenTicket]);
 
   function invalidar() {
     queryClient.invalidateQueries({ queryKey: ['rifa-detalle', id] });
@@ -336,10 +343,11 @@ export function OrganizadorRifaGestionPage() {
         searchValue={busquedaTicket}
         onSearchChange={setBusquedaTicket}
         searchPlaceholder="Buscar ticket por número (ej. 15, 042)..."
-        hasActiveFilters={Boolean(busquedaTicket || estadoTicket)}
+        hasActiveFilters={Boolean(busquedaTicket || estadoTicket || ordenTicket !== 'num_asc')}
         onResetFilters={() => {
           setBusquedaTicket('');
           setEstadoTicket('');
+          setOrdenTicket('num_asc');
         }}
         selects={[
           {
@@ -352,6 +360,15 @@ export function OrganizadorRifaGestionPage() {
               { value: 'RESERVADO', label: 'Reservado' },
               { value: 'VENDIDO', label: 'Vendido' },
               { value: 'ANULADO', label: 'Anulado' },
+            ],
+          },
+          {
+            label: 'Ordenar tickets por',
+            value: ordenTicket,
+            onChange: setOrdenTicket,
+            options: [
+              { value: 'num_asc', label: 'N° ticket menor (1 → N)' },
+              { value: 'num_desc', label: 'N° ticket mayor (N → 1)' },
             ],
           },
         ]}

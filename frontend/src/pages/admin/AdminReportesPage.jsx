@@ -38,6 +38,7 @@ const PIE_COLORS = ['#10b981', '#0ea5e9', '#6366f1'];
 export function AdminReportesPage() {
   const [busqueda, setBusqueda] = useState('');
   const [orden, setOrden] = useState('recaudado_desc');
+  const [filtroMeta, setFiltroMeta] = useState('todas');
 
   const { data: resumen, isLoading: loadingResumen } = useQuery({
     queryKey: ['reportes-resumen'],
@@ -52,9 +53,15 @@ export function AdminReportesPage() {
   const causasFiltradas = useMemo(() => {
     const raw = causasData?.items || [];
     const q = busqueda.trim().toLowerCase();
-    const filtered = q
+    let filtered = q
       ? raw.filter((c) => (c.nombre || '').toLowerCase().includes(q))
       : [...raw];
+
+    if (filtroMeta === 'cumplida') {
+      filtered = filtered.filter((c) => Number(c.porcentajeAvance || 0) >= 100);
+    } else if (filtroMeta === 'en_camino') {
+      filtered = filtered.filter((c) => Number(c.porcentajeAvance || 0) < 100);
+    }
 
     filtered.sort((a, b) => {
       if (orden === 'avance_desc') {
@@ -69,7 +76,7 @@ export function AdminReportesPage() {
       return Number(b.recaudadoConfirmado || 0) - Number(a.recaudadoConfirmado || 0);
     });
     return filtered;
-  }, [causasData, busqueda, orden]);
+  }, [causasData, busqueda, orden, filtroMeta]);
 
   if (loadingResumen || loadingCausas) {
     return <FullPageSpinner message="Generando reportes globales..." />;
@@ -144,7 +151,7 @@ export function AdminReportesPage() {
     },
   ];
 
-  const hasActiveFilters = Boolean(busqueda.trim() || orden !== 'recaudado_desc');
+  const hasActiveFilters = Boolean(busqueda.trim() || orden !== 'recaudado_desc' || filtroMeta !== 'todas');
 
   return (
     <div className="space-y-5">
@@ -158,8 +165,19 @@ export function AdminReportesPage() {
         onResetFilters={() => {
           setBusqueda('');
           setOrden('recaudado_desc');
+          setFiltroMeta('todas');
         }}
         selects={[
+          {
+            label: 'Filtrar por meta',
+            value: filtroMeta,
+            onChange: setFiltroMeta,
+            options: [
+              { value: 'todas', label: 'Todas las metas' },
+              { value: 'cumplida', label: 'Meta alcanzada (≥100%)' },
+              { value: 'en_camino', label: 'En progreso (<100%)' },
+            ],
+          },
           {
             label: 'Ordenar causas por',
             value: orden,

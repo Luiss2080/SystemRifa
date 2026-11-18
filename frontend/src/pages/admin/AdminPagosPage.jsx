@@ -7,6 +7,7 @@ import {
   Clock,
   CreditCard,
   DollarSign,
+  Eye,
   Info,
   SlidersHorizontal,
   Ticket,
@@ -80,6 +81,7 @@ export function AdminPagosPage() {
   const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
+  const [pagoDetalle, setPagoDetalle] = useState(null);
   const [pagoConfirmar, setPagoConfirmar] = useState(null);
   const [pagoRechazar, setPagoRechazar] = useState(null);
   const [motivoRechazo, setMotivoRechazo] = useState('');
@@ -226,30 +228,35 @@ export function AdminPagosPage() {
       key: 'acciones',
       label: 'Acciones',
       icon: SlidersHorizontal,
-      render: (r) =>
-        r.estado === 'PENDIENTE' ? (
-          <div className="flex items-center gap-1.5">
-            <RowActionButton
-              icon={Check}
-              label="Aprobar"
-              tone="primary"
-              onClick={() => setPagoConfirmar(r)}
-            />
-            <RowActionButton
-              icon={X}
-              title="Rechazar comprobante"
-              tone="danger"
-              onClick={() => {
-                setPagoRechazar(r);
-                setMotivoRechazo('');
-              }}
-            />
-          </div>
-        ) : (
-          <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500">
-            Procesado
-          </span>
-        ),
+      render: (r) => (
+        <div className="flex items-center gap-1.5">
+          <RowActionButton
+            icon={Eye}
+            title="Ver comprobante y detalle de auditoría"
+            tone="view"
+            onClick={() => setPagoDetalle(r)}
+          />
+          {r.estado === 'PENDIENTE' && (
+            <>
+              <RowActionButton
+                icon={Check}
+                title="Aprobar pago"
+                tone="primary"
+                onClick={() => setPagoConfirmar(r)}
+              />
+              <RowActionButton
+                icon={X}
+                title="Rechazar comprobante"
+                tone="danger"
+                onClick={() => {
+                  setPagoRechazar(r);
+                  setMotivoRechazo('');
+                }}
+              />
+            </>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -438,6 +445,94 @@ export function AdminPagosPage() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        open={Boolean(pagoDetalle)}
+        onClose={() => setPagoDetalle(null)}
+        title={`Comprobante y Detalle de Pago #${pagoDetalle?.pagoId || ''}`}
+        description="Auditoría financiera, datos del participante y verificación de tickets asociados."
+        badge={`Estado: ${pagoDetalle?.estado || 'PENDIENTE'}`}
+        icon={CreditCard}
+        maxWidth="max-w-2xl"
+      >
+        {pagoDetalle && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4">
+              <div>
+                <p className="text-xs text-slate-500 font-medium">Monto validado</p>
+                <p className="text-2xl font-black text-emerald-700">{formatearBs(pagoDetalle.monto)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-500 font-medium">Estado</p>
+                <div className="mt-1 inline-block">
+                  <Badge estado={pagoDetalle.estado} />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-medium">Método de Pago</p>
+                <p className="font-bold text-slate-900 text-sm">{pagoDetalle.metodo}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-500 font-medium">Código / Ref. Bancaria</p>
+                <p className="font-mono font-bold text-slate-900 text-sm">
+                  {pagoDetalle.referencia || 'Sin referencia'}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-700">
+              <p className="font-bold text-slate-900 text-sm">Participante & Campaña</p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <p>
+                  <strong className="text-slate-800">Participante:</strong>{' '}
+                  {pagoDetalle.usuario?.nombres ? `${pagoDetalle.usuario.nombres} ${pagoDetalle.usuario.apellidos || ''}` : pagoDetalle.usuario?.alias || `ID ${pagoDetalle.usuarioId}`}
+                </p>
+                <p>
+                  <strong className="text-slate-800">Email:</strong> {pagoDetalle.usuario?.email || '—'}
+                </p>
+                <p className="col-span-2">
+                  <strong className="text-slate-800">Rifa:</strong>{' '}
+                  {pagoDetalle.rifa?.nombre || `Rifa #${pagoDetalle.rifaId}`}
+                </p>
+                <p className="col-span-2">
+                  <strong className="text-slate-800">Boletos comprados:</strong>{' '}
+                  {(pagoDetalle.tickets || []).map((t) => `#${t.numeroTicket}`).join(', ') || '—'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button variant="secondary" onClick={() => setPagoDetalle(null)}>
+                Cerrar
+              </Button>
+              {pagoDetalle.estado === 'PENDIENTE' && (
+                <>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      const p = pagoDetalle;
+                      setPagoDetalle(null);
+                      setPagoRechazar(p);
+                      setMotivoRechazo('');
+                    }}
+                  >
+                    Rechazar
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const p = pagoDetalle;
+                      setPagoDetalle(null);
+                      setPagoConfirmar(p);
+                    }}
+                  >
+                    Confirmar pago
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

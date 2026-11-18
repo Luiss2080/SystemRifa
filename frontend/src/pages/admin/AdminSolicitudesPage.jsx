@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Clock,
   Edit3,
+  ExternalLink,
   Eye,
   SlidersHorizontal,
   Sparkles,
@@ -81,6 +82,7 @@ export function AdminSolicitudesPage() {
   const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
+  const [solicitudDetalle, setSolicitudDetalle] = useState(null);
   const [modalEstado, setModalEstado] = useState(null);
   const [nuevoEstado, setNuevoEstado] = useState('ESPERANDO_PAGO');
   const [referenciaPago, setReferenciaPago] = useState('');
@@ -254,17 +256,23 @@ export function AdminSolicitudesPage() {
       icon: SlidersHorizontal,
       render: (r) => (
         <div className="flex flex-wrap items-center gap-1.5">
+          <RowActionButton
+            icon={Eye}
+            title="Ver propuesta completa y auditoría"
+            tone="view"
+            onClick={() => setSolicitudDetalle(r)}
+          />
           {r.estado !== 'APROBADA' && r.estado !== 'RECHAZADA' && (
             <>
               <RowActionButton
                 icon={Edit3}
                 title="Cambiar estado de solicitud"
-                tone="neutral"
+                tone="edit"
                 onClick={() => abrirCambiarEstado(r)}
               />
               <RowActionButton
                 icon={Check}
-                label="Aprobar"
+                title="Aprobar y generar campaña"
                 tone="primary"
                 onClick={() => abrirAprobar(r)}
               />
@@ -272,7 +280,7 @@ export function AdminSolicitudesPage() {
           )}
           {r.rifa && (
             <Link to={`/organizador/rifas/${r.rifa.rifaId}`}>
-              <RowActionButton icon={Eye} label="Ver rifa" tone="view" />
+              <RowActionButton icon={ExternalLink} title="Ver rifa en producción" tone="primary" />
             </Link>
           )}
         </div>
@@ -564,6 +572,117 @@ export function AdminSolicitudesPage() {
               </Button>
             </div>
           </form>
+        )}
+      </Modal>
+
+      {/* Modal de Detalle de Solicitud */}
+      <Modal
+        open={Boolean(solicitudDetalle)}
+        onClose={() => setSolicitudDetalle(null)}
+        title={`Detalle de Solicitud #${solicitudDetalle?.rifaSolicitadaId || ''}`}
+        description="Propuesta de campaña solidaria enviada por el organizador para su evaluación."
+        badge={`Estado: ${solicitudDetalle?.estado || 'REVISION'}`}
+        icon={ClipboardList}
+        maxWidth="max-w-2xl"
+      >
+        {solicitudDetalle && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4">
+              <div>
+                <p className="text-xs text-slate-500 font-medium">Nombre de la campaña</p>
+                <p className="text-base font-extrabold text-slate-900">{solicitudDetalle.nombre}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-500 font-medium">Estado</p>
+                <div className="mt-1 inline-block">
+                  <Badge estado={solicitudDetalle.estado} />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-medium">Precio por ticket</p>
+                <p className="font-extrabold text-emerald-700 text-lg">
+                  {formatearBs(solicitudDetalle.precioTicket)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-500 font-medium">Cantidad de boletos</p>
+                <p className="font-extrabold text-slate-900 text-lg">
+                  {solicitudDetalle.cantidadTickets} boletos
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-700">
+              <p className="font-bold text-slate-900 text-sm">Organizador & Causa Solidaria</p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <p>
+                  <strong className="text-slate-800">Solicitante:</strong>{' '}
+                  {solicitudDetalle.usuario?.nombres
+                    ? `${solicitudDetalle.usuario.nombres} ${solicitudDetalle.usuario.apellidos || ''}`
+                    : `@${solicitudDetalle.usuario?.alias || `ID ${solicitudDetalle.usuarioId}`}`}
+                </p>
+                <p>
+                  <strong className="text-slate-800">Email:</strong>{' '}
+                  {solicitudDetalle.usuario?.email || '—'}
+                </p>
+                <p>
+                  <strong className="text-slate-800">Causa Vinculada:</strong>{' '}
+                  {solicitudDetalle.causa?.nombre || 'Sin causa directa'}
+                </p>
+                <p>
+                  <strong className="text-slate-800">Fecha solicitud:</strong>{' '}
+                  {formatearFecha(solicitudDetalle.fechaSolicitud)}
+                </p>
+                {solicitudDetalle.referenciaPago && (
+                  <p className="col-span-2">
+                    <strong className="text-slate-800">Ref. Pago Publicación:</strong>{' '}
+                    <span className="font-mono font-bold text-slate-900">{solicitudDetalle.referenciaPago}</span>
+                  </p>
+                )}
+                {solicitudDetalle.observacion && (
+                  <div className="col-span-2 rounded-lg border border-amber-200 bg-amber-50 p-2 text-amber-900">
+                    <strong className="block text-[10.5px] uppercase tracking-wide text-amber-800">Observación / Motivo:</strong>
+                    {solicitudDetalle.observacion}
+                  </div>
+                )}
+                {solicitudDetalle.descripcion && (
+                  <p className="col-span-2 text-slate-600 leading-relaxed pt-1">
+                    <strong className="text-slate-800 block">Descripción:</strong>
+                    {solicitudDetalle.descripcion}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <Button variant="secondary" onClick={() => setSolicitudDetalle(null)}>
+                Cerrar
+              </Button>
+              {solicitudDetalle.estado !== 'APROBADA' && solicitudDetalle.estado !== 'RECHAZADA' && (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      const s = solicitudDetalle;
+                      setSolicitudDetalle(null);
+                      abrirCambiarEstado(s);
+                    }}
+                  >
+                    Cambiar estado
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const s = solicitudDetalle;
+                      setSolicitudDetalle(null);
+                      abrirAprobar(s);
+                    }}
+                  >
+                    Aprobar rifa
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         )}
       </Modal>
     </div>

@@ -53,6 +53,7 @@ export function NotificacionesPage() {
   const toast = useToast();
   const [soloNoLeidas, setSoloNoLeidas] = useState(false);
   const [busqueda, setBusqueda] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({
@@ -111,13 +112,20 @@ export function NotificacionesPage() {
       list = list.filter((n) => !n.leida);
     }
     const q = busqueda.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter(
-      (n) =>
-        (n.titulo || '').toLowerCase().includes(q) ||
-        (n.mensaje || '').toLowerCase().includes(q)
-    );
-  }, [baseItems, soloNoLeidas, busqueda]);
+    if (q) {
+      list = list.filter(
+        (n) =>
+          (n.titulo || '').toLowerCase().includes(q) ||
+          (n.mensaje || '').toLowerCase().includes(q)
+      );
+    }
+    if (orden === 'antiguas') {
+      list = [...list].sort((a, b) => new Date(a.creadoEn || 0) - new Date(b.creadoEn || 0));
+    } else {
+      list = [...list].sort((a, b) => new Date(b.creadoEn || 0) - new Date(a.creadoEn || 0));
+    }
+    return list;
+  }, [baseItems, soloNoLeidas, busqueda, orden]);
 
   if (isLoading) return <FullPageSpinner message="Cargando notificaciones..." />;
 
@@ -134,10 +142,11 @@ export function NotificacionesPage() {
         searchValue={busqueda}
         onSearchChange={setBusqueda}
         searchPlaceholder="Buscar por asunto o detalle de la notificación..."
-        hasActiveFilters={Boolean(busqueda || soloNoLeidas)}
+        hasActiveFilters={Boolean(busqueda || soloNoLeidas || orden !== 'recientes')}
         onResetFilters={() => {
           setBusqueda('');
           setSoloNoLeidas(false);
+          setOrden('recientes');
           setPage(1);
         }}
         selects={[
@@ -151,6 +160,15 @@ export function NotificacionesPage() {
             options: [
               { value: 'TODAS', label: 'Todas las notificaciones' },
               { value: 'NO_LEIDAS', label: `Sin leer (${sinLeer})` },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: orden,
+            onChange: setOrden,
+            options: [
+              { value: 'recientes', label: 'Más recientes' },
+              { value: 'antiguas', label: 'Más antiguas' },
             ],
           },
         ]}

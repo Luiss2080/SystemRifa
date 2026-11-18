@@ -46,6 +46,8 @@ export function AdminRolesPage() {
 
   const [tab, setTab] = useState('roles'); // 'roles' | 'permisos' | 'historial'
   const [busqueda, setBusqueda] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState('todos');
+  const [filtroOrden, setFiltroOrden] = useState('nombre_asc');
   const [histPage, setHistPage] = useState(1);
 
   const [modalRol, setModalRol] = useState(false);
@@ -139,14 +141,27 @@ export function AdminRolesPage() {
   const roles = useMemo(() => rolesData?.items || [], [rolesData]);
   const permisos = useMemo(() => permisosData?.items || [], [permisosData]);
   const rolesFiltrados = useMemo(() => {
+    let list = roles;
+    if (filtroTipo === 'sistema') {
+      list = list.filter((r) => ROLES_SISTEMA.has(r.nombre));
+    } else if (filtroTipo === 'personalizados') {
+      list = list.filter((r) => !ROLES_SISTEMA.has(r.nombre));
+    }
     const q = busqueda.trim().toLowerCase();
-    if (!q) return roles;
-    return roles.filter(
-      (r) =>
-        (r.nombre || '').toLowerCase().includes(q) ||
-        (r.descripcion || '').toLowerCase().includes(q)
-    );
-  }, [roles, busqueda]);
+    if (q) {
+      list = list.filter(
+        (r) =>
+          (r.nombre || '').toLowerCase().includes(q) ||
+          (r.descripcion || '').toLowerCase().includes(q)
+      );
+    }
+    if (filtroOrden === 'nombre_desc') {
+      list = [...list].sort((a, b) => (b.nombre || '').localeCompare(a.nombre || ''));
+    } else {
+      list = [...list].sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+    }
+    return list;
+  }, [roles, busqueda, filtroTipo, filtroOrden]);
 
   const permisosFiltradosCatalogo = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -238,8 +253,33 @@ export function AdminRolesPage() {
             ? 'Buscar permiso por recurso:acción o descripción...'
             : 'Buscar rol por nombre o descripción...'
         }
-        hasActiveFilters={Boolean(busqueda)}
-        onResetFilters={() => setBusqueda('')}
+        hasActiveFilters={Boolean(busqueda || filtroTipo !== 'todos' || filtroOrden !== 'nombre_asc')}
+        onResetFilters={() => {
+          setBusqueda('');
+          setFiltroTipo('todos');
+          setFiltroOrden('nombre_asc');
+        }}
+        selects={[
+          {
+            label: 'Tipo de rol',
+            value: filtroTipo,
+            onChange: setFiltroTipo,
+            options: [
+              { value: 'todos', label: 'Todos los roles' },
+              { value: 'sistema', label: 'Roles del sistema' },
+              { value: 'personalizados', label: 'Roles personalizados' },
+            ],
+          },
+          {
+            label: 'Ordenar por',
+            value: filtroOrden,
+            onChange: setFiltroOrden,
+            options: [
+              { value: 'nombre_asc', label: 'Nombre (A - Z)' },
+              { value: 'nombre_desc', label: 'Nombre (Z - A)' },
+            ],
+          },
+        ]}
         rightActions={
           <div className="flex flex-wrap items-center gap-2">
             <Button
