@@ -544,6 +544,16 @@ export function FloatingWidgets() {
 
   return (
     <>
+      {(botOpen || waOpen) && (
+        <div
+          onClick={() => {
+            setBotOpen(false);
+            setWaOpen(false);
+          }}
+          aria-hidden="true"
+          className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-2xs transition-opacity sm:hidden"
+        />
+      )}
       {!dockBotRight && (
         /* Widget Inferior Izquierdo: Asistente Virtual RifaBot */
         <div
