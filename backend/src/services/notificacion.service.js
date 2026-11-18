@@ -169,6 +169,24 @@ export async function listarTiposNotificacion() {
   return { items };
 }
 
+export async function crearTipoNotificacion(data) {
+  const existente = await notificacionRepo.findTipoByCodigo(data.codigo);
+  if (existente) {
+    throw new AppError(409, 'NOTIFICATION_TYPE_EXISTS', 'Ya existe un tipo de notificación con ese código.');
+  }
+
+  const admitidas = Array.isArray(data.variables) ? data.variables : [];
+  if (data.plantillaTitulo) {
+    validarVariablesEnPlantilla(data.plantillaTitulo, admitidas);
+  }
+  if (data.plantillaMensaje) {
+    validarVariablesEnPlantilla(data.plantillaMensaje, admitidas);
+  }
+
+  const nuevo = await notificacionRepo.createTipo(data);
+  return { tipo: nuevo };
+}
+
 export async function actualizarTipoNotificacion(tipoNotificacionId, data) {
   const tipo = await notificacionRepo.findTipoById(tipoNotificacionId);
   if (!tipo) {

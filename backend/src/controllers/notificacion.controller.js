@@ -45,6 +45,15 @@ export async function getTiposNotificacion(_req, res, next) {
   }
 }
 
+export async function postTipoNotificacion(req, res, next) {
+  try {
+    const data = await notificacionService.crearTipoNotificacion(req.body);
+    res.status(201).json(data);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function patchTipoNotificacion(req, res, next) {
   try {
     const data = await notificacionService.actualizarTipoNotificacion(req.params.id, req.body);
