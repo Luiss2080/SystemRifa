@@ -775,7 +775,6 @@ export function AppHeader({ variant = 'public' }) {
               >
                 <UserPlus className="h-3.5 w-3.5" />
                 <span>Crear cuenta</span>
-                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </>
           )}
@@ -982,7 +981,6 @@ export function AppHeader({ variant = 'public' }) {
                 >
                   <UserPlus className="h-4 w-4" />
                   Crear cuenta
-                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             )}
