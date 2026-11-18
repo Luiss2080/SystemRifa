@@ -18,6 +18,12 @@ export async function findAllTipos(db = prisma) {
   });
 }
 
+export async function createTipo(data, db = prisma) {
+  return db.tipoNotificacion.create({
+    data
+  });
+}
+
 export async function updateTipo(tipoNotificacionId, data, db = prisma) {
   return db.tipoNotificacion.update({
     where: { tipoNotificacionId },

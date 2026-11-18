@@ -19,3 +19,17 @@ export const actualizarTipoNotificacionSchema = z
     message: 'Debe enviar al menos un campo para actualizar.'
   });
 
+export const crearTipoNotificacionSchema = z.object({
+  codigo: z
+    .string()
+    .trim()
+    .min(3, 'El código debe tener al menos 3 caracteres.')
+    .max(60, 'El código no puede superar 60 caracteres.')
+    .transform((v) => v.toUpperCase()),
+  plantillaTitulo: z.string().trim().min(1, 'El título es requerido.').max(150),
+  plantillaMensaje: z.string().trim().min(1, 'El mensaje es requerido.'),
+  variables: z.array(z.string().trim()).default([]),
+  estaActivo: z.boolean().default(true)
+});
+
+
