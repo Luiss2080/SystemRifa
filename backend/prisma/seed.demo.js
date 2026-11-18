@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+import { runSeed } from './seed.js';
 
 const prisma = new PrismaClient();
 
