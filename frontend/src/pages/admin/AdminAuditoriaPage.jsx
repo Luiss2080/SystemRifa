@@ -87,6 +87,19 @@ export function AdminAuditoriaPage() {
         </pre>
       ),
     },
+    {
+      key: 'acciones',
+      label: 'Acciones',
+      icon: SlidersHorizontal,
+      render: (r) => (
+        <RowActionButton
+          icon={Eye}
+          title="Ver registro completo de auditoría"
+          tone="view"
+          onClick={() => setEventoDetalle(r)}
+        />
+      ),
+    },
   ];
 
   const hasFilters = Boolean(entidad.trim() || accion.trim() || orden !== 'recientes');
@@ -136,6 +149,16 @@ export function AdminAuditoriaPage() {
             ],
           },
         ]}
+        rightActions={
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-auditoria'] })}
+          >
+            <RefreshCw className="h-4 w-4 text-emerald-600" />
+            Refrescar bitácora
+          </Button>
+        }
       />
 
       <PanelSectionHeader
@@ -186,6 +209,79 @@ export function AdminAuditoriaPage() {
         emptyTitle="Sin eventos de auditoría"
         emptyDescription="Prueba limpiando los filtros para ver todos los registros."
       />
+
+      {/* Modal Compacto y Horizontal de Detalle de Auditoría */}
+      <Modal
+        open={Boolean(eventoDetalle)}
+        onClose={() => setEventoDetalle(null)}
+        title={`Evento #${eventoDetalle?.auditoriaId || ''} · ${eventoDetalle?.accion || ''}`}
+        description="Registro inmutable de trazabilidad con metadatos del actor y payload del cambio."
+        badge="Auditoría Forense"
+        icon={History}
+        maxWidth="max-w-4xl"
+        footer={
+          <Button variant="secondary" size="sm" onClick={() => setEventoDetalle(null)}>
+            Cerrar
+          </Button>
+        }
+      >
+        {eventoDetalle && (
+          <div className="grid gap-4 md:grid-cols-12 items-start">
+            {/* Columna Izquierda (5 cols): Metadatos */}
+            <div className="space-y-3 md:col-span-5 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3.5 text-xs">
+              <div className="border-b border-slate-200/60 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Fecha y Hora
+                </span>
+                <p className="font-extrabold text-slate-900 mt-0.5">
+                  {formatearFecha(eventoDetalle.fecha)}
+                </p>
+              </div>
+
+              <div className="border-b border-slate-200/60 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Actor responsable
+                </span>
+                <p className="font-extrabold text-slate-900 mt-0.5">
+                  {eventoDetalle.usuario?.nombres ? `${eventoDetalle.usuario.nombres} ${eventoDetalle.usuario.apellidos || ''}` : eventoDetalle.usuario?.alias || `ID ${eventoDetalle.usuarioId}`}
+                </p>
+                <p className="text-[11px] text-slate-500">{eventoDetalle.usuario?.email || '—'}</p>
+              </div>
+
+              <div className="border-b border-slate-200/60 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Entidad y Registro
+                </span>
+                <p className="font-mono font-bold text-slate-800 mt-0.5">
+                  {eventoDetalle.entidad} #{eventoDetalle.entidadId}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Acción auditada
+                </span>
+                <div className="mt-1">
+                  <Badge color="indigo">{eventoDetalle.accion}</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Columna Derecha (7 cols): Payload completo formateado */}
+            <div className="space-y-1.5 md:col-span-7">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Detalle / Payload JSON
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">Inmutable</span>
+              </div>
+              <pre className="max-h-64 overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-3.5 font-mono text-[11px] leading-relaxed text-emerald-400 shadow-inner">
+                {JSON.stringify(eventoDetalle.detalle, null, 2) || '{}'}
+              </pre>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
