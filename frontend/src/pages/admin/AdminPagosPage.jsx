@@ -406,20 +406,34 @@ export function AdminPagosPage() {
         badge="Tesorería · Rechazo"
         icon={X}
         tone="danger"
+        maxWidth="max-w-2xl sm:max-w-3xl"
       >
-        <form onSubmit={handleRechazar} className="space-y-4">
-          <Textarea
-            label="Motivo del rechazo"
-            required
-            placeholder="Ej. Comprobante ilegible o monto incompleto"
-            value={motivoRechazo}
-            onChange={(e) => setMotivoRechazo(e.target.value)}
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={() => setPagoRechazar(null)}>
+        <form onSubmit={handleRechazar} className="space-y-3.5">
+          <div className="grid gap-3 sm:grid-cols-12 items-start">
+            <div className="sm:col-span-5 rounded-xl border border-rose-200/80 bg-rose-50/60 p-3 text-xs space-y-1.5 text-rose-950">
+              <p className="font-bold uppercase text-[10.5px] tracking-wide text-rose-800">
+                Detalle del pago
+              </p>
+              <p><strong>Monto:</strong> Bs {pagoRechazar?.montoTotal}</p>
+              <p className="truncate"><strong>Usuario:</strong> {pagoRechazar?.usuario?.alias || pagoRechazar?.usuario?.email || '—'}</p>
+              <p className="break-words"><strong>Tickets:</strong> {(pagoRechazar?.tickets || []).map((t) => `#${t.numeroTicket}`).join(', ') || '—'}</p>
+            </div>
+            <div className="sm:col-span-7">
+              <Textarea
+                label="Motivo del rechazo"
+                required
+                rows={3}
+                placeholder="Ej. Comprobante ilegible o monto incompleto..."
+                value={motivoRechazo}
+                onChange={(e) => setMotivoRechazo(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setPagoRechazar(null)}>
               Cancelar
             </Button>
-            <Button type="submit" variant="danger" loading={procesando}>
+            <Button type="submit" variant="danger" size="sm" loading={procesando}>
               Rechazar y liberar tickets
             </Button>
           </div>
