@@ -639,33 +639,47 @@ export function OrganizadorRifaGestionPage() {
         description="Especifica el premio, su descripción y valor referencial para los participantes."
         badge="Inventario de premios"
         icon={Award}
+        maxWidth="max-w-3xl"
       >
-        <form onSubmit={handleGuardarPremio} className="space-y-4">
-          <Input
-            label="Nombre del premio"
-            required
-            value={formPremio.nombre}
-            onChange={(e) => setFormPremio((f) => ({ ...f, nombre: e.target.value }))}
-          />
-          <Textarea
-            label="Descripción"
-            value={formPremio.descripcion}
-            onChange={(e) => setFormPremio((f) => ({ ...f, descripcion: e.target.value }))}
-          />
-          <Input
-            label="Valor referencial (Bs)"
-            type="number"
-            step="0.01"
-            min="1"
-            value={formPremio.valor}
-            onChange={(e) => setFormPremio((f) => ({ ...f, valor: e.target.value }))}
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={() => setModalPremio(null)}>
+        <form onSubmit={handleGuardarPremio} className="space-y-3.5">
+          <div className="grid gap-3.5 sm:grid-cols-2 items-start">
+            <div className="space-y-2.5">
+              <Input
+                label="Nombre del premio"
+                required
+                placeholder="Ej. Smart TV 55 Pulgadas 4K"
+                value={formPremio.nombre}
+                onChange={(e) => setFormPremio((f) => ({ ...f, nombre: e.target.value }))}
+              />
+              <Input
+                label="Valor referencial (Bs)"
+                type="number"
+                step="0.01"
+                min="1"
+                placeholder="3500.00"
+                value={formPremio.valor}
+                onChange={(e) => setFormPremio((f) => ({ ...f, valor: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2.5">
+              <Textarea
+                label="Descripción del premio"
+                rows={3}
+                placeholder="Marca, modelo, garantía o condiciones de entrega..."
+                value={formPremio.descripcion}
+                onChange={(e) => setFormPremio((f) => ({ ...f, descripcion: e.target.value }))}
+              />
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-2 text-[10.5px] text-slate-500 leading-tight">
+                🎁 El premio se destacará en la tarjeta de la rifa y en los certificados de ganadores.
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModalPremio(null)}>
               Cancelar
             </Button>
-            <Button type="submit" loading={guardandoPremio}>
-              Guardar
+            <Button type="submit" size="sm" loading={guardandoPremio}>
+              Guardar premio
             </Button>
           </div>
         </form>
@@ -742,19 +756,33 @@ export function OrganizadorRifaGestionPage() {
         badge="Cierre de premio"
         icon={Trophy}
         tone="amber"
+        maxWidth="max-w-3xl"
       >
-        <form onSubmit={handleRegistrarEntrega} className="space-y-4">
-          <Textarea
-            label="Datos de entrega / constancia"
-            placeholder="Ej. Entregado presencialmente con firma de acta"
-            value={datosEntrega}
-            onChange={(e) => setDatosEntrega(e.target.value)}
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={() => setModalEntrega(null)}>
+        <form onSubmit={handleRegistrarEntrega} className="space-y-3.5">
+          <div className="grid gap-3.5 sm:grid-cols-12 items-start">
+            <div className="sm:col-span-5 rounded-xl border border-amber-200/80 bg-amber-50/70 p-3 text-xs space-y-1.5 text-amber-950">
+              <p className="font-bold uppercase text-[10.5px] tracking-wide text-amber-800">
+                Detalle del premio
+              </p>
+              <p><strong>Premio:</strong> {modalEntrega?.nombre}</p>
+              <p><strong>Ganador:</strong> {modalEntrega?.ganador?.alias || modalEntrega?.ganador?.email || '—'}</p>
+              <p><strong>Ticket premiado:</strong> #{modalEntrega?.ticketGanador?.numeroTicket || '—'}</p>
+            </div>
+            <div className="sm:col-span-7">
+              <Textarea
+                label="Datos de entrega / constancia"
+                rows={3}
+                placeholder="Ej. Entregado presencialmente en oficinas con acta firmada y presentación de CI..."
+                value={datosEntrega}
+                onChange={(e) => setDatosEntrega(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModalEntrega(null)}>
               Cancelar
             </Button>
-            <Button type="submit" loading={guardandoEntrega}>
+            <Button type="submit" size="sm" loading={guardandoEntrega}>
               Confirmar entrega
             </Button>
           </div>
