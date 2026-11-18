@@ -1,21 +1,26 @@
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Activity, Calendar, FileText, History, ShieldCheck, Users } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Activity, Calendar, Eye, FileText, History, RefreshCw, ShieldCheck, SlidersHorizontal, Users } from 'lucide-react';
 import { getAuditoriaApi } from '../../features/panel/panelApi.js';
 import { formatearFecha } from '../../utils/format.js';
 import { Badge } from '../../components/ui/Badge.jsx';
+import { Button } from '../../components/ui/Button.jsx';
 import { DataTable } from '../../components/ui/DataTable.jsx';
+import { Modal } from '../../components/ui/Modal.jsx';
 import {
   PanelFilterBar,
   PanelKpiGrid,
   PanelSectionHeader,
+  RowActionButton,
 } from '../../components/panel/PanelKit.jsx';
 
 export function AdminAuditoriaPage() {
+  const queryClient = useQueryClient();
   const [entidad, setEntidad] = useState('');
   const [accion, setAccion] = useState('');
   const [orden, setOrden] = useState('recientes');
   const [page, setPage] = useState(1);
+  const [eventoDetalle, setEventoDetalle] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-auditoria', { entidad, accion, page }],
