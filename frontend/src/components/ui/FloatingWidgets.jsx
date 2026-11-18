@@ -255,48 +255,48 @@ export function FloatingWidgets() {
   );
 
   const botCard = (
-    <div className="animate-modal-in flex h-[440px] sm:h-[475px] max-h-[calc(100vh-5rem)] w-[calc(100vw-2rem)] max-w-[305px] sm:max-w-[315px] flex-col overflow-hidden rounded-[22px] border-2 border-amber-300/90 bg-white shadow-2xl shadow-slate-900/20 ring-1 ring-amber-950/15">
+    <div className="animate-modal-in flex h-[505px] sm:h-[535px] max-h-[calc(100vh-4.5rem)] w-[calc(100vw-2rem)] max-w-[335px] sm:max-w-[350px] flex-col overflow-hidden rounded-[24px] border-2 border-amber-300/90 bg-white shadow-2xl shadow-slate-900/25 ring-1 ring-amber-950/15">
       {/* Cabecera amarilla compacta tipo botón Crear Cuenta */}
-      <div className="relative shrink-0 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-3 py-2 text-slate-950">
+      <div className="relative shrink-0 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 px-3.5 py-2.5 text-slate-950">
         <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-amber-200 via-yellow-200 to-orange-400" />
         <div className="flex items-center justify-between gap-1.5">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-950/10 text-slate-950 ring-1 ring-slate-950/15">
-              <Bot className="h-4 w-4 text-slate-950" />
-              <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full border-2 border-amber-400 bg-emerald-500" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-950/10 text-slate-950 ring-1 ring-slate-950/15">
+              <Bot className="h-4.5 w-4.5 text-slate-950" />
+              <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-amber-400 bg-emerald-500" />
             </span>
             <div className="min-w-0">
-              <div className="flex items-center gap-1">
-                <p className="text-xs font-black tracking-tight text-slate-950 truncate">RifaBot</p>
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-slate-950/10 px-1.5 py-0.2 text-[8px] font-extrabold uppercase tracking-wider text-slate-950 ring-1 ring-slate-950/15">
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs sm:text-sm font-black tracking-tight text-slate-950 truncate">RifaBot</p>
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-slate-950/10 px-1.5 py-0.2 text-[8.5px] font-extrabold uppercase tracking-wider text-slate-950 ring-1 ring-slate-950/15">
                   <Sparkles className="h-2 w-2 text-slate-950" />
                   Online
                 </span>
               </div>
-              <p className="text-[9.5px] font-bold text-slate-950/80 truncate">
+              <p className="text-[10px] sm:text-[10.5px] font-bold text-slate-950/80 truncate">
                 Asistente Virtual Solidario
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               onClick={handleResetChat}
               title="Reiniciar conversación"
               aria-label="Reiniciar conversación"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3.5 w-3.5" />
             </button>
             <button
               type="button"
               onClick={() => setBotOpen(false)}
               title="Cerrar asistente"
               aria-label="Cerrar asistente"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-950/10 text-slate-950 transition hover:bg-slate-950/20 cursor-pointer"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -304,33 +304,33 @@ export function FloatingWidgets() {
 
       {/* Historial con fondo personalizado tipo wallpaper */}
       <div
-        className="flex-1 space-y-2 overflow-y-auto p-2.5 sm:p-3 bg-[#FAF7F0] border-t border-b border-amber-100/60"
+        className="flex-1 space-y-2.5 overflow-y-auto p-3 sm:p-3.5 bg-[#FAF7F0] border-t border-b border-amber-100/60"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' fill='none'%3E%3Cpath d='M8 12h8a1.5 1.5 0 0 1 1.5 1.5v.5a1.5 1.5 0 0 0 0 3v.5A1.5 1.5 0 0 1 16 19H8a1.5 1.5 0 0 1-1.5-1.5v-.5a1.5 1.5 0 0 0 0-3v-.5A1.5 1.5 0 0 1 8 12z' stroke='%23D97706' stroke-width='1' opacity='0.08'/%3E%3Cpath d='M34 10l.6 1.4 1.5.2-1.1 1 .3 1.5-1.3-.7-1.3.7.3-1.5-1.1-1 1.5-.2z' fill='%23B45309' opacity='0.09'/%3E%3Cpath d='M12 34c-1.2-1.5-2.5-.6-2.5.9 0 1.5 2.5 3 2.5 3s2.5-1.5 2.5-3c0-1.5-1.3-2.4-2.5-.9z' fill='%23D97706' opacity='0.08'/%3E%3Cpath d='M35 32l.6 1.2 1.2.6-1.2.6-.6 1.2-.6-1.2-1.2-.6 1.2-.6z' fill='%23B45309' opacity='0.09'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
         }}
       >
         <div className="flex justify-center">
-          <span className="rounded-full border border-amber-200/80 bg-white/95 px-2 py-0.5 text-[8.5px] font-bold uppercase tracking-wider text-amber-900 shadow-2xs">
+          <span className="rounded-full border border-amber-200/80 bg-white/95 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-900 shadow-2xs">
             Hoy · Soporte 24/7
           </span>
         </div>
 
         {messages.map((msg) =>
           msg.role === 'user' ? (
-            <div key={msg.id} className="flex flex-col items-end gap-0.5">
-              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 px-2.5 py-1.5 text-[11px] font-bold leading-relaxed text-slate-950 shadow-xs">
+            <div key={msg.id} className="flex flex-col items-end gap-1">
+              <div className="max-w-[85%] rounded-2xl rounded-br-xs bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 px-3 py-2 text-xs font-bold leading-relaxed text-slate-950 shadow-xs">
                 {msg.texto}
               </div>
-              <span className="px-1 text-[8.5px] text-slate-400">{msg.hora}</span>
+              <span className="px-1 text-[9px] text-slate-400">{msg.hora}</span>
             </div>
           ) : (
-            <div key={msg.id} className="flex items-start gap-1.5">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs">
-                <Bot className="h-2.5 w-2.5" />
+            <div key={msg.id} className="flex items-start gap-2">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs">
+                <Bot className="h-3 w-3" />
               </span>
-              <div className="min-w-0 flex-1 space-y-0.5">
-                <div className="rounded-2xl rounded-tl-xs border border-amber-200/60 bg-white/95 px-2.5 py-1.5 text-[11px] leading-relaxed text-slate-700 shadow-2xs">
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="rounded-2xl rounded-tl-xs border border-amber-200/60 bg-white/95 px-3 py-2 text-xs leading-relaxed text-slate-700 shadow-2xs">
                   <p>{msg.texto}</p>
                   {msg.ctaLabel && msg.ctaTo && (
                     <button
@@ -341,14 +341,14 @@ export function FloatingWidgets() {
                           msg.ctaTo === '/' && autenticado ? '/explorar' : msg.ctaTo;
                         navigate(destino);
                       }}
-                      className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[9.5px] font-bold text-amber-900 ring-1 ring-amber-300 transition hover:bg-amber-100 cursor-pointer"
+                      className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1 text-[10.5px] font-bold text-amber-900 ring-1 ring-amber-300 transition hover:bg-amber-100 cursor-pointer"
                     >
                       {msg.ctaLabel}
-                      <ArrowRight className="h-2 w-2" />
+                      <ArrowRight className="h-2.5 w-2.5" />
                     </button>
                   )}
                 </div>
-                <span className="block px-1 text-[8.5px] text-slate-400">{msg.hora}</span>
+                <span className="block px-1 text-[9px] text-slate-400">{msg.hora}</span>
               </div>
             </div>
           )
@@ -357,36 +357,36 @@ export function FloatingWidgets() {
       </div>
 
       {/* Sugerencias rápidas tipo chips integradas (sin barra de desplazamiento visible) */}
-      <div className="shrink-0 flex items-center gap-1 overflow-x-auto border-t border-amber-100/60 bg-amber-50/40 px-2.5 py-1.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="shrink-0 flex items-center gap-1.5 overflow-x-auto border-t border-amber-100/60 bg-amber-50/40 px-3 py-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {FAQ_TOPICS.map((topic) => (
           <button
             key={topic.id}
             type="button"
             onClick={() => enviarConsulta(topic.pregunta, topic)}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-200/90 bg-white px-2 py-0.5 text-[9.5px] font-semibold text-amber-950 shadow-2xs transition hover:border-amber-400 hover:bg-amber-50 cursor-pointer"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-200/90 bg-white px-2.5 py-1 text-[10.5px] font-semibold text-amber-950 shadow-2xs transition hover:border-amber-400 hover:bg-amber-50 cursor-pointer"
           >
             <span>{topic.chip}</span>
           </button>
         ))}
       </div>
 
-      {/* Input de consulta compacto */}
-      <div className="shrink-0 border-t border-slate-100 bg-white p-2 sm:p-2.5">
-        <form onSubmit={handleAskSubmit} className="flex items-center gap-1.5">
+      {/* Input de consulta compacto y cómodo */}
+      <div className="shrink-0 border-t border-slate-100 bg-white p-2.5 sm:p-3">
+        <form onSubmit={handleAskSubmit} className="flex items-center gap-2">
           <input
             type="text"
             value={consulta}
             onChange={(e) => setConsulta(e.target.value)}
             placeholder="Escribe tu consulta..."
-            className="h-7.5 flex-1 rounded-full border border-slate-200 bg-slate-50/80 px-2.5 text-[11px] text-slate-800 placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-1 focus:ring-amber-200 focus:outline-none"
+            className="h-8.5 flex-1 rounded-full border border-slate-200 bg-slate-50/80 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-1 focus:ring-amber-200 focus:outline-none"
           />
           <button
             type="submit"
             disabled={!consulta.trim()}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 text-slate-950 shadow-xs transition hover:brightness-105 disabled:bg-slate-200 disabled:bg-none disabled:text-slate-400 cursor-pointer disabled:cursor-default"
             aria-label="Consultar asistente"
           >
-            <Send className="h-3 w-3" />
+            <Send className="h-3.5 w-3.5" />
           </button>
         </form>
       </div>
