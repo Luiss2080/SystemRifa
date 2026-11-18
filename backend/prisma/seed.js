@@ -60,17 +60,17 @@ const PERMISOS_POR_ROL = {
 const TIPOS_NOTIFICACION = [
   {
     codigo: 'BIENVENIDA',
-    plantillaTitulo: '¡Bienvenido/a a Rifas Solidarias, {alias}!',
+    plantillaTitulo: '¡Bienvenido/a a Rifas Solidarias, {nombre} (@{alias})!',
     plantillaMensaje:
-      'Hola {alias}, tu cuenta fue creada correctamente. Ya puedes explorar rifas solidarias y participar.',
-    variables: ['alias']
+      'Hola {nombre} (@{alias}), tu cuenta fue creada correctamente. Ya puedes explorar rifas solidarias y participar.',
+    variables: ['nombre', 'alias']
   },
   {
     codigo: 'NUEVA_SOLICITUD',
     plantillaTitulo: 'Nueva solicitud de rifa: {nombreRifa}',
     plantillaMensaje:
-      'El usuario {alias} ha enviado una nueva solicitud para la rifa «{nombreRifa}».',
-    variables: ['alias', 'nombreRifa']
+      'El organizador {nombre} (@{alias}) ha enviado una nueva solicitud para la rifa «{nombreRifa}».',
+    variables: ['nombre', 'alias', 'nombreRifa']
   },
   {
     codigo: 'SOLICITUD_RECIBIDA',
@@ -118,8 +118,8 @@ const TIPOS_NOTIFICACION = [
     codigo: 'NUEVO_PAGO',
     plantillaTitulo: 'Nuevo pago pendiente en {nombreRifa}',
     plantillaMensaje:
-      'El usuario {alias} registró un pago de Bs {monto} para la rifa «{nombreRifa}» pendiente de verificación.',
-    variables: ['alias', 'monto', 'nombreRifa']
+      'El usuario {nombre} (@{alias}) registró un pago de Bs {monto} para la rifa «{nombreRifa}» pendiente de verificación.',
+    variables: ['nombre', 'alias', 'monto', 'nombreRifa']
   },
   {
     codigo: 'PAGO_CONFIRMADO',

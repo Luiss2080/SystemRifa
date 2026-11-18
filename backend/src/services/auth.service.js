@@ -59,6 +59,7 @@ export async function registrar(input) {
 
     // Regla 9: notificar post-commit sin propagar errores si falla
     await notificacionService.notificar('BIENVENIDA', [creado.usuarioId], {
+      nombre: creado.nombres ? `${creado.nombres} ${creado.apellidos || ''}`.trim() : creado.alias,
       alias: creado.alias
     });
 
