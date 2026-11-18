@@ -11,6 +11,8 @@ import { errorHandler } from './middlewares/errorHandler.js';
 
 export function createApp() {
   const app = express();
+  // Demo: detras de nginx y del balanceador de Render, la IP real viene en X-Forwarded-For
+  app.set('trust proxy', 'loopback');
 
   const allowedOrigins = env.CORS_ORIGIN.split(',').map((o) => o.trim());
 
