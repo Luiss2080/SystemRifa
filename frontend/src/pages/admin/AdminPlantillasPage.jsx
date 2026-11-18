@@ -436,75 +436,106 @@ export function AdminPlantillasPage() {
         description="Personaliza el título, cuerpo e insertables dinámicos de esta notificación automática."
         badge="Mensajería del sistema"
         icon={Mail}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-4xl"
       >
         {editando && (
-          <form onSubmit={handleGuardar} className="space-y-4">
-            <div className="space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs text-slate-600">
-              <p className="font-semibold text-slate-700">
-                Variables admitidas (clic para insertar en el mensaje):
-              </p>
-              {varsAdmitidas.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {varsAdmitidas.map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      onClick={() => insertarVariable(v)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 font-mono text-[11px] font-medium text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer"
-                    >
-                      <PlusCircle className="h-3 w-3" />
-                      {`{${v}}`}
-                    </button>
-                  ))}
+          <form onSubmit={handleGuardar} className="space-y-3.5">
+            <div className="grid gap-3.5 md:grid-cols-12 items-stretch">
+              {/* Columna izquierda: Formulario de edición compacto */}
+              <div className="space-y-2.5 md:col-span-7 flex flex-col justify-between">
+                <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-2.5 text-xs text-slate-600">
+                  <p className="mb-1.5 font-bold text-slate-700 text-[10.5px] uppercase tracking-wide">
+                    Variables admitidas (clic para insertar):
+                  </p>
+                  {varsAdmitidas.length ? (
+                    <div className="flex flex-wrap gap-1">
+                      {varsAdmitidas.map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => insertarVariable(v)}
+                          className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-0.5 font-mono text-[11px] font-semibold text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer transition shadow-2xs"
+                        >
+                          <PlusCircle className="h-3 w-3 text-emerald-500" />
+                          {`{${v}}`}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-[11px] text-slate-400">Sin variables requeridas</span>
+                  )}
                 </div>
-              ) : (
-                <span>Ninguna</span>
-              )}
+
+                <Input
+                  label="Plantilla del título"
+                  required
+                  value={form.plantillaTitulo}
+                  onChange={(e) => setForm((f) => ({ ...f, plantillaTitulo: e.target.value }))}
+                />
+
+                <Textarea
+                  label="Plantilla del mensaje"
+                  required
+                  rows={3}
+                  value={form.plantillaMensaje}
+                  onChange={(e) => setForm((f) => ({ ...f, plantillaMensaje: e.target.value }))}
+                />
+
+                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    checked={form.estaActivo}
+                    onChange={(e) => setForm((f) => ({ ...f, estaActivo: e.target.checked }))}
+                  />
+                  Notificación activa en el sistema
+                </label>
+              </div>
+
+              {/* Columna derecha: Previsualización en vivo horizontal */}
+              <div className="md:col-span-5 flex flex-col justify-between rounded-xl border border-emerald-200/80 bg-gradient-to-b from-emerald-50/60 via-slate-50/40 to-white p-3.5 shadow-2xs">
+                <div>
+                  <div className="flex items-center justify-between border-b border-emerald-200/60 pb-2 mb-2.5">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                      <Eye className="h-3.5 w-3.5 text-emerald-600" />
+                      Vista previa en vivo
+                    </span>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9.5px] font-bold ${
+                        form.estaActivo
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {form.estaActivo ? 'Activa' : 'Pausada'}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 rounded-lg border border-slate-200/60 bg-white p-3 shadow-2xs">
+                    <p className="text-xs font-extrabold text-slate-900 leading-snug">
+                      {previsualizarTexto(form.plantillaTitulo, varsAdmitidas) || (
+                        <span className="text-slate-400 italic">Escribe un título...</span>
+                      )}
+                    </p>
+                    <p className="text-[11.5px] leading-relaxed text-slate-600 break-words whitespace-pre-wrap">
+                      {previsualizarTexto(form.plantillaMensaje, varsAdmitidas) || (
+                        <span className="text-slate-400 italic">Escribe el cuerpo del mensaje...</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-lg border border-emerald-100 bg-emerald-50/70 p-2 text-[10.5px] text-emerald-900 leading-tight">
+                  💡 Las etiquetas entre llaves se reemplazarán automáticamente con los datos del usuario al emitirse la notificación.
+                </div>
+              </div>
             </div>
 
-            <Input
-              label="Plantilla del título"
-              required
-              value={form.plantillaTitulo}
-              onChange={(e) => setForm((f) => ({ ...f, plantillaTitulo: e.target.value }))}
-            />
-
-            <Textarea
-              label="Plantilla del mensaje"
-              required
-              rows={3}
-              value={form.plantillaMensaje}
-              onChange={(e) => setForm((f) => ({ ...f, plantillaMensaje: e.target.value }))}
-            />
-
-            <label className="flex items-center gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                checked={form.estaActivo}
-                onChange={(e) => setForm((f) => ({ ...f, estaActivo: e.target.checked }))}
-              />
-              Notificación activa
-            </label>
-
-            <div className="space-y-1 rounded-xl border border-emerald-200 bg-emerald-50/70 p-4">
-              <p className="flex items-center gap-1.5 text-xs font-bold uppercase text-emerald-800">
-                <Eye className="h-3.5 w-3.5" />
-                Vista previa con variables de ejemplo
-              </p>
-              <p className="text-sm font-bold text-slate-900">
-                {previsualizarTexto(form.plantillaTitulo, varsAdmitidas)}
-              </p>
-              <p className="text-xs text-slate-700">
-                {previsualizarTexto(form.plantillaMensaje, varsAdmitidas)}
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setEditando(null)}>
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+              <Button variant="secondary" size="sm" onClick={() => setEditando(null)}>
                 Cancelar
               </Button>
-              <Button type="submit" loading={saving}>
+              <Button type="submit" size="sm" loading={saving}>
                 Guardar plantilla
               </Button>
             </div>

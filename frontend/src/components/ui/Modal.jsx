@@ -39,7 +39,7 @@ export function Modal({
   tone = 'emerald',
   children,
   footer,
-  maxWidth = 'max-w-2xl',
+  maxWidth = 'max-w-3xl sm:max-w-4xl',
   closeOnBackdrop = true,
   accentClass,
 }) {
@@ -71,7 +71,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-3 backdrop-blur-xs sm:p-5"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -82,34 +82,34 @@ export function Modal({
       }}
     >
       <div
-        className={`animate-modal-in w-full ${maxWidth} overflow-hidden rounded-3xl border border-slate-200/90 bg-white/98 shadow-2xl ring-1 ring-slate-900/5 backdrop-blur-md`}
+        className={`animate-modal-in w-full ${maxWidth} overflow-hidden rounded-2xl border border-slate-200/90 bg-white/98 shadow-2xl ring-1 ring-slate-900/5 backdrop-blur-md`}
       >
         <div className={`h-1.5 w-full bg-gradient-to-r ${barClass}`} />
 
         <div
-          className={`flex items-start justify-between gap-4 border-b border-slate-100 bg-gradient-to-r ${palette.headerBg} px-6 py-4.5 sm:px-7`}
+          className={`flex items-start justify-between gap-3 border-b border-slate-100 bg-gradient-to-r ${palette.headerBg} px-5 py-3 sm:px-6 sm:py-3.5`}
         >
-          <div className="flex min-w-0 items-start gap-3.5 pr-2">
+          <div className="flex min-w-0 items-start gap-3 pr-2">
             {IconComp && (
               <span
-                className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ring-1 shadow-2xs ${palette.iconWrap}`}
+                className={`mt-0.5 flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl ring-1 shadow-2xs ${palette.iconWrap}`}
               >
-                <IconComp className="h-5 w-5" />
+                <IconComp className="h-4.5 w-4.5" />
               </span>
             )}
             <div className="min-w-0">
               {badge && (
                 <span
-                  className={`mb-1 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${palette.badge}`}
+                  className={`mb-0.5 inline-flex items-center rounded-full px-2 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider ${palette.badge}`}
                 >
                   {badge}
                 </span>
               )}
-              <h3 id={titleId} className="text-lg font-extrabold tracking-tight text-slate-900">
+              <h3 id={titleId} className="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">
                 {title}
               </h3>
               {description && (
-                <p className="mt-0.5 text-xs leading-relaxed text-slate-500 sm:text-sm">
+                <p className="mt-0.5 text-xs leading-normal text-slate-500">
                   {description}
                 </p>
               )}
@@ -119,17 +119,17 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 shadow-2xs ring-1 ring-slate-200/90 transition hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 shadow-2xs ring-1 ring-slate-200/90 transition hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer"
             aria-label="Cerrar ventana"
           >
-            <X className="h-4.5 w-4.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="max-h-[78vh] overflow-y-auto px-6 py-5 sm:px-7">{children}</div>
+        <div className="max-h-[82vh] overflow-y-auto px-5 py-4 sm:px-6 sm:py-4.5">{children}</div>
 
         {footer && (
-          <div className="flex flex-wrap items-center justify-end gap-2.5 border-t border-slate-100 bg-slate-50/85 px-6 py-4 sm:px-7">
+          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/85 px-5 py-2.5 sm:px-6 sm:py-3">
             {footer}
           </div>
         )}
@@ -147,7 +147,7 @@ export function ConfirmModal({
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
   variant = 'danger',
-  maxWidth = 'max-w-xl',
+  maxWidth = 'max-w-lg',
   loading = false,
   badge,
   children,
@@ -176,24 +176,24 @@ export function ConfirmModal({
       maxWidth={maxWidth}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button variant={variant} onClick={onConfirm} loading={loading}>
+          <Button variant={variant} size="sm" onClick={onConfirm} loading={loading}>
             {confirmText}
           </Button>
         </>
       }
     >
-      <div className="space-y-4">
+      <div className="space-y-3">
         {message && (
-          <div className="flex items-start gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4">
+          <div className="flex items-start gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3.5">
             <span
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ring-1 ${iconWrap}`}
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ring-1 ${iconWrap}`}
             >
-              <HeaderIcon className="h-4.5 w-4.5" />
+              <HeaderIcon className="h-4 w-4" />
             </span>
-            <p className="text-sm leading-relaxed text-slate-700">{message}</p>
+            <p className="text-xs leading-relaxed text-slate-700 sm:text-sm">{message}</p>
           </div>
         )}
         {children}
