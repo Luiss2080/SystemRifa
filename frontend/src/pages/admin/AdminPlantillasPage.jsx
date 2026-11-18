@@ -34,17 +34,49 @@ import {
 } from '../../components/panel/PanelKit.jsx';
 
 const EJEMPLOS_VARIABLES = {
+  nombre: 'Ana María Rojas',
   alias: 'AnaSolidaria',
   nombreRifa: 'Rifa Pro Hogar Infantil',
   estado: 'PAGO_CONFIRMADO',
-  observacion: 'Comprobante validado',
-  numeros: '12, 24',
+  observacion: 'Comprobante verificado con éxito',
+  numeros: '12, 24, 77',
   minutos: '15',
   monto: '50.00',
   motivo: 'Referencia bancaria no coincide',
-  numeroGanador: '24',
+  numeroGanador: '77',
   premio: 'Bicicleta Montañera',
 };
+
+function getEventoConfig(codigo = '') {
+  if (codigo.includes('APROBADA') || codigo.includes('CONFIRMADO') || codigo.includes('GANADOR')) {
+    return {
+      badge: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+      iconBox: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+    };
+  }
+  if (codigo.includes('RECHAZAD') || codigo.includes('VENCID') || codigo.includes('CANCEL')) {
+    return {
+      badge: 'border-rose-200 bg-rose-50 text-rose-800',
+      iconBox: 'bg-rose-50 text-rose-700 border border-rose-200',
+    };
+  }
+  if (codigo.includes('BIENVENIDA')) {
+    return {
+      badge: 'border-indigo-200 bg-indigo-50 text-indigo-800',
+      iconBox: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+    };
+  }
+  if (codigo.includes('TICKET') || codigo.includes('RESERV')) {
+    return {
+      badge: 'border-amber-200 bg-amber-50 text-amber-800',
+      iconBox: 'bg-amber-50 text-amber-700 border border-amber-200',
+    };
+  }
+  return {
+    badge: 'border-sky-200 bg-sky-50 text-sky-800',
+    iconBox: 'bg-sky-50 text-sky-700 border border-sky-200',
+  };
+}
 
 function previsualizarTexto(plantilla = '', variables = []) {
   return plantilla.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, key) => {

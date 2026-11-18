@@ -305,15 +305,16 @@ export function RowActionButton({
   disabled = false,
 }) {
   const tones = {
-    view: 'border-slate-200/90 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900',
+    view: 'border-sky-200/90 bg-sky-50/80 text-sky-800 hover:bg-sky-100 hover:border-sky-300 hover:text-sky-900',
+    edit: 'border-teal-200/90 bg-teal-50/80 text-teal-800 hover:bg-teal-100 hover:border-teal-300 hover:text-teal-900',
     primary:
-      'border-slate-200/90 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700',
+      'border-emerald-200/90 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-300 hover:text-emerald-900',
     amber:
-      'border-slate-200/90 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800',
+      'border-amber-200/90 bg-amber-50/80 text-amber-800 hover:bg-amber-100 hover:border-amber-300 hover:text-amber-900',
     danger:
-      'border-slate-200/90 bg-white text-slate-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700',
+      'border-rose-200/90 bg-rose-50/80 text-rose-700 hover:bg-rose-100 hover:border-rose-300 hover:text-rose-800',
     neutral:
-      'border-slate-200/90 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900',
+      'border-slate-200/90 bg-slate-50/90 text-slate-700 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-900',
   };
 
   return (
@@ -323,7 +324,7 @@ export function RowActionButton({
       disabled={disabled}
       title={title || label}
       aria-label={title || label}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-lg border h-8 ${label ? 'px-2.5' : 'w-8'} text-xs font-semibold shadow-2xs transition disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer ${
+      className={`inline-flex items-center justify-center gap-1.5 rounded-lg border h-8 ${label ? 'px-2.5' : 'w-8'} text-xs font-bold shadow-2xs transition duration-150 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer ${
         tones[tone] || tones.neutral
       }`}
     >
