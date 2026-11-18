@@ -136,6 +136,7 @@ async function ensureRifaActiva({
 }
 
 async function main() {
+  await runSeed(prisma);
   const demoPassword = process.env.SEED_DEMO_PASSWORD || 'Demo1234!';
   const passwordHash = await bcrypt.hash(demoPassword, 10);
 
