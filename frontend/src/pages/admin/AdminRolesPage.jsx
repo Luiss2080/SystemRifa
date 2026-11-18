@@ -426,25 +426,37 @@ export function AdminRolesPage() {
         description="Define el identificador único y propósito del nuevo rol en el sistema RBAC."
         badge="Seguridad RBAC"
         icon={Shield}
+        maxWidth="max-w-3xl"
       >
-        <form onSubmit={handleCrearRol} className="space-y-4">
-          <Input
-            label="Nombre del rol"
-            required
-            placeholder="Ej. AUDITOR_EXTERNO"
-            value={formRol.nombre}
-            onChange={(e) => setFormRol((f) => ({ ...f, nombre: e.target.value }))}
-          />
-          <Textarea
-            label="Descripción"
-            value={formRol.descripcion}
-            onChange={(e) => setFormRol((f) => ({ ...f, descripcion: e.target.value }))}
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={() => setModalRol(false)}>
+        <form onSubmit={handleCrearRol} className="space-y-3.5">
+          <div className="grid gap-3.5 sm:grid-cols-2 items-start">
+            <div className="space-y-2.5">
+              <Input
+                label="Nombre del rol"
+                required
+                placeholder="Ej. AUDITOR_EXTERNO"
+                value={formRol.nombre}
+                onChange={(e) => setFormRol((f) => ({ ...f, nombre: e.target.value }))}
+              />
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-2.5 text-[11px] text-slate-600 leading-relaxed">
+                🛡️ Los nombres de roles deben ser descriptivos en mayúsculas. Podrás asignar permisos detallados tras su creación.
+              </div>
+            </div>
+
+            <Textarea
+              label="Descripción del rol"
+              rows={3}
+              placeholder="Explica qué alcance de gestión o responsabilidades tendrá este perfil..."
+              value={formRol.descripcion}
+              onChange={(e) => setFormRol((f) => ({ ...f, descripcion: e.target.value }))}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModalRol(false)}>
               Cancelar
             </Button>
-            <Button type="submit" loading={creandoRol}>
+            <Button type="submit" size="sm" loading={creandoRol}>
               Crear rol
             </Button>
           </div>
@@ -455,13 +467,18 @@ export function AdminRolesPage() {
         open={Boolean(rolSeleccionadoActual)}
         onClose={() => setRolEditando(null)}
         title={`Permisos del rol · ${rolSeleccionadoActual?.nombre || ''}`}
-        description={`Activos actualmente: ${rolSeleccionadoActual?.permisos?.length || 0} de ${permisos.length}`}
+        description={`Activos: ${rolSeleccionadoActual?.permisos?.length || 0} de ${permisos.length} permisos del sistema`}
         badge="Matriz de permisos"
         icon={KeyRound}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-4xl"
+        footer={
+          <Button variant="secondary" size="sm" onClick={() => setRolEditando(null)}>
+            Listo
+          </Button>
+        }
       >
         {rolSeleccionadoActual && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="relative">
               <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
@@ -469,17 +486,17 @@ export function AdminRolesPage() {
                 placeholder="Filtrar permisos (ej. pagos, usuarios, sorteos)..."
                 value={filtroPermiso}
                 onChange={(e) => setFiltroPermiso(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50/70 py-2 pr-3 pl-9 text-sm focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-1.5 pr-3 pl-9 text-xs focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
               />
             </div>
 
-            <div className="max-h-96 space-y-4 overflow-y-auto pr-1">
+            <div className="max-h-[58vh] space-y-3 overflow-y-auto pr-1">
               {permisosAgrupados.map(([recurso, lista]) => (
-                <div key={recurso} className="space-y-1.5">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                <div key={recurso} className="space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">
                     {recurso}
                   </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
                     {lista.map((permiso) => {
                       const asignado = permisosDeRolSet.has(permiso.permisoId);
                       return (
@@ -487,19 +504,21 @@ export function AdminRolesPage() {
                           key={permiso.permisoId}
                           type="button"
                           onClick={() => handleTogglePermiso(rolSeleccionadoActual, permiso, asignado)}
-                          className={`flex items-center justify-between rounded-xl border px-3 py-2 text-left text-xs transition cursor-pointer ${
+                          className={`flex items-center justify-between rounded-xl border px-2.5 py-1.5 text-left text-xs transition cursor-pointer ${
                             asignado
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-900'
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-900 shadow-2xs'
                               : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                           }`}
                         >
-                          <div>
-                            <p className="font-bold">
+                          <div className="min-w-0 pr-1.5">
+                            <p className="font-extrabold text-[11px] truncate">
                               {permiso.recurso}:{permiso.accion}
                             </p>
-                            <p className="text-[11px] opacity-75">{permiso.nombre}</p>
+                            <p className="text-[10px] text-slate-500 truncate">{permiso.nombre}</p>
                           </div>
-                          <span className="font-bold">{asignado ? '✓' : '+'}</span>
+                          <span className={`text-xs font-black ${asignado ? 'text-emerald-700' : 'text-slate-400'}`}>
+                            {asignado ? '✓' : '+'}
+                          </span>
                         </button>
                       );
                     })}

@@ -413,33 +413,43 @@ export function AdminSolicitudesPage() {
         badge="Flujo de solicitud"
         icon={Edit3}
         tone="slate"
+        maxWidth="max-w-3xl"
       >
-        <form onSubmit={handleCambiarEstado} className="space-y-4">
-          <Select
-            label="Nuevo estado"
-            value={nuevoEstado}
-            onChange={(e) => setNuevoEstado(e.target.value)}
-            options={[
-              { value: 'ESPERANDO_PAGO', label: 'ESPERANDO_PAGO' },
-              { value: 'PAGO_CONFIRMADO', label: 'PAGO_CONFIRMADO' },
-              { value: 'RECHAZADA', label: 'RECHAZADA' },
-            ]}
-          />
-          <Input
-            label="Referencia de pago (si aplica)"
-            value={referenciaPago}
-            onChange={(e) => setReferenciaPago(e.target.value)}
-          />
-          <Textarea
-            label="Observación (obligatoria al rechazar)"
-            value={observacionEstado}
-            onChange={(e) => setObservacionEstado(e.target.value)}
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" onClick={() => setModalEstado(null)}>
+        <form onSubmit={handleCambiarEstado} className="space-y-3.5">
+          <div className="grid gap-3.5 sm:grid-cols-2 items-start">
+            <div className="space-y-2.5">
+              <Select
+                label="Nuevo estado"
+                value={nuevoEstado}
+                onChange={(e) => setNuevoEstado(e.target.value)}
+                options={[
+                  { value: 'ESPERANDO_PAGO', label: 'ESPERANDO_PAGO' },
+                  { value: 'PAGO_CONFIRMADO', label: 'PAGO_CONFIRMADO' },
+                  { value: 'RECHAZADA', label: 'RECHAZADA' },
+                ]}
+              />
+              <Input
+                label="Referencia de pago (si aplica)"
+                placeholder="N° comprobante o nota bancaria"
+                value={referenciaPago}
+                onChange={(e) => setReferenciaPago(e.target.value)}
+              />
+            </div>
+            <div>
+              <Textarea
+                label="Observación (obligatoria al rechazar)"
+                placeholder="Motivo del cambio de estado o justificación de rechazo..."
+                rows={3}
+                value={observacionEstado}
+                onChange={(e) => setObservacionEstado(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <Button variant="secondary" size="sm" onClick={() => setModalEstado(null)}>
               Cancelar
             </Button>
-            <Button type="submit" loading={procesandoEstado}>
+            <Button type="submit" size="sm" loading={procesandoEstado}>
               Guardar estado
             </Button>
           </div>
@@ -454,71 +464,102 @@ export function AdminSolicitudesPage() {
         description="Puedes ajustar los valores finales antes de crear la rifa y generar sus tickets."
         badge="Aprobación y publicación"
         icon={Sparkles}
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-4xl"
       >
         {modalAprobar && (
-          <form onSubmit={handleAprobar} className="space-y-4">
-            <Input
-              label="Nombre definitivo"
-              required
-              value={formAprobar.nombre}
-              onChange={(e) => setFormAprobar((f) => ({ ...f, nombre: e.target.value }))}
-            />
-            <Textarea
-              label="Descripción"
-              value={formAprobar.descripcion}
-              onChange={(e) => setFormAprobar((f) => ({ ...f, descripcion: e.target.value }))}
-            />
-            <Select
-              label="Causa solidaria"
-              placeholder="Sin causa"
-              options={causasOpciones}
-              value={formAprobar.causaId}
-              onChange={(e) => setFormAprobar((f) => ({ ...f, causaId: e.target.value }))}
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                label="Precio ticket (Bs)"
-                type="number"
-                step="0.01"
-                required
-                value={formAprobar.precioTicket}
-                onChange={(e) => setFormAprobar((f) => ({ ...f, precioTicket: e.target.value }))}
-              />
-              <Input
-                label="Cantidad de tickets"
-                type="number"
-                required
-                value={formAprobar.cantidadTickets}
-                onChange={(e) =>
-                  setFormAprobar((f) => ({ ...f, cantidadTickets: e.target.value }))
-                }
-              />
-              <Input
-                label="Inicio (La Paz)"
-                type="datetime-local"
-                required
-                value={formAprobar.fechaInicio}
-                onChange={(e) => setFormAprobar((f) => ({ ...f, fechaInicio: e.target.value }))}
-              />
-              <Input
-                label="Fin (La Paz)"
-                type="datetime-local"
-                required
-                value={formAprobar.fechaFin}
-                onChange={(e) => setFormAprobar((f) => ({ ...f, fechaFin: e.target.value }))}
-              />
+          <form onSubmit={handleAprobar} className="space-y-3.5">
+            <div className="grid gap-3.5 md:grid-cols-12 items-start">
+              {/* Columna izquierda: Datos principales y parámetros numéricos */}
+              <div className="space-y-2.5 md:col-span-7">
+                <Input
+                  label="Nombre definitivo"
+                  required
+                  value={formAprobar.nombre}
+                  onChange={(e) => setFormAprobar((f) => ({ ...f, nombre: e.target.value }))}
+                />
+                <Select
+                  label="Causa solidaria"
+                  placeholder="Sin causa"
+                  options={causasOpciones}
+                  value={formAprobar.causaId}
+                  onChange={(e) => setFormAprobar((f) => ({ ...f, causaId: e.target.value }))}
+                />
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <Input
+                    label="Precio ticket (Bs)"
+                    type="number"
+                    step="0.01"
+                    min="1"
+                    required
+                    value={formAprobar.precioTicket}
+                    onChange={(e) => setFormAprobar((f) => ({ ...f, precioTicket: e.target.value }))}
+                  />
+                  <Input
+                    label="Cantidad de tickets"
+                    type="number"
+                    min="10"
+                    required
+                    value={formAprobar.cantidadTickets}
+                    onChange={(e) =>
+                      setFormAprobar((f) => ({ ...f, cantidadTickets: e.target.value }))
+                    }
+                  />
+                </div>
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <Input
+                    label="Inicio (La Paz)"
+                    type="datetime-local"
+                    required
+                    value={formAprobar.fechaInicio}
+                    onChange={(e) => setFormAprobar((f) => ({ ...f, fechaInicio: e.target.value }))}
+                  />
+                  <Input
+                    label="Fin (La Paz)"
+                    type="datetime-local"
+                    required
+                    value={formAprobar.fechaFin}
+                    onChange={(e) => setFormAprobar((f) => ({ ...f, fechaFin: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              {/* Columna derecha: Descripciones y resumen estimado */}
+              <div className="space-y-2.5 md:col-span-5 flex flex-col justify-between">
+                <Textarea
+                  label="Descripción de la campaña"
+                  rows={2}
+                  value={formAprobar.descripcion}
+                  onChange={(e) => setFormAprobar((f) => ({ ...f, descripcion: e.target.value }))}
+                />
+                <Textarea
+                  label="Observación de aprobación"
+                  rows={2}
+                  placeholder="Nota interna de auditoría..."
+                  value={formAprobar.observacion}
+                  onChange={(e) => setFormAprobar((f) => ({ ...f, observacion: e.target.value }))}
+                />
+                <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-3 text-xs">
+                  <p className="font-bold text-emerald-950 uppercase text-[10px] tracking-wider mb-1">
+                    Proyección de recaudación
+                  </p>
+                  <div className="flex items-center justify-between text-slate-700">
+                    <span>Meta máxima bruta:</span>
+                    <span className="font-extrabold text-emerald-700 text-sm">
+                      Bs {(Number(formAprobar.precioTicket || 0) * Number(formAprobar.cantidadTickets || 0)).toLocaleString('es-BO', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[10.5px] text-slate-500">
+                    Se generarán {Number(formAprobar.cantidadTickets || 0)} tickets correlativos al confirmar.
+                  </p>
+                </div>
+              </div>
             </div>
-            <Textarea
-              label="Observación de aprobación"
-              value={formAprobar.observacion}
-              onChange={(e) => setFormAprobar((f) => ({ ...f, observacion: e.target.value }))}
-            />
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setModalAprobar(null)}>
+
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+              <Button variant="secondary" size="sm" onClick={() => setModalAprobar(null)}>
                 Cancelar
               </Button>
-              <Button type="submit" loading={aprobando}>
+              <Button type="submit" size="sm" loading={aprobando}>
                 Aprobar y generar rifa
               </Button>
             </div>
