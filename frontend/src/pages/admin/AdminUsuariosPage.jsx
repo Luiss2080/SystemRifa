@@ -206,14 +206,14 @@ export function AdminUsuariosPage() {
           (r.alias || 'U').slice(0, 2).toUpperCase();
         return (
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-200">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-700 border border-slate-200/90 shadow-2xs">
               {iniciales}
             </span>
             <div>
-              <p className="font-bold text-slate-900">
+              <p className="font-bold text-slate-900 leading-tight">
                 {r.nombres} {r.apellidos}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 mt-0.5">
                 ID #{r.usuarioId} · @{r.alias}
               </p>
             </div>
@@ -227,8 +227,8 @@ export function AdminUsuariosPage() {
       icon: Mail,
       render: (r) => (
         <div>
-          <p className="font-medium text-slate-800">{r.email}</p>
-          <p className="text-xs text-slate-400">{r.telefono || 'Sin teléfono'}</p>
+          <p className="font-semibold text-slate-800 text-xs sm:text-sm">{r.email}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{r.telefono || 'Sin teléfono'}</p>
         </div>
       ),
     },
@@ -238,11 +238,23 @@ export function AdminUsuariosPage() {
       icon: Shield,
       render: (r) => (
         <div className="flex flex-wrap gap-1">
-          {(r.roles || []).map((rol) => (
-            <Badge key={rol} color={rol === 'ADMINISTRADOR' ? 'emerald' : 'indigo'}>
-              {rol}
-            </Badge>
-          ))}
+          {(r.roles || []).map((rol) => {
+            const isAdm = rol === 'ADMINISTRADOR';
+            const isOrg = rol === 'ORGANIZADOR';
+            const cls = isAdm
+              ? 'border-slate-800 bg-slate-800 text-white font-bold'
+              : isOrg
+                ? 'border-teal-200 bg-teal-50 text-teal-800 font-semibold'
+                : 'border-slate-200 bg-slate-50 text-slate-700 font-medium';
+            return (
+              <span
+                key={rol}
+                className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10.5px] uppercase tracking-wider ${cls}`}
+              >
+                {rol}
+              </span>
+            );
+          })}
         </div>
       ),
     },
@@ -251,7 +263,20 @@ export function AdminUsuariosPage() {
       label: 'Estado',
       icon: CheckCircle2,
       render: (r) => (
-        <Badge color={r.activo ? 'emerald' : 'rose'}>{r.activo ? 'Activo' : 'Inactivo'}</Badge>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold border ${
+            r.activo
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              : 'border-slate-200 bg-slate-50 text-slate-500'
+          }`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              r.activo ? 'bg-emerald-500' : 'bg-slate-400'
+            }`}
+          />
+          {r.activo ? 'Activo' : 'Inactivo'}
+        </span>
       ),
     },
     {

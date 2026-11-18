@@ -1,10 +1,10 @@
 const VARIANTES_POR_COLOR = {
-  emerald: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-  amber: 'bg-amber-50 text-amber-700 ring-amber-600/20',
-  rose: 'bg-rose-50 text-rose-700 ring-rose-600/20',
-  sky: 'bg-sky-50 text-sky-700 ring-sky-600/20',
-  indigo: 'bg-indigo-50 text-indigo-700 ring-indigo-600/20',
-  slate: 'bg-slate-100 text-slate-700 ring-slate-500/20',
+  emerald: 'border border-emerald-200/90 bg-emerald-50/90 text-emerald-800 font-semibold',
+  amber: 'border border-amber-200/90 bg-amber-50/90 text-amber-800 font-semibold',
+  rose: 'border border-rose-200/90 bg-rose-50/90 text-rose-800 font-semibold',
+  sky: 'border border-sky-200/90 bg-sky-50/90 text-sky-800 font-semibold',
+  indigo: 'border border-slate-200 bg-slate-100 text-slate-700 font-semibold',
+  slate: 'border border-slate-200 bg-slate-100 text-slate-700 font-semibold',
 };
 
 const MAPA_ESTADOS = {
@@ -33,7 +33,7 @@ export function Badge({ children, color, estado, className = '' }) {
   const estilos = VARIANTES_POR_COLOR[colorFinal] || VARIANTES_POR_COLOR.slate;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${estilos} ${className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs ${estilos} ${className}`}
     >
       {children || estado}
     </span>
