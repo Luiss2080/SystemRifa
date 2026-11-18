@@ -368,19 +368,24 @@ export function CatalogoPage({ mode = 'landing' }) {
       )}
 
       <section id="catalogo-activo" className="scroll-mt-24 space-y-3 sm:space-y-3.5">
-        {/* Fila superior: Miga de pan interactiva + Indicador de rifas en vivo */}
+        {/* Fila superior: Indicador de rifas en vivo */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/60 pb-2">
-          <Breadcrumbs
-            items={[
-              { label: 'Inicio', href: '/' },
-              {
-                label: 'Catálogo de rifas',
-                href: esVistaLanding ? '#catalogo-activo' : '/explorar',
-                onClick: causaActivaObj ? () => seleccionarCausa('') : undefined,
-              },
-              ...(causaActivaObj ? [{ label: causaActivaObj.nombre }] : []),
-            ]}
-          />
+          {causaActivaObj ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200">
+              <HeartHandshake className="h-3.5 w-3.5 text-emerald-600" />
+              Filtrando por causa: {causaActivaObj.nombre}
+              <button
+                type="button"
+                onClick={() => seleccionarCausa('')}
+                className="hover:text-emerald-950 cursor-pointer ml-1"
+                title="Quitar causa"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ) : (
+            <div />
+          )}
 
           <span className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/80 shadow-2xs">
             <Ticket className="h-3.5 w-3.5 text-emerald-600" />
