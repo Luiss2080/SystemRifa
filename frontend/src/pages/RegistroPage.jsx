@@ -338,7 +338,12 @@ export function RegistroPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full shadow-md shadow-emerald-600/20" size="lg" loading={loading}>
+            <Button
+              type="submit"
+              className="mt-3 w-full bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold shadow-lg shadow-emerald-700/25 transition duration-200 hover:-translate-y-0.5 cursor-pointer"
+              size="lg"
+              loading={loading}
+            >
               Crear mi cuenta solidaria
               <ArrowRight className="h-4 w-4" />
             </Button>
