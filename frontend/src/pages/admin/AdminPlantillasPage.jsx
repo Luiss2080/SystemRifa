@@ -261,19 +261,30 @@ export function AdminPlantillasPage() {
 
   async function handleGuardar(e) {
     e.preventDefault();
-    if (!editando) return;
+    if (!modalPlantilla) return;
     setSaving(true);
     try {
-      await actualizarTipoNotificacionApi(editando.tipoNotificacionId, {
-        plantillaTitulo: form.plantillaTitulo.trim(),
-        plantillaMensaje: form.plantillaMensaje.trim(),
-        estaActivo: form.estaActivo,
-      });
+      if (modalPlantilla.modo === 'crear') {
+        await crearTipoNotificacionApi({
+          codigo: form.codigo.trim().toUpperCase(),
+          plantillaTitulo: form.plantillaTitulo.trim(),
+          plantillaMensaje: form.plantillaMensaje.trim(),
+          variables: form.variables,
+          estaActivo: form.estaActivo,
+        });
+        toast.success('Plantilla creada', 'El nuevo evento de notificación fue registrado con éxito.');
+      } else {
+        await actualizarTipoNotificacionApi(modalPlantilla.tipo.tipoNotificacionId, {
+          plantillaTitulo: form.plantillaTitulo.trim(),
+          plantillaMensaje: form.plantillaMensaje.trim(),
+          estaActivo: form.estaActivo,
+        });
+        toast.success('Plantilla guardada', 'El formato del mensaje se actualizó correctamente.');
+      }
       queryClient.invalidateQueries({ queryKey: ['admin-plantillas'] });
-      toast.success('Plantilla guardada', 'El formato del mensaje se actualizó correctamente.');
-      setEditando(null);
+      setModalPlantilla(null);
     } catch (err) {
-      toast.error('Error al guardar', extraerErrorApi(err).message);
+      toast.error('Error al guardar plantilla', extraerErrorApi(err).message);
     } finally {
       setSaving(false);
     }
@@ -441,33 +452,39 @@ export function AdminPlantillasPage() {
           },
         ]}
         rightActions={
-          <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
-            <button
-              type="button"
-              onClick={() => setVista('tabla')}
-              className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
-                vista === 'tabla'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-              title="Vista de tabla"
-            >
-              <List className="h-4 w-4" />
-              <span>Tabla</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setVista('tarjetas')}
-              className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
-                vista === 'tarjetas'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-              title="Vista de tarjetas"
-            >
-              <LayoutGrid className="h-4 w-4" />
-              <span>Tarjetas</span>
-            </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" onClick={abrirCrear}>
+              <Plus className="h-4 w-4" />
+              Nueva plantilla
+            </Button>
+            <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+              <button
+                type="button"
+                onClick={() => setVista('tabla')}
+                className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
+                  vista === 'tabla'
+                    ? 'bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="Vista de tabla"
+              >
+                <List className="h-4 w-4" />
+                <span>Tabla</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setVista('tarjetas')}
+                className={`flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition cursor-pointer ${
+                  vista === 'tarjetas'
+                    ? 'bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+                title="Vista de tarjetas"
+              >
+                <LayoutGrid className="h-4 w-4" />
+                <span>Tarjetas</span>
+              </button>
+            </div>
           </div>
         }
       />
