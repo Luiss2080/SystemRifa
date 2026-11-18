@@ -353,6 +353,20 @@ export function AdminCausasPage() {
             ],
           },
         ]}
+        rightActions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link to="/causas">
+              <Button variant="secondary" size="sm">
+                <ExternalLink className="h-4 w-4" />
+                Vista pública
+              </Button>
+            </Link>
+            <Button size="sm" onClick={abrirCrear}>
+              <Plus className="h-4 w-4" />
+              Nueva causa
+            </Button>
+          </div>
+        }
       />
 
       <PanelSectionHeader
