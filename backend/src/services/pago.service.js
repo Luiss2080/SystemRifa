@@ -80,6 +80,7 @@ export async function registrarPago(usuario, { rifaId, ticketIds, metodo, refere
   });
 
   await notificacionService.notificarConPermiso('NUEVO_PAGO', 'pagos:verificar', {
+    nombre: usuario.nombres ? `${usuario.nombres} ${usuario.apellidos || ''}`.trim() : usuario.alias,
     alias: usuario.alias,
     monto,
     nombreRifa: rifa.nombre

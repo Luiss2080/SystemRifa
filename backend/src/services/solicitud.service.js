@@ -72,6 +72,7 @@ export async function crearSolicitud(usuario, input) {
     nombreRifa: creada.nombre
   });
   await notificacionService.notificarConPermiso('NUEVA_SOLICITUD', 'solicitudes:revisar', {
+    nombre: usuario.nombres ? `${usuario.nombres} ${usuario.apellidos || ''}`.trim() : usuario.alias,
     alias: usuario.alias,
     nombreRifa: creada.nombre
   });
