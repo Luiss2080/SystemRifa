@@ -114,109 +114,108 @@ export function SplashOverlay({ cargando = false }) {
       role="status"
       aria-live="polite"
       aria-label="Cargando Rifas Solidarias"
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-emerald-50/50 to-teal-50/60 px-4 backdrop-blur-md transition-opacity duration-350 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-emerald-50/70 to-teal-50/80 px-6 select-none transition-opacity duration-350 ${
         fading ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      {/* Halos atmosféricos suaves con los colores verde y amarillo de la web */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-amber-200/35 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-teal-100/30 blur-3xl" />
+      {/* Halos atmosféricos suaves en pantalla completa */}
+      <div className="pointer-events-none absolute -top-32 -left-32 h-[32rem] w-[32rem] rounded-full bg-emerald-200/45 blur-3xl animate-float-slow" />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[32rem] w-[32rem] rounded-full bg-amber-200/40 blur-3xl animate-float-slower" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[26rem] rounded-full bg-teal-100/40 blur-3xl" />
 
-      {/* Anillos orbitales geométricos sutiles */}
+      {/* Anillos orbitales concéntricos gigantes de fondo */}
       <svg
-        className="pointer-events-none absolute h-[600px] w-[600px] text-emerald-600/[0.07] animate-spin-slow"
-        viewBox="0 0 400 400"
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[750px] w-[750px] text-emerald-600/[0.07] animate-spin-slow"
+        viewBox="0 0 500 500"
         fill="none"
       >
-        <circle cx="200" cy="200" r="190" stroke="currentColor" strokeWidth="1.5" strokeDasharray="8 8" />
-        <circle cx="200" cy="200" r="140" stroke="currentColor" strokeWidth="1" />
-        <circle cx="200" cy="200" r="90" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+        <circle cx="250" cy="250" r="235" stroke="currentColor" strokeWidth="1.5" strokeDasharray="10 10" />
+        <circle cx="250" cy="250" r="175" stroke="currentColor" strokeWidth="1" />
+        <circle cx="250" cy="250" r="115" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 8" />
       </svg>
 
-      {/* Tarjeta central limpia, blanca y elegante */}
-      <div className="relative mx-auto flex w-full max-w-sm sm:max-w-md flex-col items-center rounded-[32px] border border-emerald-100/90 bg-white/95 p-7 sm:p-9 text-center shadow-2xl shadow-emerald-950/10 backdrop-blur-md ring-1 ring-slate-900/5 overflow-hidden">
+      {/* Contenido en pantalla completa sin contenedor ni recuadros */}
+      <div className="relative z-10 flex flex-col items-center text-center max-w-xl w-full px-4">
         
-        {/* Barra superior con gradiente de la marca */}
-        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400" />
-
         {/* Badge superior temático */}
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-3 py-1 text-[10.5px] font-extrabold uppercase tracking-wider text-emerald-800">
-          <span className="relative flex h-2 w-2">
+        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/90 bg-white/80 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-emerald-800 shadow-xs backdrop-blur-sm">
+          <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-80" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
           </span>
           <span>Bolillero Digital & Sorteos Auditados</span>
         </div>
 
         {/* Animación central de rifas: bolillero, ticket y bolitas numeradas de sorteo */}
-        <div className="relative my-5 flex h-28 w-28 items-center justify-center">
+        <div className="relative my-7 flex h-36 w-36 sm:h-40 sm:w-40 items-center justify-center">
           {/* Anillo exterior punteado de bolillero */}
           <span className="animate-spin-slow motion-reduce:animate-none absolute inset-0 rounded-full border-2 border-dashed border-emerald-300" />
           
           {/* Anillo interior giratorio inverso */}
-          <span className="animate-spin-reverse motion-reduce:animate-none absolute inset-2 rounded-full border-2 border-transparent border-t-amber-400 border-r-emerald-500" />
+          <span className="animate-spin-reverse motion-reduce:animate-none absolute inset-3 rounded-full border-2 border-transparent border-t-amber-400 border-r-emerald-500" />
 
           {/* Bolitas numeradas del sorteo orbitando el centro */}
-          <span className="absolute -top-1 left-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-amber-500 text-[10px] font-black text-slate-950 shadow-md ring-2 ring-white animate-bounce">
+          <span className="absolute -top-1 left-4 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-[11px] font-black text-slate-950 shadow-md ring-2 ring-white animate-bounce">
             77
           </span>
-          <span className="absolute top-2 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[10px] font-black text-white shadow-md ring-2 ring-white animate-pulse">
+          <span className="absolute top-4 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-black text-white shadow-md ring-2 ring-white animate-pulse">
             15
           </span>
-          <span className="absolute -bottom-1 -left-1 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 text-[10px] font-black text-white shadow-md ring-2 ring-white">
+          <span className="absolute -bottom-1 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 text-[11px] font-black text-white shadow-md ring-2 ring-white">
             09
           </span>
-          <span className="absolute -bottom-1 right-3 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-amber-500 text-[10px] font-black text-slate-950 shadow-md ring-2 ring-white animate-bounce">
+          <span className="absolute -bottom-1 right-4 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-400 text-[11px] font-black text-slate-950 shadow-md ring-2 ring-white animate-bounce">
             ★
           </span>
 
           {/* Núcleo central con Ticket de la Suerte */}
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-xl shadow-emerald-700/25 ring-4 ring-emerald-50">
-            <Ticket className="h-7 w-7 text-amber-300 drop-shadow-xs" />
+          <div className="relative flex h-18 w-18 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-xl shadow-emerald-700/25 ring-4 ring-white/90">
+            <Ticket className="h-9 w-9 text-amber-300 drop-shadow-xs" />
           </div>
 
-          <Sparkles className="absolute -top-1.5 -right-1.5 h-4 w-4 animate-bounce text-amber-400" />
+          <Sparkles className="absolute -top-1.5 -right-1.5 h-5 w-5 animate-bounce text-amber-400" />
         </div>
 
         {/* Título y subtítulo con la identidad de la web */}
-        <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-slate-900">
           RIFAS <span className="text-emerald-700">SOLIDARIAS</span>
-        </h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">
+        </h1>
+        <p className="mt-2 text-xs sm:text-sm font-semibold text-slate-500">
           Premios transparentes · Apoyo a causas reales
         </p>
 
-        {/* Progreso dinámico con mensaje del sorteo y porcentaje */}
-        <div className="mt-5 w-full space-y-2">
-          <div className="flex items-center justify-between text-[11px] font-bold">
-            <span className="text-emerald-800 truncate max-w-[80%] text-left">
+        {/* Progreso dinámico en pantalla completa */}
+        <div className="mt-7 w-full max-w-md space-y-2.5">
+          <div className="flex items-center justify-between text-xs sm:text-sm font-bold">
+            <span className="text-emerald-900 truncate max-w-[80%] text-left">
               {etapaTexto}
             </span>
             <span className="font-mono text-emerald-700 font-extrabold">{progreso}%</span>
           </div>
 
-          <div className="relative h-2 w-full overflow-hidden rounded-full bg-emerald-100/60 p-0.5 border border-emerald-200/60">
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-emerald-100/70 p-0.5 border border-emerald-200/70 shadow-inner">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 transition-[width] duration-150 ease-out"
+              className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 transition-[width] duration-150 ease-out shadow-xs"
               style={{ width: `${progreso}%` }}
             />
           </div>
         </div>
 
-        {/* Pilares clave del sistema de rifas */}
-        <div className="mt-5 grid grid-cols-3 gap-2 w-full pt-4 border-t border-slate-100">
+        {/* Pilares clave del sistema en línea limpia */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-center">
           <div className="flex flex-col items-center">
-            <span className="text-[11px] font-extrabold text-emerald-700">15 Minutos</span>
-            <span className="text-[9.5px] font-medium text-slate-400">Reserva de boletos</span>
+            <span className="text-xs sm:text-sm font-extrabold text-emerald-700">15 Minutos</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500">Reserva de boletos</span>
           </div>
-          <div className="flex flex-col items-center border-x border-slate-100">
-            <span className="text-[11px] font-extrabold text-amber-600">SHA-256</span>
-            <span className="text-[9.5px] font-medium text-slate-400">Sorteo inmutable</span>
-          </div>
+          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
           <div className="flex flex-col items-center">
-            <span className="text-[11px] font-extrabold text-teal-700">Simple QR</span>
-            <span className="text-[9.5px] font-medium text-slate-400">Pago verificado</span>
+            <span className="text-xs sm:text-sm font-extrabold text-amber-600">SHA-256</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500">Sorteo inmutable</span>
+          </div>
+          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
+          <div className="flex flex-col items-center">
+            <span className="text-xs sm:text-sm font-extrabold text-teal-700">Simple QR</span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-slate-500">Pago verificado</span>
           </div>
         </div>
 
