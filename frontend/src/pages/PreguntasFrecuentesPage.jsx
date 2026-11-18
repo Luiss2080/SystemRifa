@@ -165,12 +165,7 @@ export function PreguntasFrecuentesPage() {
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('todas');
   const [page, setPage] = useState(1);
-  const [abiertos, setAbiertos] = useState(new Set([0]));
-
-  useEffect(() => {
-    setPage(1);
-    setAbiertos(new Set([0]));
-  }, [categoria, busqueda]);
+  const [abiertos, setAbiertos] = useState(new Set());
 
   const faqsFiltradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -187,20 +182,32 @@ export function PreguntasFrecuentesPage() {
     return faqsFiltradas.slice(start, start + PAGE_SIZE);
   }, [faqsFiltradas, page]);
 
-  function toggleItem(idx) {
+  useEffect(() => {
+    setPage(1);
+  }, [categoria, busqueda]);
+
+  useEffect(() => {
+    if (faqsPaginadas.length > 0) {
+      setAbiertos(new Set([faqsPaginadas[0].q]));
+    } else {
+      setAbiertos(new Set());
+    }
+  }, [page, categoria, busqueda]);
+
+  function toggleItem(q) {
     setAbiertos((prev) => {
       const next = new Set(prev);
-      if (next.has(idx)) {
-        next.delete(idx);
+      if (next.has(q)) {
+        next.delete(q);
       } else {
-        next.add(idx);
+        next.add(q);
       }
       return next;
     });
   }
 
   function expandirTodos() {
-    setAbiertos(new Set(faqsPaginadas.map((_, i) => i)));
+    setAbiertos(new Set(faqsPaginadas.map((item) => item.q)));
   }
 
   function contraerTodos() {
@@ -353,7 +360,42 @@ export function PreguntasFrecuentesPage() {
         </aside>
 
         {/* Columna Derecha: Acordeón Moderno con Iconos de Categoría */}
-        <div className="space-y-3 lg:col-span-8">
+        <div className="space-y-3.5 lg:col-span-8">
+          {/* Filtros rápidos horizontales (chips) para alternar al instante */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+            {CATEGORIAS.map((cat) => {
+              const Icon = cat.icon;
+              const activo = categoria === cat.id;
+              const count =
+                cat.id === 'todas'
+                  ? FAQS_DATA.length
+                  : FAQS_DATA.filter((f) => f.cat === cat.id).length;
+
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoria(cat.id)}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
+                    activo
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/60 hover:text-emerald-800'
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{cat.label}</span>
+                  <span
+                    className={`flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-black ${
+                      activo ? 'bg-white text-emerald-700' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Barra superior de control */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/60 pb-2">
             <div className="flex items-center gap-2">
@@ -363,6 +405,11 @@ export function PreguntasFrecuentesPage() {
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
                 {faqsFiltradas.length} {faqsFiltradas.length === 1 ? 'pregunta' : 'preguntas'}
               </span>
+              {totalPages > 1 && (
+                <span className="text-xs text-slate-400">
+                  · Página {page} de {totalPages} (5 por página)
+                </span>
+              )}
             </div>
 
             {faqsFiltradas.length > 0 && (
@@ -386,7 +433,7 @@ export function PreguntasFrecuentesPage() {
             )}
           </div>
 
-          {/* Lista de Preguntas */}
+          {/* Lista de Preguntas: exactamente 5 preguntas por pantalla */}
           {faqsFiltradas.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-8 sm:p-12 text-center space-y-3">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
@@ -420,8 +467,8 @@ export function PreguntasFrecuentesPage() {
             </div>
           ) : (
             <div className="space-y-2.5">
-              {faqsFiltradas.map((item, idx) => {
-                const isOpen = abiertos.has(idx);
+              {faqsPaginadas.map((item) => {
+                const isOpen = abiertos.has(item.q);
                 const catInfo = CAT_INFO[item.cat] || CAT_INFO.participantes;
                 const CatIcon = catInfo.icon;
 
@@ -436,7 +483,7 @@ export function PreguntasFrecuentesPage() {
                   >
                     <button
                       type="button"
-                      onClick={() => toggleItem(idx)}
+                      onClick={() => toggleItem(item.q)}
                       aria-expanded={isOpen}
                       className="flex w-full items-center justify-between gap-3 p-3.5 sm:p-4 text-left cursor-pointer group"
                     >
@@ -481,6 +528,21 @@ export function PreguntasFrecuentesPage() {
                   </article>
                 );
               })}
+            </div>
+          )}
+
+          {/* Paginación a ancho completo cuando hay más de 5 preguntas */}
+          {faqsFiltradas.length > PAGE_SIZE && (
+            <div className="pt-2">
+              <PaginationCard
+                page={page}
+                totalPages={totalPages}
+                total={faqsFiltradas.length}
+                showingFrom={(page - 1) * PAGE_SIZE + 1}
+                showingTo={Math.min(faqsFiltradas.length, page * PAGE_SIZE)}
+                onPageChange={setPage}
+                itemLabel="preguntas"
+              />
             </div>
           )}
         </div>
