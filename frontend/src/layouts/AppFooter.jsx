@@ -441,16 +441,16 @@ export function AppFooter() {
         description={modalContent?.description}
         badge="Transparencia y legalidad"
         icon={ShieldCheck}
-        maxWidth="max-w-lg"
+        maxWidth="max-w-2xl sm:max-w-3xl"
         footer={
           <Button variant="primary" size="sm" onClick={() => setModalActivo(null)}>
             Entendido
           </Button>
         }
       >
-        <div className="space-y-3 text-sm leading-relaxed text-slate-600">
+        <div className="grid gap-2.5 sm:grid-cols-2 text-xs leading-relaxed text-slate-600">
           {modalContent?.paragraphs.map((text, idx) => (
-            <p key={idx} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+            <p key={idx} className="rounded-xl border border-slate-100 bg-slate-50/70 p-3 shadow-2xs">
               {text}
             </p>
           ))}

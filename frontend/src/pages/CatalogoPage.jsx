@@ -532,164 +532,169 @@ export function CatalogoPage({ mode = 'landing' }) {
 
         {/* Modal de Filtros con Opciones e Iconos para despejar la pantalla */}
         {modalFiltrosAbierto && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-modal-in">
-            <div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs animate-modal-in">
+            <div className="relative flex max-h-[85vh] w-full max-w-4xl flex-col rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
               {/* Encabezado del Modal */}
-              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 bg-slate-50/70 sm:px-6">
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3 bg-slate-50/70 sm:px-6 sm:py-3.5">
                 <div className="flex items-center gap-2.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-                    <SlidersHorizontal className="h-4.5 w-4.5" />
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                    <SlidersHorizontal className="h-4 w-4" />
                   </span>
                   <div>
                     <h3 className="text-base font-extrabold text-slate-900">Filtros de Rifas Solidarias</h3>
-                    <p className="text-xs text-slate-500">Selecciona la causa benéfica o criterios de cierre</p>
+                    <p className="text-xs text-slate-500">Selecciona la causa benéfica o criterios de orden</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setModalFiltrosAbierto(false)}
-                  className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer"
+                  className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer"
                   aria-label="Cerrar modal de filtros"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-4.5 w-4.5" />
                 </button>
               </div>
 
-              {/* Cuerpo del Modal */}
-              <div className="flex-1 overflow-y-auto p-5 space-y-5 sm:p-6">
-                {/* Selector de Causas con Iconos */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-700">
-                      Causa Solidaria Verificada
-                    </label>
-                    {causaId && (
+              {/* Cuerpo del Modal horizontal */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+                <div className="grid gap-4 md:grid-cols-12 items-start">
+                  {/* Selector de Causas con Iconos (Columna izquierda) */}
+                  <div className="md:col-span-7">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-700">
+                        Causa Solidaria Verificada
+                      </label>
+                      {causaId && (
+                        <button
+                          type="button"
+                          onClick={() => seleccionarCausa('')}
+                          className="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
+                        >
+                          Ver todas
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-60 overflow-y-auto pr-1">
+                      {/* Opción: Todas las causas */}
                       <button
                         type="button"
                         onClick={() => seleccionarCausa('')}
-                        className="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
+                        className={`flex items-center justify-between gap-2.5 rounded-xl border p-2 text-left transition cursor-pointer ${
+                          !causaId
+                            ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
+                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
+                        }`}
                       >
-                        Ver todas
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                            !causaId ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
+                          }`}>
+                            <LayoutGrid className="h-3.5 w-3.5" />
+                          </span>
+                          <span className="text-xs font-bold truncate">Todas las causas</span>
+                        </div>
+                        {!causaId && <Check className="h-3.5 w-3.5 shrink-0 text-emerald-600" />}
                       </button>
-                    )}
+
+                      {/* Causas oficiales con sus respectivos iconos */}
+                      {causas.map((c) => {
+                        const activa = String(causaId) === String(c.causaId);
+                        const { icon: CausaIcon, color: iconColor } = getCausaIcon(c.nombre);
+                        return (
+                          <button
+                            key={c.causaId}
+                            type="button"
+                            onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
+                            className={`flex items-center justify-between gap-2.5 rounded-xl border p-2 text-left transition cursor-pointer ${
+                              activa
+                                ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
+                                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                                activa ? 'bg-emerald-600 text-white' : iconColor
+                              }`}>
+                                <CausaIcon className="h-3.5 w-3.5" />
+                              </span>
+                              <span className="text-xs font-bold truncate">{c.nombre}</span>
+                            </div>
+                            {activa && <Check className="h-3.5 w-3.5 shrink-0 text-emerald-600" />}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {/* Opción: Todas las causas */}
-                    <button
-                      type="button"
-                      onClick={() => seleccionarCausa('')}
-                      className={`flex items-center justify-between gap-3 rounded-2xl border p-2.5 text-left transition cursor-pointer ${
-                        !causaId
-                          ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
-                          : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                          !causaId ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          <LayoutGrid className="h-4 w-4" />
-                        </span>
-                        <span className="text-xs font-bold truncate">Todas las causas</span>
-                      </div>
-                      {!causaId && <Check className="h-4 w-4 shrink-0 text-emerald-600" />}
-                    </button>
-
-                    {/* Causas oficiales con sus respectivos iconos */}
-                    {causas.map((c) => {
-                      const activa = String(causaId) === String(c.causaId);
-                      const { icon: CausaIcon, color: iconColor } = getCausaIcon(c.nombre);
-                      return (
-                        <button
-                          key={c.causaId}
-                          type="button"
-                          onClick={() => seleccionarCausa(activa ? '' : String(c.causaId))}
-                          className={`flex items-center justify-between gap-3 rounded-2xl border p-2.5 text-left transition cursor-pointer ${
-                            activa
-                              ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
-                              : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                              activa ? 'bg-emerald-600 text-white' : iconColor
-                            }`}>
-                              <CausaIcon className="h-4 w-4" />
-                            </span>
-                            <span className="text-xs font-bold truncate">{c.nombre}</span>
+                  {/* Criterios de cierre y orden (Columna derecha) */}
+                  <div className="space-y-3.5 md:col-span-5">
+                    {/* Filtro de Urgencia */}
+                    <div>
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-700 block mb-1.5">
+                        Tiempo de Cierre
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setSoloCierraPronto((v) => !v)}
+                        className={`flex items-center justify-between w-full rounded-xl border p-2.5 text-left transition cursor-pointer ${
+                          soloCierraPronto
+                            ? 'border-amber-400 bg-amber-50/80 text-amber-950 font-extrabold ring-1 ring-amber-400'
+                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                            soloCierraPronto ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            <Clock className="h-3.5 w-3.5" />
+                          </span>
+                          <div>
+                            <p className="text-xs font-bold">Cierra pronto (&le; 48 horas)</p>
+                            <p className="text-[10.5px] text-slate-500">Solo rifas en sus últimas 48h</p>
                           </div>
-                          {activa && <Check className="h-4 w-4 shrink-0 text-emerald-600" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                        </div>
+                        {soloCierraPronto && <Check className="h-3.5 w-3.5 text-amber-600" />}
+                      </button>
+                    </div>
 
-                {/* Filtro de Urgencia */}
-                <div>
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-700 block mb-2">
-                    Tiempo de Cierre
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setSoloCierraPronto((v) => !v)}
-                    className={`flex items-center justify-between w-full rounded-2xl border p-3 text-left transition cursor-pointer ${
-                      soloCierraPronto
-                        ? 'border-amber-400 bg-amber-50/80 text-amber-950 font-extrabold ring-1 ring-amber-400'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
-                        soloCierraPronto ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700'
-                      }`}>
-                        <Clock className="h-4 w-4" />
-                      </span>
-                      <div>
-                        <p className="text-xs font-bold">Cierra pronto (&le; 48 horas)</p>
-                        <p className="text-[11px] text-slate-500">Muestra únicamente rifas en sus últimas 48 horas</p>
+                    {/* Criterio de Orden */}
+                    <div>
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-700 block mb-1.5">
+                        Criterio de Orden
+                      </label>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { id: 'cierre', label: 'Cierre próximo', icon: Clock },
+                          { id: 'precio', label: 'Menor precio', icon: ArrowUpDown },
+                          { id: 'disponibles', label: 'Más disponibles', icon: Ticket },
+                        ].map((opt) => {
+                          const selected = orden === opt.id;
+                          const OptIcon = opt.icon;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => setOrden(opt.id)}
+                              className={`flex flex-col items-center justify-center gap-1 rounded-xl border p-2 text-center transition cursor-pointer ${
+                                selected
+                                  ? 'border-emerald-600 bg-emerald-50 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
+                                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              <OptIcon className={`h-3.5 w-3.5 ${selected ? 'text-emerald-700' : 'text-slate-400'}`} />
+                              <span className="text-[11px] font-bold leading-tight">{opt.label}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
-                    {soloCierraPronto && <Check className="h-4 w-4 text-amber-600" />}
-                  </button>
-                </div>
-
-                {/* Criterio de Orden */}
-                <div>
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-700 block mb-2">
-                    Criterio de Orden
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { id: 'cierre', label: 'Cierre próximo', icon: Clock },
-                      { id: 'precio', label: 'Menor precio', icon: ArrowUpDown },
-                      { id: 'disponibles', label: 'Más disponibles', icon: Ticket },
-                    ].map((opt) => {
-                      const selected = orden === opt.id;
-                      const OptIcon = opt.icon;
-                      return (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          onClick={() => setOrden(opt.id)}
-                          className={`flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-2.5 text-center transition cursor-pointer ${
-                            selected
-                              ? 'border-emerald-600 bg-emerald-50 text-emerald-950 font-extrabold ring-1 ring-emerald-500/50'
-                              : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                          }`}
-                        >
-                          <OptIcon className={`h-4 w-4 ${selected ? 'text-emerald-700' : 'text-slate-400'}`} />
-                          <span className="text-xs font-bold">{opt.label}</span>
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
               </div>
 
               {/* Pie del Modal */}
-              <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4 bg-slate-50/70 sm:px-6">
+              <div className="flex items-center justify-between border-t border-slate-100 px-5 py-2.5 bg-slate-50/70 sm:px-6 sm:py-3">
                 <button
                   type="button"
                   onClick={limpiarFiltros}
@@ -702,7 +707,7 @@ export function CatalogoPage({ mode = 'landing' }) {
                 <button
                   type="button"
                   onClick={() => setModalFiltrosAbierto(false)}
-                  className="rounded-full bg-emerald-600 px-6 py-2.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs hover:bg-emerald-700 transition cursor-pointer"
+                  className="rounded-full bg-emerald-600 px-5 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-xs hover:bg-emerald-700 transition cursor-pointer"
                 >
                   Aplicar ({rifasFiltradas.length} encontradas)
                 </button>
