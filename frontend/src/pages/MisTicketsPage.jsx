@@ -483,43 +483,56 @@ export function MisTicketsPage() {
         description="Envía la referencia de tu transferencia o comprobante antes de que expire la reserva."
         badge="Pago de reserva"
         icon={CreditCard}
+        maxWidth="max-w-3xl"
       >
         {grupoAPagar && (
-          <form onSubmit={handlePagarGrupo} className="space-y-4">
-            <div className="rounded-xl bg-slate-50 p-3 text-sm">
-              <p>
-                <strong>Números:</strong>{' '}
-                {grupoAPagar.tickets.map((t) => `#${t.numeroTicket}`).join(', ')}
-              </p>
-              <p className="mt-1">
-                <strong>Monto total:</strong>{' '}
-                <span className="font-bold text-emerald-700">{formatearBs(grupoAPagar.total)}</span>
-              </p>
+          <form onSubmit={handlePagarGrupo} className="space-y-3.5">
+            <div className="grid gap-3.5 sm:grid-cols-12 items-start">
+              <div className="sm:col-span-5 rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-3 text-xs space-y-1.5 text-slate-700">
+                <p className="font-bold uppercase text-[10px] tracking-wider text-emerald-800">
+                  Resumen de compra
+                </p>
+                <p className="break-words">
+                  <strong>Números:</strong>{' '}
+                  {grupoAPagar.tickets.map((t) => `#${t.numeroTicket}`).join(', ')}
+                </p>
+                <div className="pt-1 border-t border-emerald-200/60 flex items-center justify-between text-xs">
+                  <span>Total a transferir:</span>
+                  <span className="font-extrabold text-emerald-700 text-sm">
+                    {formatearBs(grupoAPagar.total)}
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-500 pt-1 leading-tight">
+                  ⏱️ Conserva tu comprobante para que administración valide tus tickets.
+                </p>
+              </div>
+
+              <div className="sm:col-span-7 space-y-2.5">
+                <Select
+                  label="Método de pago"
+                  value={metodo}
+                  onChange={(e) => setMetodo(e.target.value)}
+                  options={[
+                    { value: 'TRANSFERENCIA_QR', label: 'Transferencia / QR Bancario' },
+                    { value: 'TRANSFERENCIA_BANCARIA', label: 'Transferencia bancaria directa' },
+                    { value: 'EFECTIVO', label: 'Efectivo' },
+                  ]}
+                />
+
+                <Input
+                  label="Referencia o comprobante"
+                  placeholder="N° de operación o referencia bancaria"
+                  value={referencia}
+                  onChange={(e) => setReferencia(e.target.value)}
+                />
+              </div>
             </div>
 
-            <Select
-              label="Método de pago"
-              value={metodo}
-              onChange={(e) => setMetodo(e.target.value)}
-              options={[
-                { value: 'TRANSFERENCIA_QR', label: 'Transferencia / QR Bancario' },
-                { value: 'TRANSFERENCIA_BANCARIA', label: 'Transferencia bancaria directa' },
-                { value: 'EFECTIVO', label: 'Efectivo' },
-              ]}
-            />
-
-            <Input
-              label="Referencia o comprobante"
-              placeholder="N° de operación o nota"
-              value={referencia}
-              onChange={(e) => setReferencia(e.target.value)}
-            />
-
-            <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setGrupoAPagar(null)}>
+            <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+              <Button variant="secondary" size="sm" onClick={() => setGrupoAPagar(null)}>
                 Cancelar
               </Button>
-              <Button type="submit" loading={enviando}>
+              <Button type="submit" size="sm" loading={enviando}>
                 Confirmar envío de pago
               </Button>
             </div>
